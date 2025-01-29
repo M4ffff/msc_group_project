@@ -29,14 +29,14 @@ st.write("&nbsp;&nbsp;&nbsp;&nbsp;Converting speech signals into text (e.g., in 
 st.write("&nbsp;&nbsp;&nbsp;&nbsp;Text Classification: Categorizing text into different classes (e.g., news classification, spam detection).")
 col1, col2, col3 = st.columns([1, 2, 3])
 with col2:
- st.image("images/ORC.png", caption="Facial Recognition", width=300)
+ st.image("images/ORC.png", caption="ORC", width=300)
 
 st.subheader("&nbsp;&nbsp;3.Gaming and Entertainment")
 st.write("&nbsp;&nbsp;&nbsp;&nbsp;Game Recommendation: Recommending games based on players' gaming history and preferences.")
 st.write("&nbsp;&nbsp;&nbsp;&nbsp;In-Game Character Behavior Prediction: Predicting character behavior based on player data to optimize the gaming experience.")
 col1, col2, col3 = st.columns([1, 2, 3])
 with col2:
- st.image("images/OIP.jpg", caption="Facial Recognition", width=300)
+ st.image("images/OIP.jpg", caption="OIP", width=300)
 
 st.write("&nbsp;&nbsp;&nbsp;&nbsp;Of course, there are many other application scenarios.Supervised learning is widely applied and deeply integrated into various aspects of daily life, making it an accessible and practical tool rather than something distant or unattainable.")
 
