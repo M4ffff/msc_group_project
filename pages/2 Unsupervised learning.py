@@ -300,7 +300,8 @@ def make_my_blobs(seed):
     axis_max = centre_max_val + 2*std
     X, y = make_blobs(n_samples=300, n_features=2, centers=num_centres, center_box=(-centre_max_val, centre_max_val), cluster_std=std, random_state=seed)
     return X, axis_max
-    
+
+
 if "counter" not in st.session_state:
     st.write("counter not in...............")
     st.session_state["counter"] = 0
@@ -308,7 +309,7 @@ if "counter" not in st.session_state:
 
 fig, ax = plt.subplots(figsize=(6, 4))
 
-
+# Unfinished buttons which will allow selecting of different data
 left, middle, right = st.columns(3)
 if left.button("Get blobby  data", use_container_width=True):
     left.markdown("Producing some blobby data.")
