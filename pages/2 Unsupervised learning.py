@@ -1,4 +1,3 @@
-import ipywidgets as widgets
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -29,13 +28,20 @@ st.subheader("INTRO STUFF ")
 st.markdown("Explain unsupervised learning")
       
 
-st.markdown("IDEA: \n potentially have a plot which produces random data into a random number of clusters. The student then has to flick, through, changing the number of clusters until the graph looks right. Makes it a more unique experience for theh student as they have their own set of data. Allow them to reset and produce another random set of data so they can do it as often as they like. ")
+
+
+st.subheader("Toy dataset example")
+
+st.markdown("Example with explanations of pca and clustering animation using toy dataset ")
+
+
+
+
 
 
 st.markdown(" \" Here's an example which allows exploring of unsupervised learning techniques PCA and clustering \" ")
 
-
-st.subheader("SCATTER TEST ")
+st.markdown("REPLACE THIS FAKE DATA WITH TOYSET DATA")
 
 from sklearn.datasets import make_blobs
 from random import randint
@@ -59,171 +65,23 @@ c = (
 st.altair_chart(c, use_container_width=True)
 
 
-st.subheader("PYPLOT TEST ")
 
 
-import matplotlib.pyplot as plt
-from sklearn.datasets import make_blobs
-from sklearn.mixture import GaussianMixture
+st.subheader("INTERACTIVE PLOT TO SEE HOW CLUSTERING WORKS WITH DIFFERENT DATASHAPES")
 
-X, y_true = make_blobs(n_samples=300, centers=4, cluster_std=1, random_state=0)
-gmm = GaussianMixture(n_components=4).fit(X)
-labels = gmm.predict(X)
-probs = gmm.predict_proba(X)
-size = 10 * probs.max(axis=1) ** 2
 
-fig, ax = plt.subplots(figsize=(6, 4))
-ax.scatter(X[:, 0], X[:, 1], c=labels, s=size)
+# normal writing details
+multi = '''Data doesnt always come in blobs - it can come in other shapes:    
+Different clustering techniques work better than others depending on the shape of the data
 
+The following figure allows the user to produce some data selected randomly from a set of different dataset -  
+Lots of them have funky shapes eg data in shape of smiley face (shown below) 
 
-st.pyplot(fig)
+Will allow users to see how clustering works for different data shapes in a *fun* :rainbow[interactive] way 
+'''
+st.markdown(multi)
 
-
-
-st.subheader("MAP TEST ")
-
-
-
-
-# map_data = pd.DataFrame(
-#     np.random.randn(1000, 2) / [50, 50] + [37.76, -122.4],
-#     columns=['lat', 'lon'])
-
-# st.map(map_data)
-
-
-
-
-
-
-
-
-
-
-# Load in the data provided by TheraTech.
-post_data = pd.read_csv('pages/post_cancer_markers.csv')
-pre_data = pd.read_csv('pages/pre_cancer_markers.csv')
-
-# List of just the column names. Used later. 
-marker_names = post_data.columns[:6]
-
-# A sample of one of the dataframes to show how the data is provided. 
-# Only the first 5 rows of 2000 are shown.
-st.write(post_data.head())
-
-
-
-# 
-st.markdown("animation showing how k means clustering works")
-
-st.markdown("Vary number of clusters (maybe use different data than the cancer marker data)")
-
-
-
-
-
-# Interactive plotting using above updater function.
-
-# List of the different options for data to view.
-viewing_options = ['Pre and Post data', 'Pre data', 'Post data']
-
-# Allows viewing of full slider name.
-# style = {'description_width': 'initial'} 
- 
-# # Initialises figure 
-
-
-def update_marker(marker_num):
-    """
-    Updater function to allow the viewer to slide through the data for each marker.
-    Shows the relationship between pre and post data, as well as allows viewer to see the distributions of the pre/post data separately. 
-
-    Args:
-        marker_num (int): Which marker the viewer wants to see. 
-        histogram (str): Which data the viewer wants to see. 
-    """
-    
-    # Creates arrays of the pre and post data for the required marker
-    marker_i_pre = pre_data[f'marker_{marker_num}']
-    marker_i_post = post_data[f'marker_{marker_num}']
-    pre_min = np.min(marker_i_pre)
-    pre_max = np.max(marker_i_pre)
-    post_min = np.min(marker_i_post)
-    post_max = np.max(marker_i_post)
-
-    df = pd.DataFrame({"pre column": marker_i_pre, "post column": marker_i_post})
-    # st.scatter_chart(df, x="pre column")
-    
-    c = (
-        alt.Chart(df)
-        .mark_circle()
-        .encode(
-        alt.X('pre column', scale=alt.Scale(domain=[0.99*pre_min, 1.01*pre_max], nice=False)),
-        alt.Y('post column', scale=alt.Scale(domain=[0.99*post_min, 1.01*post_max], nice=False)),
-        )
-    )
-
-    st.altair_chart(c, use_container_width=False)
-    
-
-slider = st.slider(label='Marker number:', min_value=0, max_value=5, step=1) # , style=style)  
-
-st.write(slider)
-
-# Makes widget, with an integer slider to change marker number, and a drop down menu to see the different data distributions.  
-update_marker(slider)
-
-
-
-
-
-st.markdown("Comparison and correlation between different markers?")
-
-st.markdown("Show output of PCA using 2/3 components")
-
-st.markdown("Bar codes of variation coverered using differnet number of components")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Interactive plotting using above updater function.
-
-# List of the different options for data to view.
-viewing_options = ['Pre and Post data', 'Pre data', 'Post data']
-
-# Allows viewing of full slider name.
-# style = {'description_width': 'initial'} 
- 
-# # Initialises figure 
-    
-
-
-# # slider = st.slider(label='Marker number:', min_value=0, max_value=5, step=1) # , style=style)  
-
-# # st.write(slider)
-
-# # Makes widget, with an integer slider to change marker number, and a drop down menu to see the different data distributions.  
-
-# print("just before calling function")
-# update_marker2()
-
-
-
-
+st.image("images/funky_shapes.png", caption="Data with funky shapes", width=600)
 
 
 def update_marker3(counter, technique2, X, fig, ax):
@@ -302,6 +160,9 @@ def make_my_blobs(seed):
     return X, axis_max
 
 
+st.subheader("FIGURE")
+
+
 if "counter" not in st.session_state:
     st.write("counter not in...............")
     st.session_state["counter"] = 0
@@ -313,9 +174,9 @@ fig, ax = plt.subplots(figsize=(6, 4))
 left, middle, right = st.columns(3)
 if left.button("Get blobby  data", use_container_width=True):
     left.markdown("Producing some blobby data.")
-if middle.button("Get moony data", icon="😃", use_container_width=True):
+if middle.button("Get moony data", use_container_width=True):
     middle.markdown("Producing some moony data.")
-if right.button("Get moony/blobby data", icon=":material/mood:", use_container_width=True):
+if right.button("Get moony/blobby data", use_container_width=True):
     right.markdown("Producing some moony/blobby data.")
 
 if st.button("Get new data", type="primary"):
