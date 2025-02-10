@@ -2,6 +2,294 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import time
+import matplotlib.pyplot as plt
+from sklearn import svm
+from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error,classification_report,accuracy_score, confusion_matrix
+from sklearn.datasets import make_classification,make_blobs
+import seaborn as sns
+from sklearn.ensemble import RandomForestClassifier
+
+
+# def about subpage
+def subpage1():
+    st.write(summaries[selected_method])
+    # Formula
+    st.subheader("Formula")
+    st.latex(r"y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_n x_n + \epsilon")
+
+    # data
+    st.subheader("Data Generation")
+    st.write("Let's generate some synthetic data to demonstrate linear regression.")
+    seed = st.slider("Choose a random seed", 0.0, 100.0, 50.0)
+
+    np.random.seed(int(seed))
+    X = 2.5 * np.random.rand(100, 1)
+    y = 2 + 3 * X + np.random.randn(100, 1)
+
+    # draw
+    st.subheader("Data Visualization")
+    fig, ax = plt.subplots()
+    ax.scatter(X, y, color='blue', label='Data Points')
+    plt.xlabel('X')
+    plt.ylabel('y')
+    plt.title('Scatter Plot of X vs y')
+    st.pyplot(fig)
+
+    # train
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+
+
+    st.subheader("Model Evaluation")
+    y_pred = model.predict(X_test)
+    mse = mean_squared_error(y_test, y_pred)
+    st.write(f"Mean Squared Error: {mse}")
+
+
+    fig, ax = plt.subplots()
+    ax.scatter(X, y, color='blue', label='Data Points')
+    ax.plot(X, model.predict(X), color='red', label='Regression Line')
+    plt.xlabel('X')
+    plt.ylabel('y')
+    plt.title('Linear Regression Fit')
+    plt.legend()
+    st.pyplot(fig)
+
+
+    st.subheader("Interactive Prediction")
+    x_value = st.slider("Choose a value for X", 0.0, 1.0, 0.5)
+    y_pred = model.predict([[x_value]])
+    st.write(f"Predicted y for X = {x_value}: {y_pred[0][0]:.2f}")
+
+def subpage2():
+    st.write(summaries[selected_method])
+
+    st.subheader("Formula")
+    st.latex(r"P(y=1|x) = \frac{1}{1 + e^{-(w_1x_1 + w_2x_2 + ... + w_nx_n + b)}}")
+
+
+    st.subheader("Data Generation")
+    st.write("Let's generate some synthetic data to demonstrate logistic regression.")
+    seed = st.slider("Choose a random seed", 0.0, 100.0, 50.0)
+    intseed=int(seed)
+    X, y = make_classification(n_samples=100, n_features=2, n_redundant=0, n_clusters_per_class=1, flip_y=0.1,
+                               random_state=intseed)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+    st.subheader("Data Visualization")
+    fig, ax = plt.subplots()
+    ax.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap='viridis', label='Training Data')
+    plt.xlabel('Feature 1')
+    plt.ylabel('Feature 2')
+    plt.title('Training Data Scatter Plot')
+    st.pyplot(fig)
+
+
+    model = LogisticRegression()
+    model.fit(X_train, y_train)
+
+
+    st.subheader("Model Evaluation")
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    conf_matrix = confusion_matrix(y_test, y_pred)
+    st.write(f"Accuracy: {accuracy:.2f}")
+    st.write("Confusion Matrix:")
+    st.write(conf_matrix)
+
+    st.subheader("Decision Boundary")
+
+    def plot_decision_boundary(X, y, model):
+        x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+        y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+        xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1), np.arange(y_min, y_max, 0.1))
+        Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+        Z = Z.reshape(xx.shape)
+        plt.contourf(xx, yy, Z, alpha=0.8)
+        plt.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis', edgecolor='k')
+        plt.xlabel('Feature 1')
+        plt.ylabel('Feature 2')
+        plt.title('Decision Boundary')
+        plt.show()
+
+    plot_decision_boundary(X_train, y_train, model)
+
+    st.subheader("Interactive Prediction")
+    feature1 = st.slider("Choose a value for Feature 1", X[:, 0].min(), X[:, 0].max(), (X[:, 0].mean()))
+    feature2 = st.slider("Choose a value for Feature 2", X[:, 1].min(), X[:, 1].max(), (X[:, 1].mean()))
+    input_features = np.array([[feature1, feature2]])
+    prediction = model.predict(input_features)
+    st.write(f"Predicted class for input ({feature1:.2f}, {feature2:.2f}): {prediction[0]}")
+
+def subpage3():
+    st.write(summaries[selected_method])
+
+    st.subheader("Formula")
+    st.latex(r"f(x) = \text{sign}(w \cdot x + b)")
+
+    st.subheader("Data Generation")
+    seed = st.slider("Choose a random seed", 0.0, 100.0, 50.0)
+    intseed=int(seed)
+    X, y = make_blobs(n_samples=100, centers=2, random_state= intseed, cluster_std=1.05)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state= intseed)
+
+    st.subheader("Data Visualization")
+    fig, ax = plt.subplots()
+    ax.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis', label='Data Points')
+    plt.xlabel('Feature 1')
+    plt.ylabel('Feature 2')
+    plt.title('Scatter Plot of X vs y')
+    st.pyplot(fig)
+
+
+    model = svm.SVC(kernel='linear')
+    model.fit(X_train, y_train)
+
+    st.subheader("Model Evaluation")
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    st.write("Accuracy:", accuracy)
+
+    st.subheader("Confusion Matrix")
+    conf_matrix = confusion_matrix(y_test, y_pred)
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues')
+    plt.xlabel('Predicted Label')
+    plt.ylabel('True Label')
+    plt.title('Confusion Matrix')
+    st.pyplot(plt)
+
+    st.subheader("Decision Boundary")
+
+    def plot_decision_boundary(X, y, model):
+        x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+        y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+        xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
+                             np.arange(y_min, y_max, 0.1))
+        Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+        Z = Z.reshape(xx.shape)
+        plt.contourf(xx, yy, Z, alpha=0.8)
+        plt.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis', edgecolor='k')
+        plt.xlabel('Feature 1')
+        plt.ylabel('Feature 2')
+        plt.title('Decision Boundary')
+        plt.show()
+
+    plot_decision_boundary(X_train, y_train, model)
+
+    st.subheader("Interactive Prediction")
+    feature1 = st.slider("Choose a value for Feature 1", float(X[:, 0].min()), float(X[:, 0].max()),
+                         float(X[:, 0].mean()))
+    feature2 = st.slider("Choose a value for Feature 2", float(X[:, 1].min()), float(X[:, 1].max()),
+                         float(X[:, 1].mean()))
+    input_features = np.array([[feature1, feature2]])
+    prediction = model.predict(input_features)
+    st.write(f"Predicted class for input ({feature1:.2f}, {feature2:.2f}): {prediction[0]}")
+
+    st.subheader("Decision Boundary with Hyperplane and Support Vectors")
+
+    def plot_decision_boundary_with_hyperplane(X, y, model):
+        x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+        y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+        xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
+                             np.arange(y_min, y_max, 0.1))
+        Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+        Z = Z.reshape(xx.shape)
+
+        fig, ax = plt.subplots(figsize=(10, 8))
+
+        ax.contourf(xx, yy, Z, alpha=0.8, cmap='coolwarm')
+        ax.contour(xx, yy, Z, colors='k', linestyles='--', levels=[-1, 0, 1], linewidths=1)
+
+        scatter = ax.scatter(X[:, 0], X[:, 1], c=y, cmap='coolwarm', edgecolor='k', s=50, label='Data Points')
+
+        w = model.coef_[0]
+        b = model.intercept_[0]
+        x_values = np.linspace(x_min, x_max, 100)
+        y_values = -(w[0] * x_values + b) / w[1]
+
+        ax.plot(x_values, y_values, color='black', linestyle='-', linewidth=2, label='Hyperplane')
+
+        margin = 1 / np.sqrt(np.sum(w ** 2))
+        y_values_upper = y_values + margin * (w[1] / np.linalg.norm(w))
+        y_values_lower = y_values - margin * (w[1] / np.linalg.norm(w))
+
+        ax.plot(x_values, y_values_upper, color='gray', linestyle='--', linewidth=1, label='Margin')
+        ax.plot(x_values, y_values_lower, color='gray', linestyle='--', linewidth=1)
+
+        ax.scatter(model.support_vectors_[:, 0], model.support_vectors_[:, 1],
+                   facecolors='none', edgecolors='black', s=120, linewidths=1.5, label='Support Vectors')
+
+        ax.set_xlabel('Feature 1')
+        ax.set_ylabel('Feature 2')
+        ax.set_title('Decision Boundary with Hyperplane and Support Vectors')
+        ax.legend()
+
+        st.pyplot(fig)
+
+    plot_decision_boundary_with_hyperplane(X_train, y_train, model)
+
+def subpage4():
+    st.write(summaries[selected_method])
+    st.subheader("Data Generation")
+    seed = st.slider("Choose a random seed", 0.0, 100.0, 50.0)
+    intseed=int(seed)
+    X, y = make_classification(n_samples=1000, n_features=4,
+                               n_informative=2, n_redundant=2,
+                               random_state=intseed, shuffle=False)
+
+    X_train, X_test, y_train, y_test = train_test_split(X[:, :2], y, test_size=0.2, random_state=  intseed)
+
+    rf = RandomForestClassifier(n_estimators=100, random_state=intseed)
+    rf.fit(X_train, y_train)
+
+    st.subheader("Data Visualization")
+    fig, ax = plt.subplots()
+    ax.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis', label='Data Points')
+    plt.xlabel('Feature 1')
+    plt.ylabel('Feature 2')
+    plt.title('Scatter Plot of X vs y')
+    st.pyplot(fig)
+
+    st.subheader("Feature Importance")
+    feature_importances = rf.feature_importances_
+    feature_names = ['Feature 1', 'Feature 2']
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x=feature_importances, y=feature_names)
+    plt.title('Feature Importance')
+    st.pyplot(plt)
+
+    st.subheader("Model Evaluation")
+    y_pred = rf.predict(X_test)
+    cm = confusion_matrix(y_test, y_pred)
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+    plt.title('Confusion Matrix')
+    st.pyplot(plt)
+
+    st.subheader("Decision Boundary")
+
+    def plot_decision_boundary(X, y, model):
+        x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+        y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+        xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
+                             np.arange(y_min, y_max, 0.1))
+        Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+        Z = Z.reshape(xx.shape)
+
+        plt.figure(figsize=(8, 6))
+        plt.contourf(xx, yy, Z, alpha=0.4, cmap='coolwarm')
+        plt.scatter(X[:, 0], X[:, 1], c=y, edgecolor='k', cmap='coolwarm', alpha=0.8)
+        plt.title('Decision Boundary')
+        st.pyplot(plt)
+
+    plot_decision_boundary(X_train, y_train, rf)
+
 
 st.title("Supervised Learning ")
 st.write("🎉🎉🎉If you've made it this far, it means you're genuinely interested in this topic, and the content ahead is definitely worth looking forward to!🎉🎉🎉")
@@ -54,9 +342,12 @@ selected_method = st.selectbox(
     options=list(summaries.keys())
 )
 
-# 根据选择显示简要概述
-st.header("Introduction")
-st.write(summaries[selected_method])
-
-
+if selected_method == "Linear Regression":
+    subpage1()
+elif selected_method == "Logistic Regression":
+    subpage2()
+elif selected_method == "Support Vector Machine":
+    subpage3()
+elif selected_method == "Random Forest":
+    subpage4()
 
