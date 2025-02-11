@@ -30,43 +30,85 @@ st.markdown("Explain unsupervised learning")
 
 
 
-st.subheader("Toy dataset example")
+st.subheader("PCA and K-means Clustering")
 
-st.markdown("Example with explanations of pca and clustering animation using toy dataset ")
-
-
+st.markdown("PCA simplifies complex datasets by reducing the number of features, while keeping as much of the important information so that the significancy of the data is not affected. First, the data is standardised, so that all features are on the same scale. Then key features are identified, through the combination of original features. Finally, the dimensions are reduced, only the top few features are kept which retains the most significant information.")
 
 
+st.markdown("PCA is usually followed by a clustering algorithm. K-means clustering is a common way to group data into different categories based on how similar the data points are. It starts with picking the number of groups, with random group centres. The data points are then assigned to the nearest group and the group centres are updates. This is repeated until the best grouping is found.")
 
 
-st.markdown(" \" Here's an example which allows exploring of unsupervised learning techniques PCA and clustering \" ")
 
-st.markdown("REPLACE THIS FAKE DATA WITH TOYSET DATA")
 
-from sklearn.datasets import make_blobs
-from random import randint
+
+st.markdown("**Example:** Explore PCA and clustering on the Toy dataset below.")
+st.markdown("**Raw Toy data:**")
+from sklearn.preprocessing import StandardScaler
 
 toy_dat = pd.read_csv('toy.csv')
-x = toy_dat['x']
-y = toy_dat['y']
+toy_dat['encoded_label'] = [1 if i == 'b' else 0 for i in toy_dat['label'].values]  ## Makes a = 0, b = 1.
+del toy_dat['label']    ## Drop labels column as not computer readable.
 
-num_centres = randint(3, 6)
-centre_max_val = 4
-std = 1
-axis_max = centre_max_val + 2*std
-X, y = make_blobs(n_samples=300, n_features=2, centers=num_centres, center_box=(-centre_max_val, centre_max_val), cluster_std=std, random_state=2)
-
-chart_data = pd.DataFrame(X, columns=["a", "b"])
+axis_max = max(toy_dat["x"].max(), toy_dat["y"].max()) + 2
 
 c = (
-   alt.Chart(chart_data)
-   .mark_circle()
-   .encode(x=alt.X("a", scale=alt.Scale(domain=[-axis_max, axis_max])),
-            y=alt.Y("b", scale=alt.Scale(domain=[-axis_max, axis_max])) 
-    )
+    alt.Chart(toy_dat)
+    .mark_circle()
+    .encode(x=alt.X("x", scale=alt.Scale(domain=[-axis_max, axis_max])),
+            y=alt.Y("y", scale=alt.Scale(domain=[-axis_max, axis_max])),
+           )
 )
 
 st.altair_chart(c, use_container_width=True)
+
+st.markdown("**Applying PCA:**")
+cols = st.multiselect("**Select numerical columns for PCA:**", toy_dat.columns)
+
+if len(cols) >= 2:
+    scaler = StandardScaler()
+    scaled_data = scaler.fit_transform(toy_dat[cols])
+    
+    pca = PCA(n_components=2)
+    pca_result = pca.fit_transform(scaled_data)
+    pca_df = pd.DataFrame(pca_result, columns=["PC1", "PC2"])
+    
+    pca_df["Index"] = toy_dat.index
+    
+    pca_chart = (
+        alt.Chart(pca_df)
+        .mark_circle(size=80)
+        .encode(
+            x=alt.X("PC1", scale=alt.Scale(zero=False)),
+            y=alt.Y("PC2", scale=alt.Scale(zero=False)),
+            tooltip=["Index", "PC1", "PC2"]
+        )
+    )
+    st.altair_chart(pca_chart, use_container_width=True)
+    
+    explained_variance = pca.explained_variance_ratio_ * 100
+    st.write(f"Explained Variance: **PC1 = {explained_variance[0]:.2f}%**, **PC2 = {explained_variance[1]:.2f}%**")
+ 
+
+st.markdown("**K-means Clustering on Principle Components:**")
+
+k = st.slider("Select a number of clusters:", min_value=2, max_value=10, value=3)
+
+kmeans = KMeans(n_clusters=k, random_state=42, n_init="auto")
+pca_df["Cluster"] = kmeans.fit_predict(pca_df)
+
+axis_max = max(pca_df["PC1"].max(), pca_df["PC2"].max()) + 2
+
+cluster_plot = (
+    alt.Chart(pca_df)
+    .mark_circle()
+    .encode(x=alt.X("PC1", scale=alt.Scale(domain=[-axis_max, axis_max])),
+            y=alt.Y("PC2", scale=alt.Scale(domain=[-axis_max, axis_max])),
+            color="Cluster:N",
+            tooltip=("PC1", "PC2", "Cluster")
+           )
+)
+
+st.altair_chart(cluster_plot, use_container_width=True)
 
 
 

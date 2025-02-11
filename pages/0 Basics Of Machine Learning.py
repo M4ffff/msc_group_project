@@ -27,7 +27,7 @@ st.markdown("Whether you’re curious about how Netflix recommends your favourit
 
 # Introduction to content.
 # Add slider to show how ML techniques work e.g. for linear regression show how changing the slope or intercept affects a line of best fit on a graph.
-st.markdown("# What will you learn?")
+st.subheader("What will you learn?")
 st.markdown("This web app is structured into several sections, each focusing on different essential machine learning concepts.")
 
 st.markdown("***Section One***: *Supervised Learning:*")
@@ -36,8 +36,8 @@ st.markdown("-	Classification: Categorise data, such as spam email detection or 
 
 
 st.markdown("***Section Two***: *Unsupervised Learning:*")
-st.markdown("-	Clustering: Group similar data points, such as a customer segmentation or image compression.")
 st.markdown("-	Principle component analysis (PCA): Reduce the dimensionality of datasets, helping visualise and analyse complex data efficiently.")
+st.markdown("-	Clustering: Group similar data points, such as a customer segmentation or image compression.")
 
 
 st.markdown("***Section Three***: *Neural Networks:*")
@@ -69,17 +69,17 @@ st.pyplot(fig)
 
 
 # Demystifying machine learning terms.
-st.markdown("# What's the difference between AI, ML, Deep Learning, and Generative AI?")
+st.subheader("What's the difference between AI, ML, Deep Learning, and Generative AI?")
 st.markdown("-	Artificial Intelligence (AI): The broad field of creating systems capable of intelligent behaviour, from playing chess to making medical diagnoses.")
 st.markdown("-	Machine Learning (ML): A subset of AI focused on developing algorithms that enable computers to learn patterns from data and make predictions.")
 st.markdown("-	Deep Learning: A specialised branch of ML that uses neural networks with many layers to solve complex problems like image and speech recognition.")
 st.markdown("-	Generative AI: A type of AI focused on generating new data, such as text, images, or audio, based on training examples, such as ChatGPT or DALL-E.")
 
-## FIND NEW IMAGE ===st.image("AI-venn-diagram.png", caption="A diagram showing the relationship between AI, ML, deep learning, and generative AI.", use_column_width=True)
+st.image("AI-venn-diagram.png", caption="A diagram showing the relationship between AI, ML, deep learning, and generative AI.", use_column_width=True)
 
 # Connecting machine learning to real world examples.
 # Add dropdown/selectbox to let users select a real-world application, display short description or visual of how ML is used in that field.
-st.markdown("# How can ML be applied in the real-world?")
+st.subheader("How can ML be applied in the real-world?")
 fields = ["Healthcare", "Finance", "Transportation", "Entertainment"]
 fields_choice = st.selectbox("**Pick one!**", fields)
 
@@ -89,7 +89,7 @@ if fields_choice == "Healthcare":
 
 elif fields_choice == "Finance":
     st.write("ML can be used in fraud detection, algorithmic trading, and credit scoring.")
-    ## FIND NEW IMAGE === st.image("ML-in-finance.jpg.webp", caption=" ", use_column_width=True)
+    st.image("ML-in-finance.jpg", caption=" ", use_column_width=True)
     
 elif fields_choice == "Transportation":
     st.write("ML systems help create autonomous vehicles, route optimisation, and predictive maintenance.")
@@ -101,12 +101,12 @@ elif fields_choice == "Entertainment":
 
 
 # Brief insight into AI.
-st.markdown("# Why is AI so important?")
+st.subheader("Why is AI so important?")
 st.markdown("AI and ML are at the forefront of technological advancement, driving innovation in science and industry. From accelerating drug discovery in pharmaceuticals to improving manufacturing efficiency and developing groundbreaking technologies in renewable energy, their impact is profound and far-reaching. By gaining a foundational understanding of ML, you’ll join the growing community of individuals shaping the future of these transformative fields.")
 
 
 # Quiz.
-st.markdown("# Quiz time!")
+st.subheader("Quiz time!")
 question_one = st.radio(
     "What is meant by the term AI?",
     ("A type of data analysis.", "A type of electrical outlet.", "A system capable of intelligent behaviour."))
@@ -140,6 +140,6 @@ st.write("(Keep note of me to reflect after completing the content!)")
 
 
 # Progress bar to indicate the users learning journey.
-st.markdown("# Get started!")
+st.subheader("Get started!")
 st.markdown("Dive into the sections, experiment with datasets, and watch your skills grow as you progress through this app. Let’s demystify machine learning together and unlock its potential to address real-world challenges!")
 st.progress(10)
