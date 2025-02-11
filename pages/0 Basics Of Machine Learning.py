@@ -75,7 +75,7 @@ st.markdown("-	Machine Learning (ML): A subset of AI focused on developing algor
 st.markdown("-	Deep Learning: A specialised branch of ML that uses neural networks with many layers to solve complex problems like image and speech recognition.")
 st.markdown("-	Generative AI: A type of AI focused on generating new data, such as text, images, or audio, based on training examples, such as ChatGPT or DALL-E.")
 
-st.image("AI-venn-diagram.png", caption="A diagram showing the relationship between AI, ML, deep learning, and generative AI.", use_column_width=True)
+## FIND NEW IMAGE ===st.image("AI-venn-diagram.png", caption="A diagram showing the relationship between AI, ML, deep learning, and generative AI.", use_column_width=True)
 
 # Connecting machine learning to real world examples.
 # Add dropdown/selectbox to let users select a real-world application, display short description or visual of how ML is used in that field.
@@ -89,7 +89,7 @@ if fields_choice == "Healthcare":
 
 elif fields_choice == "Finance":
     st.write("ML can be used in fraud detection, algorithmic trading, and credit scoring.")
-    st.image("ML-in-finance.jpg.webp", caption=" ", use_column_width=True)
+    ## FIND NEW IMAGE === st.image("ML-in-finance.jpg.webp", caption=" ", use_column_width=True)
     
 elif fields_choice == "Transportation":
     st.write("ML systems help create autonomous vehicles, route optimisation, and predictive maintenance.")

@@ -46,6 +46,10 @@ st.markdown("REPLACE THIS FAKE DATA WITH TOYSET DATA")
 from sklearn.datasets import make_blobs
 from random import randint
 
+toy_dat = pd.read_csv('toy.csv')
+x = toy_dat['x']
+y = toy_dat['y']
+
 num_centres = randint(3, 6)
 centre_max_val = 4
 std = 1
