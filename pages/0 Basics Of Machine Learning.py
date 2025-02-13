@@ -4,14 +4,6 @@ import matplotlib.pyplot as plt
 
 # Page and side bar title.
 st.markdown("# The Basics of Machine Learning")
-st.sidebar.markdown("# Content Menu")
-
-
-# Side bar menu to add links.
-st.sidebar.markdown("***Section One: Supervised Learning.***")
-st.sidebar.markdown("***Section Two: Unsupervised Learning.***")
-st.sidebar.markdown("***Section Three: Neural Networks.***")
-st.sidebar.markdown("***Section Four: Python Implementation.***")
 
 
 # Subtitle for brief intro to machine learning.
@@ -124,7 +116,7 @@ else:
     st.error("Try again!")
 
 question_three = st.radio(
-    "Which of these ML models does linear regression fall under?",
+    "Which of these ML techniques does linear regression fall under?",
     ("Unsupervised Learning.", "Superduper Learning.", "Supervised Learning."))
 if question_three == "Supervised Learning.":
     st.success("Correct!")

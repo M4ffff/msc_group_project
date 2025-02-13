@@ -38,9 +38,6 @@ st.markdown("PCA simplifies complex datasets by reducing the number of features,
 st.markdown("PCA is usually followed by a clustering algorithm. K-means clustering is a common way to group data into different categories based on how similar the data points are. It starts with picking the number of groups, with random group centres. The data points are then assigned to the nearest group and the group centres are updates. This is repeated until the best grouping is found.")
 
 
-
-
-
 st.markdown("**Example:** Explore PCA and clustering on the Toy dataset below.")
 st.markdown("**Raw Toy data:**")
 from sklearn.preprocessing import StandardScaler
