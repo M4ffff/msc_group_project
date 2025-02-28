@@ -39,75 +39,54 @@ st.markdown("PCA is usually followed by a clustering algorithm. K-means clusteri
 
 
 st.markdown("**Example:** Explore PCA and clustering on the Toy dataset below.")
-st.markdown("**Raw Toy data:**")
-from sklearn.preprocessing import StandardScaler
 
 toy_dat = pd.read_csv('toy.csv')
-toy_dat['encoded_label'] = [1 if i == 'b' else 0 for i in toy_dat['label'].values]  ## Makes a = 0, b = 1.
-del toy_dat['label']    ## Drop labels column as not computer readable.
+toy_dat['encoded_label'] = [1 if i == 'b' else 0 for i in toy_dat['label'].values]  # Makes a = 0, b = 1.
+del toy_dat['label']    # Drop labels column as not computer readable.
 
-axis_max = max(toy_dat["x"].max(), toy_dat["y"].max()) + 2
+st.subheader("Raw Toy Dataset:")
+st.dataframe(toy_dat.head())
+st.markdown("The columns, or features, of the toy dataset represent the variables measured for each data point. Whereas, the data points represent individual samples, with each row in the dataset being a different sample. The plot below displays the first two features of the dataset.")
 
-c = (
-    alt.Chart(toy_dat)
-    .mark_circle()
-    .encode(x=alt.X("x", scale=alt.Scale(domain=[-axis_max, axis_max])),
-            y=alt.Y("y", scale=alt.Scale(domain=[-axis_max, axis_max])),
-           )
-)
+# Apply PCA
+pca = PCA(n_components=2)
+toydat_pca = pca.fit_transform(toy_dat)
+toy_dat_pca = pd.DataFrame(toydat_pca, columns=["PC1", "PC2"])
 
-st.altair_chart(c, use_container_width=True)
+# Show original data (first two numerical columns)
+st.markdown("**First Two Features**")
+fig, ax = plt.subplots()
+ax.scatter(toy_dat.iloc[:, 0], toy_dat.iloc[:, 1], alpha=0.5)
+ax.set_xlabel(toy_dat.columns[0])
+ax.set_ylabel(toy_dat.columns[1])
+st.pyplot(fig)
 
-st.markdown("**Applying PCA:**")
-cols = st.multiselect("**Select numerical columns for PCA:**", toy_dat.columns)
+# Show PCA result
+st.subheader("After PCA")
+st.markdown("PCA transforms the original dataset into a new set of axes, known as principle components. The 1st principle component (PC1) captures the greatest variance in the data, the 2nd principle component (PC2) captures the second greatest variance and so on, capturing less and less variance for each principle component. Below you can see a change in structure and separation of the data points.")
+fig, ax = plt.subplots()
+ax.scatter(toy_dat_pca["PC1"], toy_dat_pca["PC2"], alpha=0.5, color='red')
+ax.set_xlabel("PC1")
+ax.set_ylabel("PC2")
+st.pyplot(fig)
 
-if len(cols) >= 2:
-    scaler = StandardScaler()
-    scaled_data = scaler.fit_transform(toy_dat[cols])
-    
-    pca = PCA(n_components=2)
-    pca_result = pca.fit_transform(scaled_data)
-    pca_df = pd.DataFrame(pca_result, columns=["PC1", "PC2"])
-    
-    pca_df["Index"] = toy_dat.index
-    
-    pca_chart = (
-        alt.Chart(pca_df)
-        .mark_circle(size=80)
-        .encode(
-            x=alt.X("PC1", scale=alt.Scale(zero=False)),
-            y=alt.Y("PC2", scale=alt.Scale(zero=False)),
-            tooltip=["Index", "PC1", "PC2"]
-        )
-    )
-    st.altair_chart(pca_chart, use_container_width=True)
-    
-    explained_variance = pca.explained_variance_ratio_ * 100
-    st.write(f"Explained Variance: **PC1 = {explained_variance[0]:.2f}%**, **PC2 = {explained_variance[1]:.2f}%**")
- 
+# K-Means clustering
+st.subheader("K-Means Clustering")
+st.markdown("What number of clusters best fits the transformed toy data?")
+num_clusters = st.slider("Select number of clusters", 2, 10, 3)
+kmeans = KMeans(n_clusters=num_clusters, random_state=42)
+kmeans.fit(toydat_pca)
+toy_dat_pca["Cluster"] = kmeans.labels_
 
-st.markdown("**K-means Clustering on Principle Components:**")
-
-k = st.slider("Select a number of clusters:", min_value=2, max_value=10, value=3)
-
-kmeans = KMeans(n_clusters=k, random_state=42, n_init="auto")
-pca_df["Cluster"] = kmeans.fit_predict(pca_df)
-
-axis_max = max(pca_df["PC1"].max(), pca_df["PC2"].max()) + 2
-
-cluster_plot = (
-    alt.Chart(pca_df)
-    .mark_circle()
-    .encode(x=alt.X("PC1", scale=alt.Scale(domain=[-axis_max, axis_max])),
-            y=alt.Y("PC2", scale=alt.Scale(domain=[-axis_max, axis_max])),
-            color="Cluster:N",
-            tooltip=("PC1", "PC2", "Cluster")
-           )
-)
-
-st.altair_chart(cluster_plot, use_container_width=True)
-
-
+# Show clustered data
+fig, ax = plt.subplots()
+for cluster in range(num_clusters):
+    cluster_points = toy_dat_pca[toy_dat_pca["Cluster"] == cluster]
+    ax.scatter(cluster_points["PC1"], cluster_points["PC2"], label=f"Cluster {cluster}")
+ax.set_xlabel("PC1")
+ax.set_ylabel("PC2")
+ax.legend()
+st.pyplot(fig)
 
 
 st.subheader("INTERACTIVE PLOT TO SEE HOW CLUSTERING WORKS WITH DIFFERENT DATASHAPES")
