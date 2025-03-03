@@ -30,41 +30,63 @@ st.markdown("Explain unsupervised learning")
 
 
 
-st.subheader("Toy dataset example")
+st.subheader("PCA and K-means Clustering")
 
-st.markdown("Example with explanations of pca and clustering animation using toy dataset ")
-
-
+st.markdown("PCA simplifies complex datasets by reducing the number of features, while keeping as much of the important information so that the significancy of the data is not affected. First, the data is standardised, so that all features are on the same scale. Then key features are identified, through the combination of original features. Finally, the dimensions are reduced, only the top few features are kept which retains the most significant information.")
 
 
+st.markdown("PCA is usually followed by a clustering algorithm. K-means clustering is a common way to group data into different categories based on how similar the data points are. It starts with picking the number of groups, with random group centres. The data points are then assigned to the nearest group and the group centres are updates. This is repeated until the best grouping is found.")
 
 
-st.markdown(" \" Here's an example which allows exploring of unsupervised learning techniques PCA and clustering \" ")
+st.markdown("**Example:** Explore PCA and clustering on the Toy dataset below.")
 
-st.markdown("REPLACE THIS FAKE DATA WITH TOYSET DATA")
+toy_dat = pd.read_csv('toy.csv')
+toy_dat['encoded_label'] = [1 if i == 'b' else 0 for i in toy_dat['label'].values]  # Makes a = 0, b = 1.
+del toy_dat['label']    # Drop labels column as not computer readable.
 
-from sklearn.datasets import make_blobs
-from random import randint
+st.subheader("Raw Toy Dataset:")
+st.dataframe(toy_dat.head())
+st.markdown("The columns, or features, of the toy dataset represent the variables measured for each data point. Whereas, the data points represent individual samples, with each row in the dataset being a different sample. The plot below displays the first two features of the dataset.")
 
-num_centres = randint(3, 6)
-centre_max_val = 4
-std = 1
-axis_max = centre_max_val + 2*std
-X, y = make_blobs(n_samples=300, n_features=2, centers=num_centres, center_box=(-centre_max_val, centre_max_val), cluster_std=std, random_state=2)
+# Apply PCA
+pca = PCA(n_components=2)
+toydat_pca = pca.fit_transform(toy_dat)
+toy_dat_pca = pd.DataFrame(toydat_pca, columns=["PC1", "PC2"])
 
-chart_data = pd.DataFrame(X, columns=["a", "b"])
+# Show original data (first two numerical columns)
+st.markdown("**First Two Features**")
+fig, ax = plt.subplots()
+ax.scatter(toy_dat.iloc[:, 0], toy_dat.iloc[:, 1], alpha=0.5)
+ax.set_xlabel(toy_dat.columns[0])
+ax.set_ylabel(toy_dat.columns[1])
+st.pyplot(fig)
 
-c = (
-   alt.Chart(chart_data)
-   .mark_circle()
-   .encode(x=alt.X("a", scale=alt.Scale(domain=[-axis_max, axis_max])),
-            y=alt.Y("b", scale=alt.Scale(domain=[-axis_max, axis_max])) 
-    )
-)
+# Show PCA result
+st.subheader("After PCA")
+st.markdown("PCA transforms the original dataset into a new set of axes, known as principle components. The 1st principle component (PC1) captures the greatest variance in the data, the 2nd principle component (PC2) captures the second greatest variance and so on, capturing less and less variance for each principle component. Below you can see a change in structure and separation of the data points.")
+fig, ax = plt.subplots()
+ax.scatter(toy_dat_pca["PC1"], toy_dat_pca["PC2"], alpha=0.5, color='red')
+ax.set_xlabel("PC1")
+ax.set_ylabel("PC2")
+st.pyplot(fig)
 
-st.altair_chart(c, use_container_width=True)
+# K-Means clustering
+st.subheader("K-Means Clustering")
+st.markdown("What number of clusters best fits the transformed toy data?")
+num_clusters = st.slider("Select number of clusters", 2, 10, 3)
+kmeans = KMeans(n_clusters=num_clusters, random_state=42)
+kmeans.fit(toydat_pca)
+toy_dat_pca["Cluster"] = kmeans.labels_
 
-
+# Show clustered data
+fig, ax = plt.subplots()
+for cluster in range(num_clusters):
+    cluster_points = toy_dat_pca[toy_dat_pca["Cluster"] == cluster]
+    ax.scatter(cluster_points["PC1"], cluster_points["PC2"], label=f"Cluster {cluster}")
+ax.set_xlabel("PC1")
+ax.set_ylabel("PC2")
+ax.legend()
+st.pyplot(fig)
 
 
 st.subheader("INTERACTIVE PLOT TO SEE HOW CLUSTERING WORKS WITH DIFFERENT DATASHAPES")
