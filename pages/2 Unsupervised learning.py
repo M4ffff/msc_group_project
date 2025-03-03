@@ -11,21 +11,15 @@ from sklearn.datasets import make_blobs
 from random import randint
 import random
 from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+import seaborn as sns
 
 st.title("Unsupervised Learning Page")
 
 
-
-st.markdown("We'll add some examples in later")
-
-
-
-
-
 # Interactive graphs of the pre/post data for each marker. 
 
-st.subheader("INTRO STUFF ")
-st.markdown("Explain unsupervised learning")
+st.markdown("This page explores unsupervised learning techniques. Unsupervised learning is a type of machine learning where the algorithm learns patterns from unlabelled data, uncovering hidden structures without predefined categories. This approach is particularly useful for exploring large datasets and discovering relationships or groupings within the data. On this page we firstly focus on Principle Component Analysis (PCA) and K-means clustering. By using example datasets, we can demonstrate how PCA can reduce dimensionality for easier visualisation, and how K-means helps identify clusters in data. We also explore how clustering can be applied to data with more complex shapes, highlighting the versatility of these techniques.")
       
 
 
@@ -38,53 +32,75 @@ st.markdown("PCA simplifies complex datasets by reducing the number of features,
 st.markdown("PCA is usually followed by a clustering algorithm. K-means clustering is a common way to group data into different categories based on how similar the data points are. It starts with picking the number of groups, with random group centres. The data points are then assigned to the nearest group and the group centres are updates. This is repeated until the best grouping is found.")
 
 
-st.markdown("**Example:** Explore PCA and clustering on the Toy dataset below.")
+st.markdown("**Example:** Explore PCA and K-means clustering on the breast cancer dataset below.")
 
-toy_dat = pd.read_csv('toy.csv')
-toy_dat['encoded_label'] = [1 if i == 'b' else 0 for i in toy_dat['label'].values]  # Makes a = 0, b = 1.
-del toy_dat['label']    # Drop labels column as not computer readable.
+bc_dat = pd.read_csv('breast-cancer.csv')
+scaled_bc = StandardScaler().fit_transform(bc_dat[bc_dat.columns[1:]])
 
-st.subheader("Raw Toy Dataset:")
-st.dataframe(toy_dat.head())
-st.markdown("The columns, or features, of the toy dataset represent the variables measured for each data point. Whereas, the data points represent individual samples, with each row in the dataset being a different sample. The plot below displays the first two features of the dataset.")
+
+st.subheader("Raw Breast Cancer Dataset")
+st.dataframe(bc_dat.head())
+st.markdown("The columns, or features, of the breast cancer dataset represent the variables measured for each data point. Whereas, the data points represent individual samples, with each row in the dataset being a different sample.")
+
+st.markdown("Have a look at how the different features of the dataset interact with eachother below!")
+
+# Show original data (numerical columns)
+numeric_columns = bc_dat.select_dtypes(include=['number']).columns.tolist()
+x_axis = st.selectbox("Select x-axis:", numeric_columns)
+y_axis = st.selectbox("Selection y-axis:", numeric_columns)
+
+fig, ax = plt.subplots()
+sns.scatterplot(data=bc_dat, x=x_axis, y=y_axis, hue=bc_dat.columns[0], ax=ax, alpha=0.7)
+ax.set(xlabel=x_axis, ylabel=y_axis, title=f"{x_axis} vs {y_axis}")
+st.pyplot(fig)
+
+
+st.subheader("After PCA")
 
 # Apply PCA
-pca = PCA(n_components=2)
-toydat_pca = pca.fit_transform(toy_dat)
-toy_dat_pca = pd.DataFrame(toydat_pca, columns=["PC1", "PC2"])
+pca = PCA()
+transformed_bc = pca.fit_transform(scaled_bc)
+pc = pd.DataFrame(transformed_bc, columns=['PC{}'.format(i + 1) for i in range(transformed_bc.shape[1])])
+pc['Diagnosis'] = bc_dat['Diagnosis']
+st.dataframe(pc[['PC1', 'PC2']].head())
 
-# Show original data (first two numerical columns)
-st.markdown("**First Two Features**")
-fig, ax = plt.subplots()
-ax.scatter(toy_dat.iloc[:, 0], toy_dat.iloc[:, 1], alpha=0.5)
-ax.set_xlabel(toy_dat.columns[0])
-ax.set_ylabel(toy_dat.columns[1])
-st.pyplot(fig)
+st.markdown("PCA transforms the original dataset into a new set of axes, known as principle components. The 1st principle component (PC1) captures the greatest variance in the data, the 2nd principle component (PC2) captures the second greatest variance and so on, capturing less and less variance for each principle component. For this example we'll focus on the first two principle components, as that is where the majority of the variance is focused.")
 
 # Show PCA result
-st.subheader("After PCA")
-st.markdown("PCA transforms the original dataset into a new set of axes, known as principle components. The 1st principle component (PC1) captures the greatest variance in the data, the 2nd principle component (PC2) captures the second greatest variance and so on, capturing less and less variance for each principle component. Below you can see a change in structure and separation of the data points.")
+st.markdown("**PCA Scatter Plot (PC1 vs PC2)**")
 fig, ax = plt.subplots()
-ax.scatter(toy_dat_pca["PC1"], toy_dat_pca["PC2"], alpha=0.5, color='red')
-ax.set_xlabel("PC1")
-ax.set_ylabel("PC2")
+
+palette = {"Malignant": "blue", "Benign": "orange"}
+
+for diagnosis in ["Malignant", "Benign"]:
+    subset = pc[pc["Diagnosis"] == diagnosis]
+    sns.scatterplot(data=subset, x="PC1", y="PC2", hue="Diagnosis", palette=palette, alpha=0.7, s=30)
+
+ax.set(xlabel="PC1", ylabel="PC2", title="PCA Scatter Plot")
+ax.legend()
 st.pyplot(fig)
+
 
 # K-Means clustering
 st.subheader("K-Means Clustering")
-st.markdown("What number of clusters best fits the transformed toy data?")
+st.markdown("What number of clusters best fits the transformed breast cancer data?")
 num_clusters = st.slider("Select number of clusters", 2, 10, 3)
 kmeans = KMeans(n_clusters=num_clusters, random_state=42)
-kmeans.fit(toydat_pca)
-toy_dat_pca["Cluster"] = kmeans.labels_
+kmeans.fit(pc[['PC1', 'PC2']])
+pc["Cluster"] = kmeans.labels_
 
 # Show clustered data
+st.markdown("**K-Means Clustering Scatter Plot (PC1 vs PC2)**")
 fig, ax = plt.subplots()
 for cluster in range(num_clusters):
-    cluster_points = toy_dat_pca[toy_dat_pca["Cluster"] == cluster]
-    ax.scatter(cluster_points["PC1"], cluster_points["PC2"], label=f"Cluster {cluster}")
-ax.set_xlabel("PC1")
-ax.set_ylabel("PC2")
+    subset = pc[pc["Cluster"] == cluster]
+    ax.scatter(subset["PC1"], subset["PC2"], label=f"Cluster {cluster}", alpha=0.7, s=30)
+
+# Plot cluster centers
+centers = kmeans.cluster_centers_
+ax.scatter(centers[:, 0], centers[:, 1], marker="x", s=100, c="black", label="Centroids")
+
+ax.set(xlabel="PC1", ylabel="PC2", title=f"K-Means Clustering (k={num_clusters})")
 ax.legend()
 st.pyplot(fig)
 
