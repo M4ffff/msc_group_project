@@ -34,7 +34,7 @@ st.markdown("PCA is usually followed by a clustering algorithm. K-means clusteri
 
 st.markdown("**Example:** Explore PCA and K-means clustering on the breast cancer dataset below.")
 
-bc_dat = pd.read_csv('breast-cancer.csv')
+bc_dat = pd.read_csv('pages/breast-cancer.csv')
 scaled_bc = StandardScaler().fit_transform(bc_dat[bc_dat.columns[1:]])
 
 
