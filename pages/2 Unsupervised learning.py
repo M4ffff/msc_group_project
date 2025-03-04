@@ -290,9 +290,7 @@ with tab2:
         
         return labels, cluster_centres
 
-    def gmm_cluster(data, num_centres):
-        st.write("running gmm")
-        
+    def gmm_cluster(data, num_centres):        
         from sklearn.mixture import GaussianMixture
 
         gmm = GaussianMixture(n_components=num_centres).fit(data)
@@ -305,7 +303,6 @@ with tab2:
 
 
     def dbscan_cluster(data, eps, min_samples):
-        # st.write("running dbscan")
         from sklearn.cluster import DBSCAN
         
         dbscan = DBSCAN(eps=eps, min_samples=min_samples).fit(data)
@@ -319,7 +316,6 @@ with tab2:
 
     # not sure if this works
     def hdbscan_cluster(data):
-        st.write("running hdbscan")
         from sklearn.cluster import HDBSCAN
         
         labels = HDBSCAN().fit_predict(data)
@@ -330,17 +326,14 @@ with tab2:
 
         return labels
 
-
-
     with col1:
-
-
         fig1, ax1 = plt.subplots(figsize=(6,6))
         
         
         basic_plot(random_data, ax1)
         # st.pyplot(fig1)
 
+    with col2:
         clustering_technique_options = ["None", "K-means", "GMM", "DBSCAN", "HBDSCAN"]
         technique = st.selectbox('Select a technique for clustering.', clustering_technique_options)
             
@@ -358,9 +351,6 @@ with tab2:
             st.write("Change the following slider to see how this parameter effects the DBSCAN results.")
             eps = st.slider("Eps", 0.01, 0.5, 0.01)
             min_clusters = st.slider("min_clusters", 1, 15)
-            if st.checkbox("Click to see what 'Eps' is....."):
-                st.write("Eps is a DBSCAN-SPECIFIC DEFINITION: :nerd_face:")
-                st.write("**Eps:** *The maximum distance between two samples for one to be considered as in the neighborhood of the other.*  ")
             
             colour_labels = dbscan_cluster(random_data, eps, min_clusters)
             size=15
@@ -375,49 +365,59 @@ with tab2:
             size = 15
             colour_labels = np.zeros(len(random_data))
             
-        basic_plot(random_data, ax1, size, colour_labels, cluster_centres)
-        st.pyplot(fig1)
-        
+    if technique == clustering_technique_options[3]:
+        if st.checkbox("Click to see what 'Eps' is....."):
+            st.write("Eps is a DBSCAN-SPECIFIC DEFINITION: :nerd_face:")
+            st.markdown("**Eps:** *The maximum distance between two samples for one to be considered as in the neighborhood of the other.*")
+            # st.markdown("<br>---------------------", unsafe_allow_html=True)
+            st.markdown("***")
         
     # st.write("previous data slider bool:", st.session_state["previous_data_slider"])
         st.write("counter:", st.session_state["counter"])
     
 
-    with col2:
-        st.write(f"filename: {random_file}")   
+    with col1:
+        basic_plot(random_data, ax1, size, colour_labels, cluster_centres)
+        st.pyplot(fig1)
+        
+    st.write(f"filename: {random_file}")   
+
     
-        # Quiz.
-        st.subheader("Quiz time!")
+    st.subheader("Quiz time!")
+    # Quiz.
+    col1, col2 = st.columns(2)
+    with col1:
         question_one = st.radio(
             "Hhow many clusters would you say there are?",(np.arange(1,7)), index=None)
-        if question_one == cluster_dict[random_file]["num_clusters"]:
-            # get emoji
-            st.success("I agree with you :smile:!")
-            
+        
+    if question_one == cluster_dict[random_file]["num_clusters"]:
+        col1.success("I agree with you :smile:!")
+        
+        with col2:
             question_two = st.radio(
             "Now, what method is best in determining this?",
             ("kmeans", "gmm", "dbscan", "hbdscan"), index=None)
             
-            if question_one == None:
+            if question_two == None:
                 st.write("") 
                 
             elif question_two in cluster_dict[random_file]["best_method"] and len(cluster_dict[random_file]["best_method"]) == 1 :
                 st.success("Yeah! Was there ever any doubt? :smirk:")
-                               
+                                
             elif question_two in cluster_dict[random_file]["best_method"] and len(cluster_dict[random_file]["best_method"]) > 1 :
                 st.success("Yeah, I agree! However, other options may be just as good? :eyes:")
-                               
+                                
             else:
                 # st.write(f"clusters: {cluster_dict[random_file]["num_clusters"]}")
                 st.error("I'm afraid I don't agree with you here, have another go!")
                     
-        # other methods
-        # elif question_one == cluster_dict[random_file]["cluster"]:
-        #     print("This wouldn't be my first choice but it works well enough! ")
-        elif question_one == None:
-            st.write("")    
-        else:
-            st.error("I'm afraid I don't agree with you here, have another go!")
+    # other methods
+    # elif question_one == cluster_dict[random_file]["cluster"]:
+    #     print("This wouldn't be my first choice but it works well enough! ")
+    elif question_one == None:
+        st.write("")    
+    else:
+        st.error("I'm afraid I don't agree with you here, have another go!")
     
     
     if "description" in cluster_dict[random_file].keys():
@@ -430,11 +430,11 @@ with tab2:
 
 
     end_multi = '''
-    From this exercise I hope you now feel like you understand clustering better.  
+    From this exercise, I hope you now feel like you understand clustering better!  
     There is evidently no one-size-fits-all clustering technique which can be used to cluster any set of data -
     the methods introduced here all have their pros and cons. 
     
-    Overall, I would say GMM is the most reliable, in particular for noise-less data. 
+    Overall, GMM is generally the most reliable (and easy to implement), in particular for noise-less data. 
     However, it does struggle with clusters that are funky shapes if there is more noise and overlap between clusters. 
     
     It is important to remember that clusters are often hard to distinguish by eye. 
