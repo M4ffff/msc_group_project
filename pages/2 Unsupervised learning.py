@@ -144,8 +144,10 @@ with tab2:
     # Making filename dictionary
     
     cluster_dict = {
-    "basic1.csv": {"best_method": ["gmm"], "num_clusters": 4},
-    "basic2.csv": {"best_method": ["dbscan"], "num_clusters": 5},
+    "basic1.csv": {"best_method": ["gmm"], "num_clusters": 4,
+                   "description": ""},
+    "basic2.csv": {"best_method": ["dbscan"], "num_clusters": 5,
+                   "description": "DBSCAN definitely the most effective here (eps=15,min_clusters=5) - the other methods struggle with the elongated shapes of the clusters."},
     "basic3.csv": {"best_method": ["gmm"], "num_clusters": 3},
     "basic4.csv": {"best_method": ["kmeans", "gmm"], "num_clusters": 3},
     "basic5.csv": {"best_method": ["kmeans", "gmm"], "num_clusters": 3},
@@ -162,6 +164,7 @@ with tab2:
     "isolation.csv": {"best_method": ["dbscan"], "num_clusters": 3},
     "lines.csv": {"best_method": ["dbscan"], "num_clusters": 5},
     "lines2.csv": {"best_method": ["dbscan"], "num_clusters": 5},
+    "moon_blobs.csv": {"best_method": ["dbscan"], "num_clusters": 4},             ############## check best method
     "network.csv": {"best_method": ["kmeans", "gmm", "dbscan"], "num_clusters": 5},
     "outliers.csv": {"best_method": ["gmm"], "num_clusters": 2},
     # "ring.csv": {"best_method": "kmeans", "num_clusters": 1}, ###
@@ -187,11 +190,11 @@ with tab2:
     def get_data(seed):
         random.seed(seed)
         random_file = random.choice(list(cluster_dict.keys())) 
-        random_file = (list(cluster_dict.keys()))[6]
+        # random_file = (list(cluster_dict.keys()))[6]
         # st.write(random_file)
 
         random_data = pd.read_csv(f"datasets/cluster data/{random_file}")
-        random_data.drop(columns=["color"])
+        random_data = random_data.drop(columns=["color"])
         
         # random_noise = np.random.normal(0, 1)
         # random_data += random_noise
@@ -200,22 +203,40 @@ with tab2:
         
         return random_file, random_data
 
-
-    if "counter" not in st.session_state:
+    
+    # determine random starting seed of session if first run
+    if "initial_seed" not in st.session_state:
         initial_seed = random.randint(0, 100)
-        st.session_state["counter"] = initial_seed
         st.write(f"Initial seed counter: {initial_seed}")
+        st.session_state["initial_seed"] = initial_seed
+    
+    # make session counter if it doesnt exist, and set equal to initial seed
+    if "counter" not in st.session_state:
+        st.session_state["counter"] = st.session_state["initial_seed"]
+    
+        
+    session_counter = st.session_state["counter"]
+    st.write(f"Session seed counter: {session_counter}")
 
 
     random_file, random_data = get_data(st.session_state["counter"])
 
     # Select and plot random file of funky data
-    if st.button("Get new data", type="primary"):
-        
-        st.session_state["counter"] += 1
-        random_file, random_data = get_data(st.session_state["counter"])
+    col1, col2 = st.columns([0.2, 0.8])
+    with col1:
+        if st.button("Get new data", type="primary"):
+            
+            st.session_state["counter"] += 1
+            random_file, random_data = get_data(st.session_state["counter"])
+    with col2:
+        if st.session_state["counter"] > st.session_state["initial_seed"]:
+            if st.button("Review previous data", type="secondary"):
+                
+                st.session_state["counter"] -= 1
+                random_file, random_data = get_data(st.session_state["counter"])
 
     # Option to show data
+    st.write("this is a bit irrelevant")
     if st.checkbox('Show dataframe'):
         st.write(random_data.head(5))
 
@@ -555,23 +576,7 @@ with tab2:
     # st.write("previous data slider bool:", st.session_state["previous_data_slider"])
     # st.write("counter:", st.session_state["counter"])
         
-        
-    
-    # if st.session_state["previous_data_slider"] == True:
-    #     if st.session_state["counter"] == 0:
-    #         st.write("No previous data to re-explore...")
-    #     else:
-    #         max_counter = st.session_state["counter"]
-    #         previous_seed = st.slider("Previous seeds", 0, max_counter)
-            
-    #     X, axis_max = make_my_blobs(previous_seed)
-    #     update_marker3(previous_seed, technique2, X, fig, ax)
-
-    # else:
-    #     X, axis_max = make_my_blobs(st.session_state["counter"])
-    #     update_marker3(st.session_state["counter"], technique2, X, fig, ax)
-
-
+ 
 
 
     
@@ -600,60 +605,70 @@ with tab2:
 
     st.write(end_multi)
 
-    col1, col2, col3, col4 = st.columns(4)
+    def pros_and_cons(multi_pros, multi_cons):
+       
+        col1, col2 = st.columns(2)
+        with col1:
+            st.header("Pros")
+        with col2:
+            st.header("Cons")
+        with st.container(border=True, height=200):
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown(multi_pros)
+            with col2:
+                st.write(multi_cons)
+            
     
-    with col1:
-        st.header("K-means clustering")
-        kmeans_multi = '''
-        Pros
+    kmeans_tab, gmm_tab, dbscan_tab, hdbscan_tab = st.tabs(["K-means", "GMM", "DBSCAN", "HDBSCAN"])
+    
+    with kmeans_tab:
+        multi_pros = '''
         - Simple to implement  
         - Good with blobby data 
-        
-        Cons
-        - Only good with blobby data
         '''
-        st.write(kmeans_multi)
+        multi_cons = '''
+        - Only good with blobby data - can't do interesting shapes
+        '''
+        pros_and_cons(multi_pros, multi_cons)
         
-    with col2:
-        st.header("GMM clustering")
-        gmm_multi = '''
-        Pros
+    with gmm_tab:
+        multi_pros = '''
         - Simple to implement  
         - Good with blobby data 
         - Good with interestingly-shaped clusters if distinct
         - Shows probability of each point being in its designated cluster
-        
-        Cons
-        - A
         '''
-        st.write(gmm_multi)
-
-    with col3:
-        st.header("DBSCAN clustering")
-        dbscan_multi = ''' 
-        Pros
+        multi_cons = '''
+        - Bad with intertwined data
+        '''
+        pros_and_cons(multi_pros, multi_cons)
+        
+    with dbscan_tab:
+        multi_pros = ''' 
         - Good with strangely shaped clusters 
         - Shows which points are likely noise
         - Number of clusters does not need to be pre-determined
-        
-        Cons
-        - Only good with blobby data
         '''
-        st.write(dbscan_multi)
+        multi_cons = '''
+        - Eps must be chosen carefully
+        - Can produce an extremely larger number of clusters
+        '''
+        pros_and_cons(multi_pros, multi_cons)
 
-    with col4:
-        st.header("HDBSCAN")
-        hdbscan_multi = '''
-        Pros
+    with hdbscan_tab:
+        multi_pros = '''
         - No parameters required 
         - Good with strangely shaped clusters 
-        
-        Cons
+        '''
+        multi_cons = '''
         - Computationally expensive
         '''
-        st.write(hdbscan_multi)
+        pros_and_cons(multi_pros, multi_cons)
 
 
+    
+    
 
     st.write("selecting the correct number of clusters can be done in some way")
     st.write("brief overview")
