@@ -243,7 +243,7 @@ with tab2:
 
 
 
-    st.write("Make this lil quiz **harder** by increasing the noise of the data.\
+    st.write("Make the lil quiz below **harder** by increasing the noise of the data.\
              This will make the clusters less distinct. (and may make the models significantly worse at determining the clusters) ")
     noise_std = st.slider("Select noise distribution", 0.0, 0.5, step=0.1 )
     rand_noise = np.random.normal(0,noise_std, random_data.shape )
@@ -388,7 +388,7 @@ with tab2:
     col1, col2 = st.columns(2)
     with col1:
         question_one = st.radio(
-            "Hhow many clusters would you say there are?",(np.arange(1,7)), index=None)
+            "How many clusters would you say there are?",(np.arange(1,7)), index=None)
         
     if question_one == cluster_dict[random_file]["num_clusters"]:
         col1.success("I agree with you :smile:!")
