@@ -12,7 +12,7 @@ from random import randint
 import random
 from sklearn.cluster import KMeans
 import os
-
+from sklearn.preprocessing import StandardScaler
 
 
 
@@ -100,17 +100,14 @@ with tab2:
 
 
     # normal writing details
-    multi = '''Data doesnt always come in blobs - it can come in other shapes:    
+    multi = '''
+    Data doesnt always come in blobs - it can come in other shapes:    
     Different clustering techniques work better than others depending on the shape of the data
 
     The following figure allows the user to produce some data selected randomly from a set of different dataset -  
-    Lots of them have funky shapes eg data in shape of smiley face (shown below) 
+    Lots of them have funky shapes eg data in shape of smiley face :smiley: 
 
-    Will allow users to see how clustering works for different data shapes in a *fun* :rainbow[interactive] way 
-
-
-    .
-
+    Will allow users to see how clustering works for different data shapes in a *fun* :rainbow[interactive] way
 
     There are three main methods for clustering:
     - K-means clustering
@@ -134,7 +131,7 @@ with tab2:
     '''
     st.markdown(multi)
 
-    st.image("images/funky_shapes.png", caption="Data with funky shapes", width=600)
+    # st.image("images/funky_shapes.png", caption="Data with funky shapes", width=600)
 
 
     #######################################################################################################################################
@@ -149,7 +146,8 @@ with tab2:
     "basic2.csv": {"best_method": ["dbscan"], "num_clusters": 5,
                    "description": "DBSCAN definitely the most effective here (eps=15,min_clusters=5) - the other methods struggle with the elongated shapes of the clusters."},
     "basic3.csv": {"best_method": ["gmm"], "num_clusters": 3},
-    "basic4.csv": {"best_method": ["kmeans", "gmm"], "num_clusters": 3},
+    "basic4.csv": {"best_method": ["kmeans", "gmm"], "num_clusters": 3,
+                   "description": "K-means and GMM are most effective here due to the blobby nature of the data."},
     "basic5.csv": {"best_method": ["kmeans", "gmm"], "num_clusters": 3},
     "blob.csv": {"best_method": ["kmeans", "gmm"], "num_clusters": 4},
     # "box.csv": {"best_method": "dbscan", "num_clusters": 1}, ###
@@ -160,15 +158,19 @@ with tab2:
     "dart.csv": {"best_method": ["gmm"], "num_clusters": 2},
     "dart2.csv": {"best_method": ["dbscan"], "num_clusters": 4},
     "face.csv": {"best_method": ["dbscan"], "num_clusters": 4},
-    "hyperplane.csv": {"best_method": ["gmm"], "num_clusters": 2},
+    "hyperplane.csv": {"best_method": ["gmm"], "num_clusters": 2,
+                   "description": "GMM probably the most effective here, although there aren't any clearly defined clusters so hard to judge the effectiveness of each method."},
     "isolation.csv": {"best_method": ["dbscan"], "num_clusters": 3},
     "lines.csv": {"best_method": ["dbscan"], "num_clusters": 5},
-    "lines2.csv": {"best_method": ["dbscan"], "num_clusters": 5},
+    "lines2.csv": {"best_method": ["dbscan"], "num_clusters": 5,
+                   "description": "DBSCAN the most effective here (eps=?,min_clusters=?) - the other methods struggle with the elongated shapes of the clusters."},
     "moon_blobs.csv": {"best_method": ["dbscan"], "num_clusters": 4},             ############## check best method
-    "network.csv": {"best_method": ["kmeans", "gmm", "dbscan"], "num_clusters": 5},
+    "network.csv": {"best_method": ["kmeans", "gmm", "dbscan"], "num_clusters": 5,
+                   "description": "All the methods work pretty effective here, although GMM deals with increased noise the best. DBSCAN:(eps=0.10,min_clusters=5)"},
     "outliers.csv": {"best_method": ["gmm"], "num_clusters": 2},
     # "ring.csv": {"best_method": "kmeans", "num_clusters": 1}, ###
-    "sparse.csv": {"best_method": ["kmeans"], "num_clusters": 3},
+    "sparse.csv": {"best_method": ["kmeans", "gmm"], "num_clusters": 3,
+                   "description": "This is pretty blobby data, so kmeans and GMM both effectively cluster into 3 clusters. DBSCAN struggles with the sparsity of the data here"},
     "spiral.csv": {"best_method": ["dbscan"], "num_clusters": 1}, ###
     "spiral2.csv": {"best_method": ["gmm"], "num_clusters": 2},
     "spirals.csv": {"best_method": ["gmm"], "num_clusters": 3},
@@ -194,13 +196,13 @@ with tab2:
         # st.write(random_file)
 
         random_data = pd.read_csv(f"datasets/cluster data/{random_file}")
-        random_data = random_data.drop(columns=["color"])
         
-        # random_noise = np.random.normal(0, 1)
-        # random_data += random_noise
+        # drop color column if it exists
+        random_data = random_data.drop(columns=["color"], errors='ignore')
         
-        # Add noise??
-        
+        # normalise data    
+        random_data = pd.DataFrame( StandardScaler().fit_transform(random_data.values), columns=random_data.columns )
+                
         return random_file, random_data
 
     
@@ -236,15 +238,14 @@ with tab2:
                 random_file, random_data = get_data(st.session_state["counter"])
 
     # Option to show data
-    st.write("this is a bit irrelevant")
-    if st.checkbox('Show dataframe'):
+    if st.checkbox('Show dataframe (potentially a bit irrelevant?)'):
         st.write(random_data.head(5))
 
 
 
     st.write("Make this lil quiz **harder** by increasing the noise of the data.\
-             This will make the clusters less distinct. ")
-    noise_std = st.slider("Select noise distribution", 0.0, 20.0, step=1.0 )
+             This will make the clusters less distinct. (and may make the models significantly worse at determining the clusters) ")
+    noise_std = st.slider("Select noise distribution", 0.0, 0.5, step=0.1 )
     rand_noise = np.random.normal(0,noise_std, random_data.shape )
 
     random_data += rand_noise
@@ -355,7 +356,7 @@ with tab2:
             
         elif technique == clustering_technique_options[3]:
             st.write("Change the following slider to see how this parameter effects the DBSCAN results.")
-            eps = st.slider("Eps", 1, 15)
+            eps = st.slider("Eps", 0.01, 0.5, 0.01)
             min_clusters = st.slider("min_clusters", 1, 15)
             if st.checkbox("Click to see what 'Eps' is....."):
                 st.write("Eps is a DBSCAN-SPECIFIC DEFINITION: :nerd_face:")
@@ -376,7 +377,7 @@ with tab2:
             
         basic_plot(random_data, ax1, size, colour_labels, cluster_centres)
         st.pyplot(fig1)
-            
+        
         
     # st.write("previous data slider bool:", st.session_state["previous_data_slider"])
         st.write("counter:", st.session_state["counter"])
@@ -418,169 +419,10 @@ with tab2:
         else:
             st.error("I'm afraid I don't agree with you here, have another go!")
     
-    # # Option to look at past data - do later
-    # # Need to make permanent
-    # if "previous_data_slider" not in st.session_state:
-    #     st.session_state["previous_data_slider"] = False
-        
-    # if st.button("Review previous data", type = "secondary"):
-    #     st.session_state["previous_data_slider"] = True
     
-    
-    
-    # if st.session_state["previous_data_slider"] == True:
-    #     if st.session_state["counter"] == 0:
-    #         st.write("No previous data to re-explore...")
-    #         previous_seed = st.session_state["counter"]
-    #     else:
-    #         max_counter = st.session_state["counter"]
-    #         previous_seed = st.slider("Previous seeds", 0, max_counter)
-        
-    #     # do func
-    #     old_data = get_old_data()
-        
-    #     # update to new func 
-    #     cluster_plots(previous_seed, technique, old_data, fig, ax, num_clusters)
-
-    # else:
-    #     # NEEDS DATA
-    #     data = random_data
-        
-    #     # update to new func
-    #     cluster_plots(st.session_state["counter"], technique, data, fig, ax, num_clusters)
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # def update_marker3(counter, technique2, X, fig, ax):
-    #     """
-    #     Updater function to allow the viewer to slide through the data for each marker.
-    #     Shows the relationship between pre and post data, as well as allows viewer to see the distributions of the pre/post data separately. 
-
-    #     Args:
-    #         marker_num (int): Which marker the viewer wants to see. 
-    #         histogram (str): Which data the viewer wants to see. 
-    #     """
-    #     from sklearn.datasets import make_blobs
-    #     import random
-        
-
-    #     # ax.plot(X[:, 0], X[:, 1], '.')
-        
-        
-        
-    #     if technique2 == clustering_technique_options[1]:
-    #         # do K-means
-    #         st.write("running k means")
-            
-    #         from sklearn.cluster import KMeans
-
-    #         kmeans = KMeans(n_clusters=num_centres)
-    #         kmeans.fit(X)
-            
-    #         # x_vals = X[:, 0]
-    #         # y_vals = X[:, 1]
-    #         # x_centre_vals = kmeans.cluster_centers_[:, 0]
-    #         # y_centre_vals = kmeans.cluster_centers_[:, 1]
-            
-    #         ax.plot(X[:, 0], X[:, 1], '.')
-    #         ax.plot(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], 's')
-
-    #     elif technique2 == clustering_technique_options[2]:
-    #         # do gmm
-    #         st.write("running gmm")
-            
-    #         from sklearn.mixture import GaussianMixture
-
-    #         gmm = GaussianMixture(n_components=num_centres).fit(X)
-    #         labels = gmm.predict(X)
-            
-    #         probs = gmm.predict_proba(X)
-    #         size = 10 * probs.max(axis=1) ** 2
-            
-    #         ax.scatter(X[:, 0], X[:, 1], c=labels, s=size)
-
-    #     elif technique2 == clustering_technique_options[3]:
-    #         # do dbscan
-    #         st.write("dbscan")
-
-    #         ax.plot(X[:, 0], X[:, 1], '.')
-            
-    #     else:
-    #         st.write("None")
-            
-    #         ax.plot(X[:, 0], X[:, 1], '.')
-
-
-    #     ax.set_xlim(-axis_max, axis_max)
-    #     ax.set_ylim(-axis_max, axis_max)
-    #     st.pyplot(fig, clear_figure=True)
-        
-        
-        
-    # def make_my_blobs(seed):
-    #     random.seed(seed)
-    #     num_centres = randint(3, 6)
-    #     centre_max_val = 4
-    #     std = 1
-    #     axis_max = centre_max_val + 2*std
-    #     X, y = make_blobs(n_samples=300, n_features=2, centers=num_centres, center_box=(-centre_max_val, centre_max_val), cluster_std=std, random_state=seed)
-    #     return X, axis_max
-
-
-    # st.subheader("FIGURE")
-
-
-    # if "counter" not in st.session_state:
-    #     st.write("counter not in...............")
-    #     st.session_state["counter"] = 0
-
-
-    # fig, ax = plt.subplots(figsize=(6, 4))
-
-    # # Unfinished buttons which will allow selecting of different data
-    # left, middle, right = st.columns(3)
-    # if left.button("Get blobby  data", use_container_width=True):
-    #     left.markdown("Producing some blobby data.")
-    # if middle.button("Get moony data", use_container_width=True):
-    #     middle.markdown("Producing some moony data.")
-    # if right.button("Get moony/blobby data", use_container_width=True):
-    #     right.markdown("Producing some moony/blobby data.")
-
-    # if st.button("Get new data", type="primary"):
-    #     st.session_state["counter"] += 1
-    #     # new_X = make_my_blobs(st.session_state["counter"])[0]
-    #     # update_marker3(st.session_state["counter"], new_X, fig, ax)
-
-    # # Option to look at past data
-    # # Need to make permanent
-    # if "previous_data_slider" not in st.session_state:
-    #     st.session_state["previous_data_slider"] = False
-        
-    # if st.button("Review previous data", type = "secondary"):
-    #     st.session_state["previous_data_slider"] = True
-    
-    
-    # clustering_technique_options = ["None", "K-means", "GMM", "DBSCAN"]
-    # technique2 = st.selectbox('Select a technique for clustering.', clustering_technique_options)
-        
-    # st.write("previous data slider bool:", st.session_state["previous_data_slider"])
-    # st.write("counter:", st.session_state["counter"])
-        
- 
-
-
-    
-
+    if "description" in cluster_dict[random_file].keys():
+            st.write(cluster_dict[random_file]["description"])
+   
 
 
 
@@ -603,7 +445,7 @@ with tab2:
     
     '''
 
-    st.write(end_multi)
+    st.markdown(end_multi)
 
     def pros_and_cons(multi_pros, multi_cons):
        
