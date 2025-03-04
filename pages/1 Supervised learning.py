@@ -312,28 +312,28 @@ with tab1:
     st.write("&nbsp;&nbsp;&nbsp;&nbsp;Medical Imaging Analysis: Used for disease diagnosis (e.g., cancer detection, X-ray image analysis).")
     col1, col2, col3 = st.columns([1, 2, 3])
     with col2:
-    st.image("images/Facial Recognition.jpg", caption="Facial Recognition", width=300)
+        st.image("images/Facial Recognition.jpg", caption="Facial Recognition", width=300)
 
-    st.subheader("&nbsp;&nbsp;2. Natural Language Processing (NLP)")
-    st.write("&nbsp;&nbsp;&nbsp;&nbsp;Sentiment Analysis: Analyzing the sentiment (positive, negative, or neutral) in text (e.g., social media posts, product reviews).")
-    st.write("&nbsp;&nbsp;&nbsp;&nbsp;Machine Translation: Translating text from one language to another.")
-    st.write("&nbsp;&nbsp;&nbsp;&nbsp;Converting speech signals into text (e.g., in smart voice assistants)")
-    st.write("&nbsp;&nbsp;&nbsp;&nbsp;Text Classification: Categorizing text into different classes (e.g., news classification, spam detection).")
+        st.subheader("&nbsp;&nbsp;2. Natural Language Processing (NLP)")
+        st.write("&nbsp;&nbsp;&nbsp;&nbsp;Sentiment Analysis: Analyzing the sentiment (positive, negative, or neutral) in text (e.g., social media posts, product reviews).")
+        st.write("&nbsp;&nbsp;&nbsp;&nbsp;Machine Translation: Translating text from one language to another.")
+        st.write("&nbsp;&nbsp;&nbsp;&nbsp;Converting speech signals into text (e.g., in smart voice assistants)")
+        st.write("&nbsp;&nbsp;&nbsp;&nbsp;Text Classification: Categorizing text into different classes (e.g., news classification, spam detection).")
     col1, col2, col3 = st.columns([1, 2, 3])
     with col2:
-    st.image("images/ORC.png", caption="ORC", width=300)
+        st.image("images/ORC.png", caption="ORC", width=300)
 
-    st.subheader("&nbsp;&nbsp;3.Gaming and Entertainment")
-    st.write("&nbsp;&nbsp;&nbsp;&nbsp;Game Recommendation: Recommending games based on players' gaming history and preferences.")
-    st.write("&nbsp;&nbsp;&nbsp;&nbsp;In-Game Character Behavior Prediction: Predicting character behavior based on player data to optimize the gaming experience.")
-    col1, col2, col3 = st.columns([1, 2, 3])
+        st.subheader("&nbsp;&nbsp;3.Gaming and Entertainment")
+        st.write("&nbsp;&nbsp;&nbsp;&nbsp;Game Recommendation: Recommending games based on players' gaming history and preferences.")
+        st.write("&nbsp;&nbsp;&nbsp;&nbsp;In-Game Character Behavior Prediction: Predicting character behavior based on player data to optimize the gaming experience.")
+        col1, col2, col3 = st.columns([1, 2, 3])
     with col2:
-    st.image("images/OIP.jpg", caption="OIP", width=300)
+        st.image("images/OIP.jpg", caption="OIP", width=300)
 
-    st.write("&nbsp;&nbsp;&nbsp;&nbsp;Of course, there are many other application scenarios. Supervised learning is widely applied and deeply integrated into various aspects of daily life, making it an accessible and practical tool rather than something distant or unattainable.")
+        st.write("&nbsp;&nbsp;&nbsp;&nbsp;Of course, there are many other application scenarios. Supervised learning is widely applied and deeply integrated into various aspects of daily life, making it an accessible and practical tool rather than something distant or unattainable.")
 
-    st.header("3.What kind of Supervised Learning do you like")
-    st.write("&nbsp;&nbsp;&nbsp;&nbsp;But no matter where it is applied, the underlying logic is consistent. Starting from the basics is a necessary path to becoming a master. Choose a direction that interests you and dive in.")
+        st.header("3.What kind of Supervised Learning do you like")
+        st.write("&nbsp;&nbsp;&nbsp;&nbsp;But no matter where it is applied, the underlying logic is consistent. Starting from the basics is a necessary path to becoming a master. Choose a direction that interests you and dive in.")
 
     summaries = {
         "Linear Regression": "&nbsp;&nbsp;&nbsp;&nbsp;Linear regression is one of the most fundamental supervised learning algorithms, primarily used for predicting continuous target variables. It assumes a linear relationship between input features and the target variable and attempts to find the best-fitting line to describe this relationship.",
