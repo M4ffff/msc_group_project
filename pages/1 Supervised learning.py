@@ -357,104 +357,104 @@ with tab1:
 
 with tab2:
     # Load Dataset
-@st.cache_data
-def load_data():
-    df = pd.read_csv('datasets/Collisions.csv')
-    df = df[['SEVERITYCODE', 'WEATHER', 'ROADCOND', 'LIGHTCOND', 'SPEEDING']]  # Sample Features
+    @st.cache_data
+    def load_data():
+        df = pd.read_csv('datasets/Collisions.csv')
+        df = df[['SEVERITYCODE', 'WEATHER', 'ROADCOND', 'LIGHTCOND', 'SPEEDING']]  # Sample Features
 
-    df['SPEEDING'] = df['SPEEDING'].fillna('N')
-    df['SPEEDING'] = df['SPEEDING'].replace(r'^\s*$', 'N', regex=True)
+        df['SPEEDING'] = df['SPEEDING'].fillna('N')
+        df['SPEEDING'] = df['SPEEDING'].replace(r'^\s*$', 'N', regex=True)
 
-    df['SPEEDING'] = df['SPEEDING'].map({'Y': 1, 'N': 0})
-    df = df.dropna()  # Drop missing values
+        df['SPEEDING'] = df['SPEEDING'].map({'Y': 1, 'N': 0})
+        df = df.dropna()  # Drop missing values
 
-    df['SEVERITYCODE'] = df['SEVERITYCODE'].map({'0': 0, '1':1, '2':2, '2b':3, '3':4})  
-    
-    # List of categorical features
-    categorical_features = ['WEATHER', 'ROADCOND', 'LIGHTCOND']
+        df['SEVERITYCODE'] = df['SEVERITYCODE'].map({'0': 0, '1':1, '2':2, '2b':3, '3':4})  
+        
+        # List of categorical features
+        categorical_features = ['WEATHER', 'ROADCOND', 'LIGHTCOND']
 
-    # Convert categorical features to numerical labels
-    encoder = OrdinalEncoder()
-    df[categorical_features] = encoder.fit_transform(df[categorical_features])
-    return df
+        # Convert categorical features to numerical labels
+        encoder = OrdinalEncoder()
+        df[categorical_features] = encoder.fit_transform(df[categorical_features])
+        return df
 
-# Load data
-df = load_data()
+    # Load data
+    df = load_data()
 
-df.fillna('0', inplace=True) 
+    df.fillna('0', inplace=True) 
 
-X = df.drop(columns=['SEVERITYCODE'])
-y = df['SEVERITYCODE']
+    X = df.drop(columns=['SEVERITYCODE'])
+    y = df['SEVERITYCODE']
 
-st.header('Predicting Accident Severity - Random Forest Classifier')
+    st.header('Predicting Accident Severity - Random Forest Classifier')
 
-# Visualize Class Distribution of Severity Code
-st.subheader(" Distribution of Accident Severity")
-fig, ax = plt.subplots()
-sns.countplot(x=df['SEVERITYCODE'], palette='viridis', ax=ax)
-ax.set_xlabel("Severity Code")
-ax.set_ylabel("Count")
-ax.set_yscale('log')
-st.pyplot(fig)
-
-st.write("Dataset Preview:", df.head())  # Show first 5 rows
-
-st.image('images/cars_onroad.jpg')
-
-# Streamlit Sidebar for Feature Selection
-st.header("Select Features for Prediction")
-selected_features = st.multiselect("Choose features to include", X.columns.tolist(), default=X.columns.tolist())
-
-# Train Model on Selected Features
-if selected_features:
-    if X[selected_features].shape[0] == 0:
-        st.error("No data available after filtering. Try selecting different features.")
-        st.stop()
-
-    # Sliders for Model Parameters (Main Layout)
-    st.header("🔧 Adjust Model Parameters")
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        n_estimators = st.slider("Number of Trees", min_value=10, max_value=500, value=100, step=10)
-
-    with col2:
-        max_depth = st.slider("Max Depth", min_value=1, max_value=50, value=10, step=1)
-
-    with col3:
-        min_samples_split = st.slider("Min Samples Split", min_value=2, max_value=20, value=2, step=1)        
-   
-    X_train, X_test, y_train, y_test = train_test_split(X[selected_features], y, test_size=0.2, random_state=42)
-    
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
-    model.fit(X_train, y_train)
-
-    st.write("Feature Importances:", model.feature_importances_)
-
-    y_pred = model.predict(X_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    
-    # Display Performance Metrics
-    st.write("## Model Performance")
-    st.write(f"**Model Accuracy with Selected Features:** {accuracy:.4f}")
-    
-    feature_importances = pd.DataFrame({
-        'Feature': selected_features,
-        'Importance': model.feature_importances_
-    })
-
-    if feature_importances["Importance"].sum() == 0:
-        st.error("All feature importances are zero. Try selecting different features or check dataset preprocessing.")
-        st.stop()
-
-    # Feature Importance Visualization
-    st.write("**Feature Importance**")
-    feature_importances = pd.DataFrame({'Feature': selected_features, 'Importance': model.feature_importances_}).sort_values(by="Importance", ascending=False)
-
-    fig, ax = plt.subplots(figsize=(8, 4))
-    sns.barplot(x="Importance", y="Feature", data=feature_importances, ax=ax)
-    ax.set_title("Feature Importance")
+    # Visualize Class Distribution of Severity Code
+    st.subheader(" Distribution of Accident Severity")
+    fig, ax = plt.subplots()
+    sns.countplot(x=df['SEVERITYCODE'], palette='viridis', ax=ax)
+    ax.set_xlabel("Severity Code")
+    ax.set_ylabel("Count")
+    ax.set_yscale('log')
     st.pyplot(fig)
-else:
-    st.warning("Please select at least one feature to train the model.")
+
+    st.write("Dataset Preview:", df.head())  # Show first 5 rows
+
+    st.image('images/cars_onroad.jpg')
+
+    # Streamlit Sidebar for Feature Selection
+    st.header("Select Features for Prediction")
+    selected_features = st.multiselect("Choose features to include", X.columns.tolist(), default=X.columns.tolist())
+
+    # Train Model on Selected Features
+    if selected_features:
+        if X[selected_features].shape[0] == 0:
+            st.error("No data available after filtering. Try selecting different features.")
+            st.stop()
+
+        # Sliders for Model Parameters (Main Layout)
+        st.header("🔧 Adjust Model Parameters")
+
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            n_estimators = st.slider("Number of Trees", min_value=10, max_value=500, value=100, step=10)
+
+        with col2:
+            max_depth = st.slider("Max Depth", min_value=1, max_value=50, value=10, step=1)
+
+        with col3:
+            min_samples_split = st.slider("Min Samples Split", min_value=2, max_value=20, value=2, step=1)        
+    
+        X_train, X_test, y_train, y_test = train_test_split(X[selected_features], y, test_size=0.2, random_state=42)
+        
+        model = RandomForestClassifier(n_estimators=100, random_state=42)
+        model.fit(X_train, y_train)
+
+        st.write("Feature Importances:", model.feature_importances_)
+
+        y_pred = model.predict(X_test)
+        accuracy = accuracy_score(y_test, y_pred)
+        
+        # Display Performance Metrics
+        st.write("## Model Performance")
+        st.write(f"**Model Accuracy with Selected Features:** {accuracy:.4f}")
+        
+        feature_importances = pd.DataFrame({
+            'Feature': selected_features,
+            'Importance': model.feature_importances_
+        })
+
+        if feature_importances["Importance"].sum() == 0:
+            st.error("All feature importances are zero. Try selecting different features or check dataset preprocessing.")
+            st.stop()
+
+        # Feature Importance Visualization
+        st.write("**Feature Importance**")
+        feature_importances = pd.DataFrame({'Feature': selected_features, 'Importance': model.feature_importances_}).sort_values(by="Importance", ascending=False)
+
+        fig, ax = plt.subplots(figsize=(8, 4))
+        sns.barplot(x="Importance", y="Feature", data=feature_importances, ax=ax)
+        ax.set_title("Feature Importance")
+        st.pyplot(fig)
+    else:
+        st.warning("Please select at least one feature to train the model.")
