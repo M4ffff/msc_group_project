@@ -397,6 +397,8 @@ with tab2:
     ax.set_yscale('log')
     st.pyplot(fig)
 
+    st.write('The plot above shows the severity distribution of car accidents in Seattle. 0 = Unknown, 1 = Prop damage, 2 = Minor injury, 3 = Serious injury, 4 = Fatality. What factors could we use to predict the outcome for a given accident?')
+
     st.write("Dataset Preview:", df.head())  # Show first 5 rows
 
     st.image('images/cars_onroad.jpg')
