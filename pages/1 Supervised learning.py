@@ -70,6 +70,19 @@ with tab1:
         y_pred = model.predict([[x_value]])
         st.write(f"Predicted y for X = {x_value}: {y_pred[0][0]:.2f}")
 
+        # Question 1: Linear Regression
+        st.subheader("Question 1: Linear Regression")
+        st.write("Which of the following statements is true about Linear Regression?")
+        options_1 = ["A. Linear Regression is used for classification tasks.",
+                     "B. Linear Regression models the relationship between a dependent variable and one or more independent variables using a linear function.",
+                     "C. Linear Regression assumes that the data is not linearly separable.",
+                     "D. Linear Regression cannot be used for predicting continuous values."]
+        selected_option_1 = st.radio("Select your answer:", options_1, key="q1")
+
+        if selected_option_1 == options_1[1]:
+            st.success("Correct! Linear Regression models the relationship using a linear function.")
+        else:
+            st.error("Incorrect. The correct answer is B.")
     def subpage2():
         st.write(summaries[selected_method])
 
@@ -131,6 +144,19 @@ with tab1:
         prediction = model.predict(input_features)
         st.write(f"Predicted class for input ({feature1:.2f}, {feature2:.2f}): {prediction[0]}")
 
+        # Question 2: Logistic Regression
+        st.subheader("Question 2: Logistic Regression")
+        st.write("Which of the following statements is true about Logistic Regression?")
+        options_2 = ["A. Logistic Regression is used for predicting continuous numerical values.",
+                     "B. Logistic Regression uses a linear function to model the relationship between variables.",
+                     "C. Logistic Regression is a type of regression algorithm that outputs probabilities for classification tasks.",
+                     "D. Logistic Regression assumes that the data is linearly separable."]
+        selected_option_2 = st.radio("Select your answer:", options_2, key="q2")
+
+        if selected_option_2 == options_2[2]:
+            st.success("Correct! Logistic Regression outputs probabilities for classification tasks.")
+        else:
+            st.error("Incorrect. The correct answer is C.")
     def subpage3():
         st.write(summaries[selected_method])
 
@@ -239,6 +265,19 @@ with tab1:
 
         plot_decision_boundary_with_hyperplane(X_train, y_train, model)
 
+        # Question 3: Support Vector Machine (SVM)
+        st.subheader("Question 3: Support Vector Machine (SVM)")
+        st.write("Which of the following statements is true about Support Vector Machine (SVM)?")
+        options_3 = ["A. SVM is primarily used for unsupervised learning tasks.",
+                     "B. SVM aims to find the hyperplane that maximizes the margin between two classes.",
+                     "C. SVM cannot handle non-linear data without using kernel functions.",
+                     "D. SVM is not suitable for classification tasks with high-dimensional data."]
+        selected_option_3 = st.radio("Select your answer:", options_3, key="q3")
+
+        if selected_option_3 == options_3[1]:
+            st.success("Correct! SVM aims to find the hyperplane that maximizes the margin between two classes.")
+        else:
+            st.error("Incorrect. The correct answer is B.")
     def subpage4():
         st.write(summaries[selected_method])
         st.subheader("Data Generation")
@@ -295,6 +334,18 @@ with tab1:
 
         plot_decision_boundary(X_train, y_train, rf)
 
+        st.subheader("Question 4: Random Forest")
+        st.write("Which of the following statements is true about Random Forest?")
+        options_4 = ["A. Random Forest is a type of neural network.",
+                     "B. Random Forest builds multiple decision trees and merges them to get a more accurate prediction.",
+                     "C. Random Forest is not suitable for classification tasks.",
+                     "D. Random Forest requires a large amount of data to be effective."]
+        selected_option_4 = st.radio("Select your answer:", options_4, key="q4")
+
+        if selected_option_4 == options_4[1]:
+            st.success("Correct! Random Forest builds multiple decision trees for more accurate predictions.")
+        else:
+            st.error("Incorrect. The correct answer is B.")
 
     st.title("Supervised Learning ")
     st.write("🎉🎉🎉If you've made it this far, it means you're genuinely interested in this topic, and the content ahead is definitely worth looking forward to!🎉🎉🎉")
