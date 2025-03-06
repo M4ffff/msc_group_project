@@ -8,6 +8,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error,classification_report,accuracy_score, confusion_matrix
+from sklearn.metrics import mean_absolute_error, r2_score
 from sklearn.datasets import make_classification,make_blobs
 import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
