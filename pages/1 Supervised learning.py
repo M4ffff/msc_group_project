@@ -14,7 +14,7 @@ import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import OrdinalEncoder
 
-tab1, tab2 = st.tabs(['Introduction', 'Car Accident Prediction'])
+tab1, tab2, tab3 = st.tabs(['Introduction', 'Car Accident Prediction', 'Film Rating Prediction'])
 
 with tab1:
 
@@ -512,3 +512,97 @@ with tab2:
         st.pyplot(fig)
     else:
         st.warning("Please select at least one feature to train the model.")
+
+with tab3:
+    @st.cache_data
+    def load_imdb_data():
+        df = pd.read_csv('datasets/IMDb_Dataset.csv')  # Update path
+        df = df[['IMDb Rating', 'Genre', 'Duration (minutes)', 'Year']]  # Sample Features
+
+        # Handle Missing Values
+        df = df.dropna()
+
+        # Encode Categorical Features
+        categorical_features = ['Genre']
+        encoder = OrdinalEncoder()
+        df[categorical_features] = encoder.fit_transform(df[categorical_features])
+
+        return df
+
+    # Load IMDb data
+    df_imdb = load_imdb_data()
+
+    # Split Features and Target
+    X_imdb = df_imdb.drop(columns=['IMDb Rating'])
+    y_imdb = df_imdb['IMDb Rating']
+
+    # Streamlit UI
+    st.header("Predicting IMDb Film Ratings with Linear Regression")
+
+    st.image('images/imdb.png')
+
+    st.write('As we are predicting a continuous variable (rating /10), here we use a regression approach instead of classification.')
+    st.write('Dataset Preview:', df_imdb.head())
+
+    # Feature Selection
+    st.subheader("Select Features for Prediction")
+    selected_features_imdb = st.multiselect("Choose features", X_imdb.columns.tolist(), default=X_imdb.columns.tolist())
+
+    # Train Model if Features Are Selected
+    if selected_features_imdb:
+        X_train, X_test, y_train, y_test = train_test_split(X_imdb[selected_features_imdb], y_imdb, test_size=0.2, random_state=42)
+
+        # Train Linear Regression Model
+        model = LinearRegression()
+        model.fit(X_train, y_train)
+
+        # Predictions
+        y_pred = model.predict(X_test)
+
+        # Performance Metrics
+        mae = mean_absolute_error(y_test, y_pred)
+        mse = mean_squared_error(y_test, y_pred)
+        r2 = r2_score(y_test, y_pred)
+
+        st.write("## Model Performance")
+        st.write(f"**Mean Absolute Error (MAE):** {mae:.4f}")
+        st.write(f"**Mean Squared Error (MSE):** {mse:.4f}")
+        st.write(f"**R² Score:** {r2:.4f}")
+
+        # Coefficients (Feature Importance in Linear Regression)
+        coefficients = pd.DataFrame({
+            'Feature': selected_features_imdb,
+            'Coefficient': model.coef_
+        }).sort_values(by="Coefficient", key=abs, ascending=False)  # Sort by absolute value
+
+        st.write("**Feature Coefficients**")
+        fig, ax = plt.subplots(figsize=(8, 4))
+        sns.barplot(x="Coefficient", y="Feature", data=coefficients, ax=ax)
+        ax.set_title("Feature Coefficients")
+        st.pyplot(fig)
+
+    else:
+        st.warning("Please select at least one feature to train the model.")
+
+    # Quiz: Least Important Feature (Smallest Absolute Coefficient)
+    st.header("🧠 Quiz: Identify the Least Important Feature!")
+
+    if not coefficients.empty:
+        # Get the feature with the smallest absolute coefficient
+        least_important_feature = coefficients.iloc[-1]['Feature']
+
+        # Quiz options (fixed order)
+        quiz_options = coefficients['Feature'].tolist()
+
+        # Ask the question
+        selected_answer = st.radio(
+            "Which feature has the **least** impact (smallest absolute coefficient) in the model?",
+            quiz_options
+        )
+
+        # Check if the answer is correct
+        if st.button("Submit Answer 2"):
+            if selected_answer == least_important_feature:
+                st.success(f"✅ Correct! The least important feature is **{least_important_feature}**.")
+            else:
+                st.error(f"❌ Incorrect. The least important feature is **{least_important_feature}**.")    
