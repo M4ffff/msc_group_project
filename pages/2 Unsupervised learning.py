@@ -15,23 +15,20 @@ import os
 from sklearn.preprocessing import StandardScaler
 
 
-
-
+from sklearn.preprocessing import StandardScaler
+import seaborn as sns
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 st.title("Unsupervised Learning Page")
-
 
 
 tab1, tab2 = st.tabs(["Unsupervised explanation", "Clustering Examples"])
 
 
 
-
-
 # Interactive graphs of the pre/post data for each marker. 
 with tab1:
-    st.subheader("INTRO STUFF ")
-    st.markdown("Explain unsupervised learning")
+    st.markdown("This page explores unsupervised learning techniques. Unsupervised learning is a type of machine learning where the algorithm learns patterns from unlabelled data, uncovering hidden structures without predefined categories. This approach is particularly useful for exploring large datasets and discovering relationships or groupings within the data. On this page we firstly focus on Principle Component Analysis (PCA) and K-means clustering. By using example datasets, we can demonstrate how PCA can reduce dimensionality for easier visualisation, and how K-means helps identify clusters in data. We also explore how clustering can be applied to data with more complex shapes, highlighting the versatility of these techniques.")
         
 
 
@@ -40,59 +37,114 @@ with tab1:
 
     st.markdown("PCA simplifies complex datasets by reducing the number of features, while keeping as much of the important information so that the significancy of the data is not affected. First, the data is standardised, so that all features are on the same scale. Then key features are identified, through the combination of original features. Finally, the dimensions are reduced, only the top few features are kept which retains the most significant information.")
 
-
     st.markdown("PCA is usually followed by a clustering algorithm. K-means clustering is a common way to group data into different categories based on how similar the data points are. It starts with picking the number of groups, with random group centres. The data points are then assigned to the nearest group and the group centres are updates. This is repeated until the best grouping is found.")
 
+    st.markdown("**Example:** Explore PCA and K-means clustering on the breast cancer dataset below.")
 
-    st.markdown("**Example:** Explore PCA and clustering on the Toy dataset below.")
+    st.subheader("Raw Breast Cancer Dataset")
+    
+    bc_dat = pd.read_csv('datasets/breast-cancer.csv')
+    scaled_bc = StandardScaler().fit_transform(bc_dat[bc_dat.columns[1:]])
 
-    toy_dat = pd.read_csv('datasets/toy.csv')
-    toy_dat['encoded_label'] = [1 if i == 'b' else 0 for i in toy_dat['label'].values]  # Makes a = 0, b = 1.
-    del toy_dat['label']    # Drop labels column as not computer readable.
 
-    st.subheader("Raw Toy Dataset:")
-    st.dataframe(toy_dat.head())
-    st.markdown("The columns, or features, of the toy dataset represent the variables measured for each data point. Whereas, the data points represent individual samples, with each row in the dataset being a different sample. The plot below displays the first two features of the dataset.")
+    # bc_dat = pd.read_csv('breast-cancer.csv')
+    # scaled_bc = StandardScaler().fit_transform(bc_dat[bc_dat.columns[1:]])
+    st.dataframe(bc_dat.head())
+    st.markdown("The columns, or features, of the breast cancer dataset represent the variables measured for each data point. Whereas, the data points represent individual samples, with each row in the dataset being a different sample.")
+
+    st.markdown("Have a look at how the different features of the dataset interact with eachother below!")
+
+
+    # Show original data (numerical columns)
+    numeric_columns = bc_dat.select_dtypes(include=['number']).columns.tolist()
+    x_axis = st.selectbox("Select x-axis:", numeric_columns)
+    y_axis = st.selectbox("Selection y-axis:", numeric_columns)
+
+    fig, ax = plt.subplots()
+    sns.scatterplot(data=bc_dat, x=x_axis, y=y_axis, hue=bc_dat.columns[0], ax=ax, alpha=0.7)
+    ax.set(xlabel=x_axis, ylabel=y_axis, title=f"{x_axis} vs {y_axis}")
+    st.pyplot(fig)
+
 
     # Apply PCA
-    pca = PCA(n_components=2)
-    toydat_pca = pca.fit_transform(toy_dat)
-    toy_dat_pca = pd.DataFrame(toydat_pca, columns=["PC1", "PC2"])
+    st.subheader("After PCA")
+    pca = PCA()
+    transformed_bc = pca.fit_transform(scaled_bc)
+    pc = pd.DataFrame(transformed_bc, columns=['PC{}'.format(i + 1) for i in range(transformed_bc.shape[1])])
+    pc['Diagnosis'] = bc_dat['Diagnosis']
+    st.dataframe(pc[['Diagnosis', 'PC1', 'PC2', 'PC3', 'PC4', 'PC5', 'PC6', 'PC7', 'PC8', 'PC9', 'PC10']].head())
 
-    # Show original data (first two numerical columns)
-    st.markdown("**First Two Features**")
+    # Check variance ratio
+    pc_var = pca.fit(scaled_bc)
     fig, ax = plt.subplots()
-    ax.scatter(toy_dat.iloc[:, 0], toy_dat.iloc[:, 1], alpha=0.5)
-    ax.set_xlabel(toy_dat.columns[0])
-    ax.set_ylabel(toy_dat.columns[1])
+    ax.plot(np.cumsum(pc_var.explained_variance_ratio_))
+    ax.set(xlabel="Number of Components", ylabel="Cumulative Explained Variance")
     st.pyplot(fig)
+
+    st.markdown("PCA transforms the original dataset into a new set of axes, known as principle components. The 1st principle component (PC1) captures the greatest variance in the data, the 2nd principle component (PC2) captures the second greatest variance and so on, capturing less and less variance for each principle component. For this example we'll focus on the first two principle components, as that is where the majority of the variance is focused (over 80%!).")
 
     # Show PCA result
-    st.subheader("After PCA")
-    st.markdown("PCA transforms the original dataset into a new set of axes, known as principle components. The 1st principle component (PC1) captures the greatest variance in the data, the 2nd principle component (PC2) captures the second greatest variance and so on, capturing less and less variance for each principle component. Below you can see a change in structure and separation of the data points.")
+    st.markdown("**PCA Scatter Plot (PC1 vs PC2)**")
     fig, ax = plt.subplots()
-    ax.scatter(toy_dat_pca["PC1"], toy_dat_pca["PC2"], alpha=0.5, color='red')
-    ax.set_xlabel("PC1")
-    ax.set_ylabel("PC2")
+
+    palette = {"Malignant": "blue", "Benign": "orange"}
+
+    for diagnosis in ["Malignant", "Benign"]:
+        subset = pc[pc["Diagnosis"] == diagnosis]
+        sns.scatterplot(data=subset, x="PC1", y="PC2", hue="Diagnosis", palette=palette, alpha=0.7, s=30)
+
+    ax.set(xlabel="PC1", ylabel="PC2", title="PCA Scatter Plot")
+    ax.legend()
     st.pyplot(fig)
+
 
     # K-Means clustering
     st.subheader("K-Means Clustering")
-    st.markdown("What number of clusters best fits the transformed toy data?")
-    num_clusters = st.slider("Select number of clusters", 2, 10, 3)
+    st.markdown("Here you can see that K-means clustering has been applied with k=2 on the first two principle components (PC1 and PC2) of the breast cancer dataset. The model assigns each data point to one of two clusters, which we can visualise in a scatter plot. As this dataset includes labelled diagnoses (Malignant and Benign), we can compare the K-means clusters to the actual labels to assess how well the algorithm separates the two groups.")
+
+    num_clusters = 2
     kmeans = KMeans(n_clusters=num_clusters, random_state=42)
-    kmeans.fit(toydat_pca)
-    toy_dat_pca["Cluster"] = kmeans.labels_
+    kmeans.fit(pc[['PC1', 'PC2']])
+    pc["Cluster"] = kmeans.labels_
 
     # Show clustered data
+    st.markdown("**K-Means Clustering Scatter Plot (PC1 vs PC2)**")
     fig, ax = plt.subplots()
-    for cluster in range(num_clusters):
-        cluster_points = toy_dat_pca[toy_dat_pca["Cluster"] == cluster]
-        ax.scatter(cluster_points["PC1"], cluster_points["PC2"], label=f"Cluster {cluster}")
-    ax.set_xlabel("PC1")
-    ax.set_ylabel("PC2")
+    for cluster in range(2):
+        subset = pc[pc["Cluster"] == cluster]
+        ax.scatter(subset["PC1"], subset["PC2"], label=f"Cluster {cluster}", alpha=0.7, s=30)
+
+    # Plot cluster centers
+    centers = kmeans.cluster_centers_
+    ax.scatter(centers[:, 0], centers[:, 1], marker="x", s=100, c="black", label="Centroids")
+
+    ax.set(xlabel="PC1", ylabel="PC2", title=f"K-Means Clustering (k={num_clusters})")
     ax.legend()
     st.pyplot(fig)
+
+    # Check cluster accuracy
+    st.markdown("To measure the accuracy of the clustering, we can compare the assigned clusters with the actual diagnoses labels, Malignant = 0 and Benign = 1. While K-Means is not a supervised method, a strong alignment with true labels suggests that the data naturally separates into two distinct groups. However, if misclassification is high it may indicate an overlap in features, such as Malignant and Benign cases have similar characteristics in PC1 and PC2, suggesting a need for more features.")
+
+    st.markdown("**Confusion Matrix of Clustering Accuracy**")
+    st.markdown("""
+    - Top-left (0.79): 79% of Malignant cases were correctly clustered. 
+    - Top-right (0.21): 21% of Malignant cases were misclassified as Benign.
+    - Bottom-left (0.017): Only 1.7% of Benign cases were misclassified as Malignant.
+    - Bottom-right (0.98): 98% of Benign cases were correctly clustered. 
+
+    The clustering is aligned with the true labels. Most Benign cases are correctly classified (98%), with minimal misclassification. Malignant cases are also well-classified (79%), but there is still some overlap.""""")
+
+    bc_true = pc["Diagnosis"].map({"Malignant": 0, "Benign": 1})
+    bc_cluster = pc["Cluster"]
+
+    bc_conf_mat = confusion_matrix(bc_true, bc_cluster, normalize='true')
+
+    fig, ax = plt.subplots()
+    bc_plot = ConfusionMatrixDisplay(confusion_matrix=bc_conf_mat, display_labels=['Malignant', 'Benign'])
+    bc_plot.plot(ax=ax)
+    st.pyplot(fig)
+
+
 
 
 with tab2:
@@ -109,30 +161,64 @@ with tab2:
 
     Will allow users to see how clustering works for different data shapes in a *fun* :rainbow[interactive] way
 
-    There are three main methods for clustering:
+    There are three/four main methods for clustering:
     - K-means clustering
     - Gaussian Mixture Model (GMM) clustering
     - DBSCAN
+    - HDBSCAN
 
     These different methods often produce different clusters on the same set of data, as we will see below.
 
-    K-means produces "blobby" clusters, with the shape of the clusters always in a circular, blobby shape. 
-    This means if the data has striata, these are often not determined as separate clusters.
-
-    K-means involves minimising the distance between the points and each cluster centre. 
-    GMM involves calculating the probability of each point being in each cluster. 
-
-    DBSCAN does not assume the shapes of the clusters, so is often more effective at clustering strangely-shaped data, 
-    which form obvious clusters to the human eye, but which K-means and GMM may struggle with. 
-
-    K-means and GMM both need the number of clusters to be defined by the user. The number of clusters is not always easy to do, 
-    as we will see below.
 
     '''
     st.markdown(multi)
 
     # st.image("images/funky_shapes.png", caption="Data with funky shapes", width=600)
-
+    with st.expander("**k-means clustering:**"):
+        st.markdown(
+            """
+        K-means clustering works by picking a certain number of clusters, *k*, and k number of initial points (\"cluster centres\")
+        It then assigns each data point to the nearest cluster centre. 
+        The cluster centres are then recalculated as the centre of each cluster. 
+        This is repeated iteratively until the cluster centres stabilise (stay in roughly the same position).
+        Hopefully, you saw this in action on the page before!
+        
+        """)
+        
+    with st.expander("**gmm clustering:**"):
+        st.markdown(
+            """
+        GMM assumes the data is a mixture of multiple Gaussian distributions, each corresponding to a cluster.
+        The number of clusters must be specified, as with K-means clustering.
+        Gmm iteratively estimates the parameters of the Gaussian distributions, using the \"Expectation-Maximisation algorithm\"
+        The data points are each given a probability of belonging in each cluster.
+        
+        Gmm can deal with overlapping clusters, and more funky-shaped data. 
+        """)
+        
+    with st.expander("**dbscan clustering:**"):
+        st.markdown(
+            """
+        DBSCAN clusters data based on their density. 
+        Clusters are areas of high density separated by areas of low density.
+        Clusters are identified by determining points with a high number of other points in close proximity,
+        and expanding clusters from these points. 
+        DBSCAN does not need the number of clusters specified, but does require sensible input parameters. 
+        These parameters are as follows:
+        - **Eps**:  *The maximum distance between two samples for one to be considered as in the neighbourhood of the other.*
+        - **min_clusters**: *Minimum number of points for a group of data to be considered a cluster rather than noise.*
+        
+        DBSCAN does not assume the shapes of the clusters, so is often more effective at clustering strangely-shaped data, 
+        which form obvious clusters to the human eye, but which K-means and GMM may struggle with. 
+        """)
+        
+    with st.expander("**hdbscan clustering:**"):
+        st.markdown(
+            """
+        HBDSCAN is an extension of DBSCAN, with can deal effectively with clusters of varying densities. 
+        The "H" stands for "hierarchical". This is because it creates a hierarchy (ranking) of  clusters based on their density.
+        This is done automatically, although the technique can be improved by tweaking some input parameters. 
+        """)
 
     #######################################################################################################################################
     st.subheader("LOADING IN FUNKY DATA")
@@ -142,44 +228,64 @@ with tab2:
     
     cluster_dict = {
     "basic1.csv": {"best_method": ["gmm"], "num_clusters": 4,
-                   "description": ""},
+                   "description": "This data is split into 4 blobs which GMM clusters effectively."},
     "basic2.csv": {"best_method": ["dbscan"], "num_clusters": 5,
                    "description": "DBSCAN definitely the most effective here (eps=15,min_clusters=5) - the other methods struggle with the elongated shapes of the clusters."},
-    "basic3.csv": {"best_method": ["gmm"], "num_clusters": 3},
+    "basic3.csv": {"best_method": ["gmm"], "num_clusters": 3,
+                   "description": ""},
     "basic4.csv": {"best_method": ["kmeans", "gmm"], "num_clusters": 3,
                    "description": "K-means and GMM are most effective here due to the blobby nature of the data."},
-    "basic5.csv": {"best_method": ["kmeans", "gmm"], "num_clusters": 3},
-    "blob.csv": {"best_method": ["kmeans", "gmm"], "num_clusters": 4},
+    "basic5.csv": {"best_method": ["kmeans", "gmm"], "num_clusters": 3,
+                   "description": "K-means and GMM both effectively cluster here. DBSCSN and HDBSCAN struggle with the sparsity of the data."},
+    "blob.csv": {"best_method": ["kmeans", "gmm"], "num_clusters": 4,
+                   "description": "These clusters are not clearly distinct, but there is a vague blobby structure which K-means and GMM show."},
     # "box.csv": {"best_method": "dbscan", "num_clusters": 1}, ###
     # "boxes.csv": {"best_method": "dbscan", "num_clusters": 30}, ###
-    "boxes2.csv": {"best_method": ["dbscan"], "num_clusters": 3},
+    "boxes2.csv": {"best_method": ["dbscan"], "num_clusters": 3,
+                   "description": "All the methods struggle with this one,  particularly as noise increases. However, with low noise, DBSCAN determines the three clusters most reliabely."},
     # "boxes3.csv": {"best_method": "dbscan", "num_clusters": 12}, ###
-    "chrome.csv": {"best_method": ["gmm"], "num_clusters": 4},
-    "dart.csv": {"best_method": ["gmm"], "num_clusters": 2},
-    "dart2.csv": {"best_method": ["dbscan"], "num_clusters": 4},
+    "chrome.csv": {"best_method": ["dbscan", "hdbscan"], "num_clusters": 4,
+                   "description": "DBSCAN (eps=0.32, min_clusters=5) and HBDSCAN both effective here due to the strange shapes of the clusters,\
+                       even as noise increases."},
+    "dart.csv": {"best_method": ["dbscan", "hdbscan"], "num_clusters": 2,
+                   "description": "K-means particularly struggles with this one as the clusters do not have blobby shapes. "},
+    "dart2.csv": {"best_method": ["dbscan"], "num_clusters": 4,
+                   "description": ""},
     "face.csv": {"best_method": ["dbscan", "hbdscan"], "num_clusters": 4,
                  "description": "DBSCAN (eps=0.32, min_clusters=5) and HBDSCAN both effective here, even as noise increases."},
     "hyperplane.csv": {"best_method": ["gmm"], "num_clusters": 2,
                    "description": "GMM probably the most effective here, although there aren't any clearly defined clusters so hard to judge the effectiveness of each method."},
-    "isolation.csv": {"best_method": ["dbscan"], "num_clusters": 3},
-    "lines.csv": {"best_method": ["dbscan"], "num_clusters": 5},
+    "isolation.csv": {"best_method": ["dbscan"], "num_clusters": 3,
+                   "description": ""},
+    "lines.csv": {"best_method": ["dbscan"], "num_clusters": 5,
+                   "description": ""},
     "lines2.csv": {"best_method": ["dbscan"], "num_clusters": 5,
                    "description": "DBSCAN the most effective here (eps=?,min_clusters=?) - the other methods struggle with the elongated shapes of the clusters."},
-    "moon_blobs.csv": {"best_method": ["dbscan"], "num_clusters": 4},             ############## check best method
+    "moon_blobs.csv": {"best_method": ["dbscan"], "num_clusters": 4,
+                   "description": ""},             ############## check best method
     "network.csv": {"best_method": ["kmeans", "gmm", "dbscan"], "num_clusters": 5,
                    "description": "All the methods work pretty effective here, although GMM deals with increased noise the best. DBSCAN:(eps=0.10,min_clusters=5)"},
-    "outliers.csv": {"best_method": ["gmm"], "num_clusters": 2},
+    "outliers.csv": {"best_method": ["gmm"], "num_clusters": 2,
+                   "description": ""},
     # "ring.csv": {"best_method": "kmeans", "num_clusters": 1}, ###
     "sparse.csv": {"best_method": ["kmeans", "gmm"], "num_clusters": 3,
                    "description": "This is pretty blobby data, so kmeans and GMM both effectively cluster into 3 clusters. DBSCAN struggles with the sparsity of the data here"},
-    "spiral.csv": {"best_method": ["dbscan"], "num_clusters": 1}, ###
-    "spiral2.csv": {"best_method": ["gmm"], "num_clusters": 2},
-    "spirals.csv": {"best_method": ["gmm"], "num_clusters": 3},
-    "supernova.csv": {"best_method": ["gmm"], "num_clusters": 4},
-    "triangle.csv": {"best_method": ["gmm"], "num_clusters": 3},
-    "un.csv": {"best_method": ["gmm"], "num_clusters": 2},
-    "un2.csv": {"best_method": ["dbscan"], "num_clusters": 3},
-    "wave.csv": {"best_method": ["gmm"], "num_clusters": 4}
+    "spiral.csv": {"best_method": ["dbscan"], "num_clusters": 1,
+                   "description": ""}, ###
+    "spiral2.csv": {"best_method": ["gmm"], "num_clusters": 2,
+                   "description": ""},
+    "spirals.csv": {"best_method": ["gmm"], "num_clusters": 3,
+                   "description": ""},
+    "supernova.csv": {"best_method": ["gmm"], "num_clusters": 4,
+                   "description": ""},
+    "triangle.csv": {"best_method": ["gmm"], "num_clusters": 3,
+                   "description": ""},
+    "un.csv": {"best_method": ["gmm"], "num_clusters": 2,
+                   "description": ""},
+    "un2.csv": {"best_method": ["dbscan"], "num_clusters": 3,
+                   "description": ""},
+    "wave.csv": {"best_method": ["gmm"], "num_clusters": 4,
+                   "description": ""}
 }
 
 
@@ -369,7 +475,7 @@ with tab2:
     if technique == clustering_technique_options[3]:
         if st.checkbox("Click to see what 'Eps' is....."):
             st.write("Eps is a DBSCAN-SPECIFIC DEFINITION: :nerd_face:")
-            st.markdown("**Eps:** *The maximum distance between two samples for one to be considered as in the neighborhood of the other.*")
+            st.markdown("**Eps:** *The maximum distance between two samples for one to be considered as in the neighbourhood of the other.*")
             # st.markdown("<br>---------------------", unsafe_allow_html=True)
             st.markdown("***")
         
@@ -431,7 +537,7 @@ with tab2:
 
 
     end_multi = '''
-    From this exercise, I hope you now feel like you understand clustering better!  
+    From this exercise, I hope you now feel like you understand the different clustering techniques better!  
     There is evidently no one-size-fits-all clustering technique which can be used to cluster any set of data -
     the methods introduced here all have their pros and cons. 
     
@@ -442,7 +548,7 @@ with tab2:
     This exercise uses fake data to allow easy comparison between the accuracy of the different methods in a more interesting way. 
     However, unfortunately, it is rare for a dataset to have the shape of a smiley face in real-life datasets :disappointed: 
     
-    To finish off, I'll give a little rundown of the pros of each method:
+    To finish off, I'll give a little rundown of the pros and cons of each method:
     
     '''
 
@@ -469,9 +575,12 @@ with tab2:
         multi_pros = '''
         - Simple to implement  
         - Good with blobby data 
+        - Efficient with large datasets
         '''
         multi_cons = '''
-        - Only good with blobby data - can't do interesting shapes
+        - Assumes data is blobby - can't determine more interesting shapes of clusters
+        - clusters depend on starting points 
+        - sensitive to outliers
         '''
         pros_and_cons(multi_pros, multi_cons)
         
@@ -481,9 +590,13 @@ with tab2:
         - Good with blobby data 
         - Good with interestingly-shaped clusters if distinct
         - Shows probability of each point being in its designated cluster
+        - Handles overlap of clusters
         '''
         multi_cons = '''
+        - Number of clusters must be determined before 
         - Bad with intertwined data
+        - Assumes data has a Gaussian distribution
+        - Sensitive to initial parameters
         '''
         pros_and_cons(multi_pros, multi_cons)
         
@@ -494,10 +607,12 @@ with tab2:
         - Number of clusters does not need to be pre-determined
         '''
         multi_cons = '''
-        - Eps must be chosen carefully
+        - Highly dependent on parameters - must be chosen carefully
         - Can produce an extremely larger number of clusters
+        - Struggles with clusters of varying density
         '''
         pros_and_cons(multi_pros, multi_cons)
+
 
     with hdbscan_tab:
         multi_pros = '''
@@ -509,9 +624,6 @@ with tab2:
         '''
         pros_and_cons(multi_pros, multi_cons)
 
-
-    
-    
 
     st.write("selecting the correct number of clusters can be done in some way")
     st.write("brief overview")
