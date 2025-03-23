@@ -81,6 +81,7 @@ with tab1:
                      "D. Linear Regression cannot be used for predicting continuous values."]
         selected_option_1 = st.radio("Select your answer:", options_1, key="q1", index=None)
 
+
         if selected_option_1 == options_1[1]:
             st.success("Correct! Linear Regression models the relationship using a linear function.")
         elif selected_option_1 == None:
@@ -155,10 +156,12 @@ with tab1:
                      "B. Logistic Regression uses a linear function to model the relationship between variables.",
                      "C. Logistic Regression is a type of regression algorithm that outputs probabilities for classification tasks.",
                      "D. Logistic Regression assumes that the data is linearly separable."]
-        selected_option_2 = st.radio("Select your answer:", options_2, key="q2")
+        selected_option_2 = st.radio("Select your answer:", options_2, key="q2",index=0)
 
         if selected_option_2 == options_2[2]:
             st.success("Correct! Logistic Regression outputs probabilities for classification tasks.")
+        elif selected_option_1 == None:
+            st.write("")
         else:
             st.error("Incorrect. The correct answer is C.")
     def subpage3():
@@ -276,10 +279,12 @@ with tab1:
                      "B. SVM aims to find the hyperplane that maximizes the margin between two classes.",
                      "C. SVM cannot handle non-linear data without using kernel functions.",
                      "D. SVM is not suitable for classification tasks with high-dimensional data."]
-        selected_option_3 = st.radio("Select your answer:", options_3, key="q3")
+        selected_option_3 = st.radio("Select your answer:", options_3, key="q3",index=0)
 
         if selected_option_3 == options_3[1]:
             st.success("Correct! SVM aims to find the hyperplane that maximizes the margin between two classes.")
+        elif selected_option_1 == None:
+            st.write("")
         else:
             st.error("Incorrect. The correct answer is B.")
     def subpage4():
@@ -344,10 +349,12 @@ with tab1:
                      "B. Random Forest builds multiple decision trees and merges them to get a more accurate prediction.",
                      "C. Random Forest is not suitable for classification tasks.",
                      "D. Random Forest requires a large amount of data to be effective."]
-        selected_option_4 = st.radio("Select your answer:", options_4, key="q4")
+        selected_option_4 = st.radio("Select your answer:", options_4, key="q4",index=0)
 
         if selected_option_4 == options_4[1]:
             st.success("Correct! Random Forest builds multiple decision trees for more accurate predictions.")
+        elif selected_option_1 == None:
+            st.write("")
         else:
             st.error("Incorrect. The correct answer is B.")
 
