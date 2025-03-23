@@ -13,6 +13,7 @@ import random
 from sklearn.cluster import KMeans
 import os
 from sklearn.preprocessing import StandardScaler
+import time
 
 
 from sklearn.preprocessing import StandardScaler
@@ -121,6 +122,92 @@ with tab1:
     ax.set(xlabel="PC1", ylabel="PC2", title=f"K-Means Clustering (k={num_clusters})")
     ax.legend()
     st.pyplot(fig)
+
+    st.title("K-Means Clustering Animation")
+
+    button_placeholder = st.empty()
+
+    # Streamlit app
+    fig, ax = plt.subplots(figsize=(6, 4))
+
+    X = transformed_bc[:, :2]
+    n_clusters=2
+
+    # Initialize cluster centers
+    np.random.seed(0)
+    i = np.random.randint(0, X.shape[0], size=n_clusters)
+    centres = X[i]
+
+    old_centres = []
+
+    max_iterations = 10
+    stop = False
+
+    col1, col2 = st.columns([0.5, 0.2])
+    placeholder = col1.empty()
+    ax.scatter(X[:, 0], X[:, 1], marker='.')
+    ax.scatter(centres[:, 0], centres[:, 1], marker='*', s=100, color='black', label='Current Centres', zorder=3 )
+    ax.legend()
+    placeholder.pyplot(fig)
+
+    # loop through number of iterations
+    if button_placeholder.button("Run animation", type="primary"):
+        with col2:
+            st.write("**The Process**")
+            st.write("Randomly select two points of data as starting points for two cluster centres")
+            st.write("Calculate which centre each point is closest to")
+            st.write("Sort into the two clusters by which centre is closest")
+            st.write("Calculate the mean of each cluster, which is then set as the new cluster centre")
+            st.write("Repeat this process until the cluster centres stabilise.")
+        for iteration in range(max_iterations):
+            if not stop:
+                with col1:
+                    # plot data
+                    ax.clear()
+                    
+                    # pick random point as centre (plot)
+                    new_centres = centres
+                    old_centres.append(centres)
+                    for i, centres in enumerate(old_centres):
+                        alpha = 0.5 * (1+ ((i+1)/len(old_centres) ))
+                        
+                        ax.scatter(centres[:, 0], centres[:, 1], marker='x', color='black', alpha=alpha, s=15, zorder=2)
+                    
+                    # work out which centre each points are closest to (plot)
+                    
+                    # Assign points to the nearest centre
+                    vectors = X[:, np.newaxis] - centres
+                    
+                    magnitudes = np.linalg.norm(vectors, axis=-1)
+                    
+                    labels = magnitudes.argmin(axis=1)
+                    
+                    # ax.scatter(X[:, 0], X[:, 1], marker='.', c=labels)
+                    for cluster in range(2):
+                        subset = X[labels == cluster]
+                        ax.plot(subset[:, 0], subset[:, 1], alpha=1, marker='.', linestyle='', zorder=1)
+                    
+                    # calculate average of each group (plot)
+                    new_centres = np.array([X[labels == i].mean(axis=0) for i in range(n_clusters)])
+                    
+                    # stop if centres are close
+                    stop = np.allclose(centres, new_centres, atol=0.1)
+                    
+                    # set new averages as new centre points (plot)
+                    centres = new_centres
+                    
+                    ax.scatter(centres[:, 0], centres[:, 1], marker='*', s=100, color='black', label='Current Centres', zorder=3 )
+                    ax.legend()
+                    
+                    placeholder.pyplot(fig)
+                    time.sleep(2)  
+                # with col2:
+                #     st.write(f"iteration {iteration} done")
+            else:
+                st.write(f'Clustering Complete! Final Iteration: {iteration}')
+                break
+
+
 
     # Check cluster accuracy
     st.markdown("To measure the accuracy of the clustering, we can compare the assigned clusters with the actual diagnoses labels, Malignant = 0 and Benign = 1. While K-Means is not a supervised method, a strong alignment with true labels suggests that the data naturally separates into two distinct groups. However, if misclassification is high it may indicate an overlap in features, such as Malignant and Benign cases have similar characteristics in PC1 and PC2, suggesting a need for more features.")

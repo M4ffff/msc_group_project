@@ -14,6 +14,8 @@ import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import OrdinalEncoder
 
+st.title("Supervised Learning ")
+
 tab1, tab2, tab3 = st.tabs(['Introduction', 'Car Accident Prediction', 'Film Rating Prediction'])
 
 with tab1:
@@ -77,10 +79,12 @@ with tab1:
                      "B. Linear Regression models the relationship between a dependent variable and one or more independent variables using a linear function.",
                      "C. Linear Regression assumes that the data is not linearly separable.",
                      "D. Linear Regression cannot be used for predicting continuous values."]
-        selected_option_1 = st.radio("Select your answer:", options_1, key="q1")
+        selected_option_1 = st.radio("Select your answer:", options_1, key="q1", index=None)
 
         if selected_option_1 == options_1[1]:
             st.success("Correct! Linear Regression models the relationship using a linear function.")
+        elif selected_option_1 == None:
+            st.write("")
         else:
             st.error("Incorrect. The correct answer is B.")
     def subpage2():
@@ -347,7 +351,7 @@ with tab1:
         else:
             st.error("Incorrect. The correct answer is B.")
 
-    st.title("Supervised Learning ")
+
     st.write("🎉🎉🎉If you've made it this far, it means you're genuinely interested in this topic, and the content ahead is definitely worth looking forward to!🎉🎉🎉")
 
     st.header("1. What is Supervised Learning ")
