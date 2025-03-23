@@ -41,6 +41,8 @@ widgets_multi = """
     
 """
 
+st.write(widgets_multi)
+
 x = np.arange(1,100,10)
 y=2*x
 # data1 = [x,y]
@@ -51,14 +53,15 @@ data1 = pd.DataFrame({
 
 # print(data1)
 
-st.line_chart(data1, x="first column", y="second column")
+# st.line_chart(data1, x="first column", y="second column")
 
-
+st.subheader("Slider")
 # widget
 slider = st.slider('x')  
 st.write(slider, 'squared is', slider * slider)
 
 
+st.subheader("Checkbox")
 # checkbox
 if st.checkbox('Show dataframe'):
     chart_data = pd.DataFrame(
@@ -67,6 +70,18 @@ if st.checkbox('Show dataframe'):
 
     chart_data
     
+
+st.subheader("Quiz")
+my_number = 4
+question_one = st.radio(
+    "What number am I thinking of?", (np.arange(1,7)), index=None)
+    
+if question_one == 4:
+    st.success("Yeah! Great number :100:")
+else:
+    st.write("Ew, no.")
+    
+    
     
 # dropdown menu
 df = pd.DataFrame({
@@ -74,14 +89,21 @@ df = pd.DataFrame({
     'second column': [10, 20, 30, 40]
     })
 
+st.subheader("Select box")
 option = st.selectbox(
     'Which number do you like best?',
      df['first column'])
 
 'You selected: ', option
 
+
+st.subheader("Expander")
+with st.expander("Expand me!"):
+    st.write("BOO")
+
+
 # add sidebar
-add_selectbox = st.sidebar.selectbox(
-    'How would you like to be contacted?',
-    ('Email', 'Home phone', 'Mobile phone')
-)
+# add_selectbox = st.sidebar.selectbox(
+#     'How would you like to be contacted?',
+#     ('Email', 'Home phone', 'Mobile phone')
+# )
