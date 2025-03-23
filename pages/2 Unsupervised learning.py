@@ -35,8 +35,8 @@ with tab1:
 
 
     st.subheader("PCA and K-means Clustering")
-
-    with st.expander("PCA simplifies complex datasets by reducing the number of features, while keeping as much of the important information so that the significancy of the data is not affected."):
+    st.write("PCA simplifies complex datasets by reducing the number of features, while keeping as much of the important information so that the significancy of the data is not affected.")
+    with st.expander("PCA Process"):
         st.markdown('''
         Step 1: The data is standardised, so that all features are on the same scale. 
         
@@ -46,8 +46,9 @@ with tab1:
         
         ***PCA is usually followed by a clustering algorithm.***
         ''')
-
-    with st. expander("K-means clustering is a common way to group data into different categories based on how similar the data points are."):
+        
+    st.write("K-means clustering is a common way to group data into different categories based on how similar the data points are.")
+    with st. expander("K-Means Process"):
         st.markdown('''
         Step 1: The number of groups are picked, with random group centres. 
         
@@ -62,13 +63,13 @@ with tab1:
 
     st.subheader("Raw Breast Cancer Dataset")
 
+    st.write("The following dataset is a record of multiple medical measurements of breast cancer tumours. ")
+    st.write("Hopefully, using our clever unsupervised machine learning techniques, we can use this dataset to find a reliable way of diagnosing breast cancer!")
+    st.write("This is an example that shows the usefulness of machine learning, and its possibility to even save lives! :female-doctor:")
     
     bc_dat = pd.read_csv('datasets/breast-cancer.csv')
     scaled_bc = StandardScaler().fit_transform(bc_dat[bc_dat.columns[1:]])
 
-
-    # bc_dat = pd.read_csv('breast-cancer.csv')
-    # scaled_bc = StandardScaler().fit_transform(bc_dat[bc_dat.columns[1:]])
     st.dataframe(bc_dat.head())
     st.markdown("The columns, or ***features***, of the breast cancer dataset represent the variables measured for each data point. Whereas the data points themselves represent individual samples, with each row in the dataset being a different sample.")
 
@@ -103,7 +104,7 @@ with tab1:
     ax.set(xlabel="Number of Components", ylabel="Cumulative Explained Variance")
     st.pyplot(fig)
 
-    st.markdown("For this example we'll focus on the first two principle components, as that is where the majority of the variance is focused (over 80%!:astonished:).")
+    st.markdown("For this example we'll focus on the first two principle components, as the majority of the variance of the dataset is covered (over 80%!:astonished:).")
 
     # Show PCA result
     st.markdown("**PCA Scatter Plot (PC1 vs PC2)**")
@@ -148,16 +149,17 @@ with tab1:
     st.title("K-Means Clustering Animation")
 
     st.write("Click the big button below to see how K-Means clustering determines the final clusters......")
-    st.write("Also press the expander to read about the clustering process in more detail")
+    st.write("Also press the expander to read about the K-Means clustering process in more detail.")
 
-    with st.expander("K-Means clustering process"):
+    with st.expander("Detailed K-Means Clustering Process"):
         st.write("**The Process**")
-        st.write("1. Randomly select two points of data as starting points for two cluster centres.")
-        st.write("2. Calculate which centre each point is closest to.")
-        st.write("3. Sort into the two clusters by which centre is closest.  :man-boy-boy:             :woman-girl-girl:")
-        st.write("4. Calculate the mean of each cluster, which is then set as the new cluster centre. :abacus:")
-        st.write("5. Repeat this process until the cluster centres stabilise.")
-        st.write("FINSIHED :trophy:")
+        st.write("1. Select the number of clusters (in this case **two**).")
+        st.write("2. Randomly select **two** points of data as starting points for the **two** cluster centres.")
+        st.write("3. Calculate which centre each point is closest to.")
+        st.write("4. Sort into the two clusters by which centre is closest.  :man-boy-boy:             :woman-girl-girl:")
+        st.write("5. Calculate the mean of each cluster, with the mean then set as the new cluster centre. :abacus:")
+        st.write("6. Repeat this process until the cluster centres stabilise, calculated with a given **tolerance** (in the animation, set as 0.1).")
+        st.write("FINISHED :trophy:")
 
 
     button_placeholder = st.empty()
@@ -230,17 +232,24 @@ with tab1:
                 ax.legend()
                 
                 placeholder.pyplot(fig)
-                time.sleep(2)  
+                time.sleep(1.5)  
             else:
                 st.write(f'Clustering Complete! Final Iteration: {iteration}')
                 break
 
 
+    st.subheader("Final Analysis")
+
+    st.write("Here, we run through how to anlayse our ML methods, and see if our method is an accurate way of diagnosing breast cancer.")
+    st.write("We sure hope so! :crossed_fingers:")
+
 
     # Check cluster accuracy
-    with st.expander("As this dataset includes labelled diagnoses, Malignant and Benign, we can compare the K-means clusters to the actual labels (Malignant = 0 and Benign = 1) to assess how well the algorithm separates the two groups."):
+    st.write("As this dataset includes labelled diagnoses, Malignant and Benign, we can compare the K-means clusters to the actual labels (Malignant = 0 and Benign = 1) to assess how well the algorithm separates the two groups.")
+    with st.expander("Why is this useful? :thinking_face:"):
         st.markdown('''
-        This is beneficial as while K-Means is not a supervised method, a strong alignment with true labels suggests that the data naturally separates into two distinct groups. However, if misclassification is high it may indicate an overlap in features, such as Malignant and Benign cases having similar characteristics in PC1 and PC2, potentially suggesting the need for more features.''')
+        This is beneficial as while K-Means is not a supervised method, a strong alignment with true labels suggests that the data naturally separates into two distinct groups.  
+        However, if misclassification is high it may indicate an overlap in features, such as Malignant and Benign cases having similar characteristics in PC1 and PC2, potentially suggesting the need for more features.''')
 
     # Confusion matrix
     st.markdown("**Confusion Matrix of Clustering Accuracy**")
