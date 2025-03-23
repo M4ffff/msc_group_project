@@ -22,22 +22,27 @@ st.markdown("Whether you’re curious about how Netflix recommends your favourit
 st.subheader("What will you learn?")
 st.markdown("This web app is structured into several sections, each focusing on different essential machine learning concepts.")
 
-st.markdown("***:rainbow[Section One:]*** *Supervised Learning*")
-st.markdown("- Linear regression: Predict continuous outcomes like housing prices or stock market trends.")
-st.markdown("-	Classification: Categorise data, such as spam email detection or predicting customer churn.")
+with st.expander("***:rainbow[Section One:]*** *Supervised Learning*"):
+    st.markdown('''
+    - Linear Regression
+    
+    - Logistic Regression
+    
+    - Support Vector Machines (SVMs)
+    
+    - Random Forests''')
 
 
-st.markdown("***:rainbow[Section Two:]*** *Unsupervised Learning*")
-st.markdown("-	Principle component analysis (PCA): Reduce the dimensionality of datasets, helping visualise and analyse complex data efficiently.")
-st.markdown("-	Clustering: Group similar data points, such as a customer segmentation or image compression.")
+with st.expander("***:rainbow[Section Two:]*** *Unsupervised Learning*"):
+    st.markdown('''
+    - Principle component analysis (PCA)
+    
+    - Clustering''')
 
 
-st.markdown("***:rainbow[Section Three:]*** *Neural Networks*")
-st.markdown("-	Understand the building blocks of artificial intelligence and how they power applications like fraud detection, speech recognition, and personalised recommendations.")
-
-st.markdown("***:rainbow[Section Four:]*** *Python Implementation*")
-st.markdown("-	This section goes deeper into the principles and theory of each method.")
-st.markdown("- Learn Learn how to implement each method in Python with statis code examples, catering to more advanced learners who want hands-on experience with the tools and techniques.")
+with st.expander("***:rainbow[Section Three:]*** *Neural Networks*"):
+    st.markdown('''
+    - Build your own Neural Network classification tool!''')
 
 
 # Demystifying machine learning terms.
