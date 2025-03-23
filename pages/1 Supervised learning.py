@@ -462,7 +462,8 @@ with tab2:
 
     st.write('The plot above shows the severity distribution of car accidents in Seattle. 0 = Unknown, 1 = Prop damage, 2 = Minor injury, 3 = Serious injury, 4 = Fatality. What factors could we use to predict the outcome for a given accident?')
 
-    st.write("Dataset Preview:", df.head())  # Show first 5 rows
+    with st.expander("Dataset Preview"):
+        st.write (df.head())  # Show first 5 rows
 
     st.image('images/cars_onroad.jpg')
 
@@ -578,7 +579,9 @@ with tab3:
     st.image('images/imdb.png')
 
     st.write('As we are predicting a continuous variable (rating /10), here we use a regression approach instead of classification.')
-    st.write('Dataset Preview:', df_imdb.head())
+
+    with st.expander("Dataset Preview"):
+        st.write(df_imdb.head())
 
     # Feature Selection
     st.subheader("Select Features for Prediction")
