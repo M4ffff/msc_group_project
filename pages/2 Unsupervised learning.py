@@ -289,39 +289,44 @@ with tab2:
 
     # normal writing details
     multi = '''
-    Data doesnt always come in blobs - it can come in other shapes:    
-    Different clustering techniques work better than others depending on the shape of the data
+    Data doesnt always come in blobs - it can come in *other shapes*:    
+    Different clustering techniques work better than others depending on the shape of the data. :large_blue_square: :large_blue_diamond: :large_blue_circle: 
 
-    The following figure allows the user to produce some data selected randomly from a set of different dataset -  
-    Lots of them have funky shapes eg data in shape of smiley face :smiley: 
+    The plot below allows you to produce some data selected randomly from a set of :rainbow[funky] datasets -  
+    For example there is data in the shape of smiley faces :smiley:, dartboards :dart:, yin yang :yin_yang:, spirals :face_with_spiral_eyes:, and so much more!
 
-    Will allow users to see how clustering works for different data shapes in a *fun* :rainbow[interactive] way
+    I hope that this will show you how clustering works for different data shapes in a *fun* :rainbow[interactive] way,\
+        with the benefits and limitations of the different methods made clearer as you cluster different shapes using each method. 
 
-    There are three/four main methods for clustering:
-    - K-means clustering
-    - Gaussian Mixture Model (GMM) clustering
-    - DBSCAN
-    - HDBSCAN
+    **So, what clustering methods are available?**
+    
+    The following methods are the four main methods for clustering, (although there are others out there!):
+    - :orange[K-means clustering]
+    - :violet[Gaussian Mixture Model (GMM) clustering]
+    - :green[DBSCAN]
+    - :red[HDBSCAN]
 
-    These different methods often produce different clusters on the same set of data, as we will see below.
-
+    To understand how these different methods work, click on the expander tabs below....
 
     '''
     st.markdown(multi)
 
     # st.image("images/funky_shapes.png", caption="Data with funky shapes", width=600)
-    with st.expander("**k-means clustering:**"):
+    with st.expander("**:orange[K-Means clustering]:**"):
         st.markdown(
             """
-        K-means clustering works by picking a certain number of clusters, *k*, and k number of initial points (\"cluster centres\")
-        It then assigns each data point to the nearest cluster centre. 
-        The cluster centres are then recalculated as the centre of each cluster. 
-        This is repeated iteratively until the cluster centres stabilise (stay in roughly the same position).
-        Hopefully, you saw this in action on the page before!
+        Hopefully, you saw this in action on the page before, but we'll run through it again in case you didn't!
         
+        1. Select the number of clusters, for example **three**.
+        2. Randomly select **three** points of data as starting points for the **three** cluster centres.
+        3. Calculate which centre each point is closest to.")
+        4. Sort into the three clusters by which centre is closest.  :man-boy-boy:             :woman-girl-girl:
+        5. Calculate the mean of each cluster, with the mean then set as the new cluster centre. :abacus:
+        6. Repeat this process until the cluster centres stabilise, calculated with a given **tolerance**.
+        "FINISHED :trophy:
         """)
         
-    with st.expander("**gmm clustering:**"):
+    with st.expander("**:violet[GMM clustering]:**"):
         st.markdown(
             """
         GMM assumes the data is a mixture of multiple Gaussian distributions, each corresponding to a cluster.
@@ -332,7 +337,7 @@ with tab2:
         Gmm can deal with overlapping clusters, and more funky-shaped data. 
         """)
         
-    with st.expander("**dbscan clustering:**"):
+    with st.expander("**:green[DBSCAN clustering]:**"):
         st.markdown(
             """
         DBSCAN clusters data based on their density. 
@@ -348,85 +353,87 @@ with tab2:
         which form obvious clusters to the human eye, but which K-means and GMM may struggle with. 
         """)
         
-    with st.expander("**hdbscan clustering:**"):
+    with st.expander("**:red[HDBSCAN clustering]:**"):
         st.markdown(
             """
-        HBDSCAN is an extension of DBSCAN, with can deal effectively with clusters of varying densities. 
+        HDBSCAN is an extension of DBSCAN, with can deal effectively with clusters of varying densities. 
         The "H" stands for "hierarchical". This is because it creates a hierarchy (ranking) of  clusters based on their density.
-        This is done automatically, although the technique can be improved by tweaking some input parameters. 
+        This is done automatically, although the technique could be improved by tweaking some input parameters. 
         """)
+
+    final_multi = """    These different methods often produce different clusters on the same set of data, as we will see below./
+    Therefore, its up to **:rainbow[you]** to determine which method (or methods) outputs the correct clusters!
+"""
+    st.write(final_multi)
+
 
     #######################################################################################################################################
     st.subheader("LOADING IN FUNKY DATA")
 
-
     # Making filename dictionary
     
+    # SHOULD MOVE OUT OF SCRIPT
     cluster_dict = {
-    "basic1.csv": {"best_method": ["gmm"], "num_clusters": 4,
+    "basic1.csv": {"best_method": ["GMM"], "num_clusters": 4,
                    "description": "This data is split into 4 blobs which GMM clusters effectively."},
-    "basic2.csv": {"best_method": ["dbscan"], "num_clusters": 5,
+    "basic2.csv": {"best_method": ["DBSCAN"], "num_clusters": 5,
                    "description": "DBSCAN definitely the most effective here (eps=15,min_clusters=5) - the other methods struggle with the elongated shapes of the clusters."},
-    "basic3.csv": {"best_method": ["gmm"], "num_clusters": 3,
+    "basic3.csv": {"best_method": ["GMM"], "num_clusters": 3,
                    "description": ""},
-    "basic4.csv": {"best_method": ["kmeans", "gmm"], "num_clusters": 3,
+    "basic4.csv": {"best_method": ["K-means", "GMM"], "num_clusters": 3,
                    "description": "K-means and GMM are most effective here due to the blobby nature of the data."},
-    "basic5.csv": {"best_method": ["kmeans", "gmm"], "num_clusters": 3,
+    "basic5.csv": {"best_method": ["K-means", "GMM"], "num_clusters": 3,
                    "description": "K-means and GMM both effectively cluster here. DBSCSN and HDBSCAN struggle with the sparsity of the data."},
-    "blob.csv": {"best_method": ["kmeans", "gmm"], "num_clusters": 4,
+    "blob.csv": {"best_method": ["K-means", "GMM"], "num_clusters": 4,
                    "description": "These clusters are not clearly distinct, but there is a vague blobby structure which K-means and GMM show."},
     # "box.csv": {"best_method": "dbscan", "num_clusters": 1}, ###
     # "boxes.csv": {"best_method": "dbscan", "num_clusters": 30}, ###
-    "boxes2.csv": {"best_method": ["dbscan"], "num_clusters": 3,
+    "boxes2.csv": {"best_method": ["DBSCAN"], "num_clusters": 3,
                    "description": "All the methods struggle with this one,  particularly as noise increases. However, with low noise, DBSCAN determines the three clusters most reliabely."},
     # "boxes3.csv": {"best_method": "dbscan", "num_clusters": 12}, ###
-    "chrome.csv": {"best_method": ["dbscan", "hdbscan"], "num_clusters": 4,
-                   "description": "DBSCAN (eps=0.32, min_clusters=5) and HBDSCAN both effective here due to the strange shapes of the clusters,\
+    "chrome.csv": {"best_method": ["DBSCAN", "HDBSCAN"], "num_clusters": 4,
+                   "description": "DBSCAN (eps=0.32, min_clusters=5) and HDBSCAN both effective here due to the strange shapes of the clusters,\
                        even as noise increases."},
-    "dart.csv": {"best_method": ["dbscan", "hdbscan"], "num_clusters": 2,
+    "dart.csv": {"best_method": ["DBSCAN", "HDBSCAN"], "num_clusters": 2,
                    "description": "K-means particularly struggles with this one as the clusters do not have blobby shapes. "},
-    "dart2.csv": {"best_method": ["dbscan"], "num_clusters": 4,
-                   "description": ""},
-    "face.csv": {"best_method": ["dbscan", "hbdscan"], "num_clusters": 4,
-                 "description": "DBSCAN (eps=0.32, min_clusters=5) and HBDSCAN both effective here, even as noise increases."},
-    "hyperplane.csv": {"best_method": ["gmm"], "num_clusters": 2,
+    "dart2.csv": {"best_method": ["DBSCAN", "HDBSCAN"], "num_clusters": 4,
+                   "description": "DBSCAN and HDBSCAN can effectively cluster based on the shapes of the rings (although struggle when the noise is increased) "},
+    "face.csv": {"best_method": ["DBSCAN", "HDBSCAN"], "num_clusters": 4,
+                 "description": "DBSCAN (eps=0.32, min_clusters=5) and HDBSCAN both effective here, even as noise increases."},
+    "hyperplane.csv": {"best_method": ["GMM"], "num_clusters": 2,
                    "description": "GMM probably the most effective here, although there aren't any clearly defined clusters so hard to judge the effectiveness of each method."},
-    "isolation.csv": {"best_method": ["dbscan"], "num_clusters": 3,
+    "isolation.csv": {"best_method": ["DBSCAN"], "num_clusters": 3,
                    "description": ""},
-    "lines.csv": {"best_method": ["dbscan"], "num_clusters": 5,
+    "lines.csv": {"best_method": ["DBSCAN"], "num_clusters": 5,
                    "description": ""},
-    "lines2.csv": {"best_method": ["dbscan"], "num_clusters": 5,
+    "lines2.csv": {"best_method": ["DBSCAN"], "num_clusters": 5,
                    "description": "DBSCAN the most effective here (eps=?,min_clusters=?) - the other methods struggle with the elongated shapes of the clusters."},
-    "moon_blobs.csv": {"best_method": ["dbscan"], "num_clusters": 4,
+    "moon_blobs.csv": {"best_method": ["DBSCAN"], "num_clusters": 4,
                    "description": ""},             ############## check best method
-    "network.csv": {"best_method": ["kmeans", "gmm", "dbscan"], "num_clusters": 5,
+    "network.csv": {"best_method": ["K-means", "GMM", "DBSCAN"], "num_clusters": 5,
                    "description": "All the methods work pretty effective here, although GMM deals with increased noise the best. DBSCAN:(eps=0.10,min_clusters=5)"},
-    "outliers.csv": {"best_method": ["gmm"], "num_clusters": 2,
+    "outliers.csv": {"best_method": ["GMM"], "num_clusters": 2,
                    "description": ""},
     # "ring.csv": {"best_method": "kmeans", "num_clusters": 1}, ###
-    "sparse.csv": {"best_method": ["kmeans", "gmm"], "num_clusters": 3,
-                   "description": "This is pretty blobby data, so kmeans and GMM both effectively cluster into 3 clusters. DBSCAN struggles with the sparsity of the data here"},
-    "spiral.csv": {"best_method": ["dbscan"], "num_clusters": 1,
+    "sparse.csv": {"best_method": ["K-means", "GMM"], "num_clusters": 3,
+                   "description": "This is pretty blobby data, so K-means and GMM both effectively cluster into 3 clusters. DBSCAN struggles with the sparsity of the data here"},
+    "spiral.csv": {"best_method": ["DBSCAN"], "num_clusters": 1,
                    "description": ""}, ###
-    "spiral2.csv": {"best_method": ["gmm"], "num_clusters": 2,
+    "spiral2.csv": {"best_method": ["GMM"], "num_clusters": 2,
                    "description": ""},
-    "spirals.csv": {"best_method": ["gmm"], "num_clusters": 3,
+    "spirals.csv": {"best_method": ["GMM"], "num_clusters": 3,
                    "description": ""},
-    "supernova.csv": {"best_method": ["gmm"], "num_clusters": 4,
+    "supernova.csv": {"best_method": ["GMM"], "num_clusters": 4,
                    "description": ""},
-    "triangle.csv": {"best_method": ["gmm"], "num_clusters": 3,
+    "triangle.csv": {"best_method": ["DBSCAN"], "num_clusters": 3,
                    "description": ""},
-    "un.csv": {"best_method": ["gmm"], "num_clusters": 2,
+    "un.csv": {"best_method": ["GMM"], "num_clusters": 2,
                    "description": ""},
-    "un2.csv": {"best_method": ["dbscan"], "num_clusters": 3,
+    "un2.csv": {"best_method": ["DBSCAN"], "num_clusters": 3,
                    "description": ""},
-    "wave.csv": {"best_method": ["gmm"], "num_clusters": 4,
+    "wave.csv": {"best_method": ["GMM"], "num_clusters": 4,
                    "description": ""}
 }
-
-
-
-
 
 
 
@@ -461,7 +468,7 @@ with tab2:
     
         
     session_counter = st.session_state["counter"]
-    st.write(f"Session seed counter: {session_counter}")
+    # st.write(f"Session seed counter: {session_counter}")
 
 
     random_file, random_data = get_data(st.session_state["counter"])
@@ -479,10 +486,6 @@ with tab2:
                 
                 st.session_state["counter"] -= 1
                 random_file, random_data = get_data(st.session_state["counter"])
-
-    # Option to show data
-    if st.checkbox('Show dataframe (potentially a bit irrelevant?)'):
-        st.write(random_data.head(5))
 
 
 
@@ -577,23 +580,23 @@ with tab2:
         # st.pyplot(fig1)
 
     with col2:
-        clustering_technique_options = ["None", "K-means", "GMM", "DBSCAN", "HBDSCAN"]
+        clustering_technique_options = ["None", "K-means", "GMM", "DBSCAN", "HDBSCAN"]
         technique = st.selectbox('Select a technique for clustering.', clustering_technique_options)
             
         cluster_centres = None
         if technique == clustering_technique_options[1]:
-            num_clusters = st.slider("Select number of clusters", 1, 6)
+            num_clusters = st.slider("Select number of clusters", 1, 6, value=3)
             colour_labels, cluster_centres = kmeans_cluster(random_data, num_clusters)
             size = 15
             
         elif technique == clustering_technique_options[2]:
-            num_clusters = st.slider("Select number of clusters", 1, 6)
+            num_clusters = st.slider("Select number of clusters", 1, 6, value=3)
             size, colour_labels = gmm_cluster(random_data, num_clusters)
             
         elif technique == clustering_technique_options[3]:
             st.write("Change the following slider to see how this parameter effects the DBSCAN results.")
-            eps = st.slider("Eps", 0.01, 0.5, 0.01)
-            min_clusters = st.slider("min_clusters", 1, 15)
+            eps = st.slider("Eps", 0.01, 0.5, value=0.10, step=0.01)
+            min_clusters = st.slider("min_clusters", 1, 15, value=5)
             
             colour_labels = dbscan_cluster(random_data, eps, min_clusters)
             size=15
@@ -639,7 +642,7 @@ with tab2:
         with col2:
             question_two = st.radio(
             "Now, what method is best in determining this?",
-            ("kmeans", "gmm", "dbscan", "hbdscan"), index=None)
+            ("K-means", "GMM", "DBSCAN", "HDBSCAN"), index=None)
             
             if question_two == None:
                 st.write("") 
@@ -674,17 +677,20 @@ with tab2:
 
     end_multi = '''
     From this exercise, I hope you now feel like you understand the different clustering techniques better!  
-    There is evidently no one-size-fits-all clustering technique which can be used to cluster any set of data -
+    There is evidently no one-size-fits-all :gloves: clustering technique which can be used to cluster any set of data -\
     the methods introduced here all have their pros and cons. 
     
-    Overall, GMM is generally the most reliable (and easy to implement), in particular for noise-less data. 
-    However, it does struggle with clusters that are funky shapes if there is more noise and overlap between clusters. 
+    Overall, GMM is generally the most reliable (and easy to implement), in particular for noise-less :mute: data. 
+    However, it does struggle with clusters that are funky shapes if there is more noise and overlap between clusters. \
+        In these cases, it often returns to clustering into blobs rather than effectively capturing the shape of the data.  
     
-    It is important to remember that clusters are often hard to distinguish by eye. 
-    This exercise uses fake data to allow easy comparison between the accuracy of the different methods in a more interesting way. 
+    It is important to remember that clusters are often hard to distinguish by eye. :eye: 
+    This exercise uses fake data to allow easy comparison between the accuracy of the different methods in a more :rainbow[interesting] way. 
     However, unfortunately, it is rare for a dataset to have the shape of a smiley face in real-life datasets :disappointed: 
     
-    To finish off, I'll give a little rundown of the pros and cons of each method:
+    To finish off, I'll give a little rundown of the pros and cons of each method: :white_check_mark: :x:
+    
+    Before checking what I've put, why don't you come up with your own pros and cons list for each method!
     
     '''
 
@@ -715,8 +721,8 @@ with tab2:
         '''
         multi_cons = '''
         - Assumes data is blobby - can't determine more interesting shapes of clusters
-        - clusters depend on starting points 
-        - sensitive to outliers
+        - Clusters depend on starting points 
+        - Sensitive to outliers
         '''
         pros_and_cons(multi_pros, multi_cons)
         
@@ -724,7 +730,7 @@ with tab2:
         multi_pros = '''
         - Simple to implement  
         - Good with blobby data 
-        - Good with interestingly-shaped clusters if distinct
+        - Good with interestingly-shaped clusters (but only if distinct)
         - Shows probability of each point being in its designated cluster
         - Handles overlap of clusters
         '''
@@ -761,12 +767,18 @@ with tab2:
         pros_and_cons(multi_pros, multi_cons)
 
 
-    st.write("selecting the correct number of clusters can be done in some way")
-    st.write("brief overview")
-    st.write("however we wont go into much detail here")
-    st.write("here are some links tho")
+    conclusion_multi = """
+    So, there we have it - **UNSUPERVISED LEARNING**!
+    
+    I hope you feel like you've learnt a lot along the way, and now understand the different scenarios for when to use the different clustering methods. 
+    
+    Make sure to checkout the documentation page for simple examples of how to implement these methods in Python, \
+    or view our GitHub (url) to see the full code used in producing these examples. 
+    
+    Unsupervised learning, over and out. :end:
+    """
 
-
+    st.write(conclusion_multi)
 
 
 
