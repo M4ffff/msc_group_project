@@ -524,6 +524,31 @@ with tab2:
     else:
         st.warning("Please select at least one feature to train the model.")
 
+        # Quiz: Most Important Feature
+    st.header("🧠 Quiz: Identify the Most Important Feature!")
+
+    if not feature_importances.empty:
+        # Get the most important feature
+        most_important_feature = feature_importances.iloc[0]['Feature']
+
+        # Shuffle feature names for quiz options
+        quiz_options = feature_importances['Feature'].tolist()
+
+        # Ask the question
+        selected_answer = st.radio(
+            "Which feature has the **highest** importance in the model?",
+            quiz_options, index=None
+        )
+
+        # Check if the answer is correct
+        if st.button("Submit Answer"):
+            if selected_answer == most_important_feature:
+                st.success(f"Correct! **{most_important_feature}** is the most important feature in the model.")
+            elif selected_answer == None:
+                st.write("")    
+            else:
+                st.error(f"Incorrect. The most important feature is **{most_important_feature}**.")    
+
 with tab3:
     @st.cache_data
     def load_imdb_data():
@@ -596,7 +621,7 @@ with tab3:
         st.warning("Please select at least one feature to train the model.")
 
     # Quiz: Least Important Feature (Smallest Absolute Coefficient)
-    st.header("🧠 Quiz: Identify the Least Important Feature!")
+    st.header("Quiz: Identify the Least Important Feature!")
 
     if not coefficients.empty:
         # Get the feature with the smallest absolute coefficient
@@ -608,12 +633,14 @@ with tab3:
         # Ask the question
         selected_answer = st.radio(
             "Which feature has the **least** impact (smallest absolute coefficient) in the model?",
-            quiz_options
+            quiz_options, index=None
         )
 
         # Check if the answer is correct
         if st.button("Submit Answer 2"):
             if selected_answer == least_important_feature:
-                st.success(f"✅ Correct! The least important feature is **{least_important_feature}**.")
+                st.success(f" Correct! The least important feature is **{least_important_feature}**.")
+            elif selected_answer == None:
+                st.write("")                   
             else:
-                st.error(f"❌ Incorrect. The least important feature is **{least_important_feature}**.")    
+                st.error(f"Incorrect. The least important feature is **{least_important_feature}**.")    
