@@ -123,7 +123,21 @@ with tab1:
     ax.legend()
     st.pyplot(fig)
 
+
     st.title("K-Means Clustering Animation")
+
+    st.write("Click the big button below to see how K-Means clustering determines the final clusters......")
+    st.write("Also press the expander to read about the clustering process in more detail")
+
+    with st.expander("K-Means clustering process"):
+        st.write("**The Process**")
+        st.write("1. Randomly select two points of data as starting points for two cluster centres.")
+        st.write("2. Calculate which centre each point is closest to.")
+        st.write("3. Sort into the two clusters by which centre is closest.  :man-boy-boy:             :woman-girl-girl:")
+        st.write("4. Calculate the mean of each cluster, which is then set as the new cluster centre. :abacus:")
+        st.write("5. Repeat this process until the cluster centres stabilise.")
+        st.write("FINSIHED :trophy:")
+
 
     button_placeholder = st.empty()
 
@@ -133,7 +147,7 @@ with tab1:
     X = transformed_bc[:, :2]
     n_clusters=2
 
-    # Initialize cluster centers
+    # Initialize cluster centers, using random seed
     np.random.seed(0)
     i = np.random.randint(0, X.shape[0], size=n_clusters)
     centres = X[i]
@@ -143,8 +157,10 @@ with tab1:
     max_iterations = 10
     stop = False
 
-    col1, col2 = st.columns([0.5, 0.2])
-    placeholder = col1.empty()
+    # col1, col2 = st.columns([0.99, 0.01])
+    placeholder = st.empty()
+    
+    # Plot initial data, with two (random) points chosen
     ax.scatter(X[:, 0], X[:, 1], marker='.')
     ax.scatter(centres[:, 0], centres[:, 1], marker='*', s=100, color='black', label='Current Centres', zorder=3 )
     ax.legend()
@@ -152,57 +168,48 @@ with tab1:
 
     # loop through number of iterations
     if button_placeholder.button("Run animation", type="primary"):
-        with col2:
-            st.write("**The Process**")
-            st.write("Randomly select two points of data as starting points for two cluster centres")
-            st.write("Calculate which centre each point is closest to")
-            st.write("Sort into the two clusters by which centre is closest")
-            st.write("Calculate the mean of each cluster, which is then set as the new cluster centre")
-            st.write("Repeat this process until the cluster centres stabilise.")
         for iteration in range(max_iterations):
             if not stop:
-                with col1:
-                    # plot data
-                    ax.clear()
+                ax.clear()
+                
+                # update centres
+                new_centres = centres
+                old_centres.append(centres)
+                
+                # plot previous centres
+                for i, centres in enumerate(old_centres):
+                    # fade previous centres more if they are older
+                    alpha = 0.5 * (1+ ((i+1)/len(old_centres) ))
                     
-                    # pick random point as centre (plot)
-                    new_centres = centres
-                    old_centres.append(centres)
-                    for i, centres in enumerate(old_centres):
-                        alpha = 0.5 * (1+ ((i+1)/len(old_centres) ))
-                        
-                        ax.scatter(centres[:, 0], centres[:, 1], marker='x', color='black', alpha=alpha, s=15, zorder=2)
-                    
-                    # work out which centre each points are closest to (plot)
-                    
-                    # Assign points to the nearest centre
-                    vectors = X[:, np.newaxis] - centres
-                    
-                    magnitudes = np.linalg.norm(vectors, axis=-1)
-                    
-                    labels = magnitudes.argmin(axis=1)
-                    
-                    # ax.scatter(X[:, 0], X[:, 1], marker='.', c=labels)
-                    for cluster in range(2):
-                        subset = X[labels == cluster]
-                        ax.plot(subset[:, 0], subset[:, 1], alpha=1, marker='.', linestyle='', zorder=1)
-                    
-                    # calculate average of each group (plot)
-                    new_centres = np.array([X[labels == i].mean(axis=0) for i in range(n_clusters)])
-                    
-                    # stop if centres are close
-                    stop = np.allclose(centres, new_centres, atol=0.1)
-                    
-                    # set new averages as new centre points (plot)
-                    centres = new_centres
-                    
-                    ax.scatter(centres[:, 0], centres[:, 1], marker='*', s=100, color='black', label='Current Centres', zorder=3 )
-                    ax.legend()
-                    
-                    placeholder.pyplot(fig)
-                    time.sleep(2)  
-                # with col2:
-                #     st.write(f"iteration {iteration} done")
+                    ax.scatter(centres[:, 0], centres[:, 1], marker='x', color='black', alpha=alpha, s=15, zorder=2)
+                
+                # Calculate distance from each point to each centre
+                vectors = X[:, np.newaxis] - centres
+                
+                # calculate magnitudes of vectors
+                magnitudes = np.linalg.norm(vectors, axis=-1)
+                
+                labels = magnitudes.argmin(axis=1)
+                
+                # ax.scatter(X[:, 0], X[:, 1], marker='.', c=labels)
+                for cluster in range(2):
+                    subset = X[labels == cluster]
+                    ax.plot(subset[:, 0], subset[:, 1], alpha=1, marker='.', linestyle='', zorder=1)
+                
+                # calculate average of each group (plot)
+                new_centres = np.array([X[labels == i].mean(axis=0) for i in range(n_clusters)])
+                
+                # stop if centres are close
+                stop = np.allclose(centres, new_centres, atol=0.1)
+                
+                # set new averages as new centre points (plot)
+                centres = new_centres
+                
+                ax.scatter(centres[:, 0], centres[:, 1], marker='*', s=100, color='black', label='Current Centres', zorder=3 )
+                ax.legend()
+                
+                placeholder.pyplot(fig)
+                time.sleep(2)  
             else:
                 st.write(f'Clustering Complete! Final Iteration: {iteration}')
                 break
