@@ -10,7 +10,7 @@ st.markdown("# The Basics of Machine Learning")
 st.markdown("**Welcome to a beginners guide to Machine Learning techniques and their applications!**")
 
 # Brief intro paragraph.
-st.markdown("Machine learning has become an integral part of solving real-world problems, making significant strides across diverse domains like healthcare, finance, transportation, and entertainment. This web app is designed to serve as an accessible guide for beginners, helping you understand and apply key machine learning techniques to real-world datasets.")
+st.markdown("Machine learning has become an integral part of solving ***real-world*** problems, making significant strides across diverse domains like healthcare:hospital:, finance:money_with_wings:, transportation:car:, and entertainment:movie_camera:. This web app is designed to serve as an accessible guide for beginners, helping you understand and apply key machine learning techniques to ***real-world*** datasets.")
 
 
 # Following intro paragraph (draws attention to real-world applications).
@@ -22,42 +22,27 @@ st.markdown("Whether you’re curious about how Netflix recommends your favourit
 st.subheader("What will you learn?")
 st.markdown("This web app is structured into several sections, each focusing on different essential machine learning concepts.")
 
-st.markdown("***Section One***: *Supervised Learning:*")
-st.markdown("- Linear regression: Predict continuous outcomes like housing prices or stock market trends.")
-st.markdown("-	Classification: Categorise data, such as spam email detection or predicting customer churn.")
+with st.expander("***:rainbow[Section One:]*** *Supervised Learning*"):
+    st.markdown('''
+    - Linear Regression
+    
+    - Logistic Regression
+    
+    - Support Vector Machines (SVMs)
+    
+    - Random Forests''')
 
 
-st.markdown("***Section Two***: *Unsupervised Learning:*")
-st.markdown("-	Principle component analysis (PCA): Reduce the dimensionality of datasets, helping visualise and analyse complex data efficiently.")
-st.markdown("-	Clustering: Group similar data points, such as a customer segmentation or image compression.")
+with st.expander("***:rainbow[Section Two:]*** *Unsupervised Learning*"):
+    st.markdown('''
+    - Principle component analysis (PCA)
+    
+    - Clustering''')
 
 
-st.markdown("***Section Three***: *Neural Networks:*")
-st.markdown("-	Understand the building blocks of artificial intelligence and how they power applications like fraud detection, speech recognition, and personalised recommendations.")
-
-
-st.markdown("***Section Four***: *Virtual Reality (VR) Convolutional Neural Networks:*")
-st.markdown("-	Visualise CNNs and their functions in 3D space.")
-
-
-st.markdown("***Section Five***: *Python Implementation:*")
-st.markdown("-	This section goes deeper into the principles and theory of each method.")
-st.markdown("- Learn Learn how to implement each method in Python with statis code examples, catering to more advanced learners who want hands-on experience with the tools and techniques.")
-
-
-st.markdown("**Example:** Look at how changing the slope or intercept affects the line of best fit on a graph!")
-x = np.linspace(0, 10, 100)
-slope = st.slider("Choose slope (m):", 0.1, 5.0, 1.0)
-intercept = st.slider("Choose intercept (b):", -5.0, 5.0, 0.0)
-y = slope * x + intercept
-
-fig, ax = plt.subplots()
-ax.plot(x, y, label=f"y = {slope:.2f}x + {intercept:.2f}")
-ax.legend()
-ax.set(xlabel="$x-axis$", ylabel="$y-axis$", title="Linear Regression")
-ax.set_xlim(-2, 12)
-ax.set_ylim(-10, 60)
-st.pyplot(fig)
+with st.expander("***:rainbow[Section Three:]*** *Neural Networks*"):
+    st.markdown('''
+    - Build your own Neural Network classification tool!''')
 
 
 # Demystifying machine learning terms.
@@ -101,25 +86,31 @@ st.markdown("AI and ML are at the forefront of technological advancement, drivin
 st.subheader("Quiz time!")
 question_one = st.radio(
     "What is meant by the term AI?",
-    ("A type of data analysis.", "A type of electrical outlet.", "A system capable of intelligent behaviour."))
+    ("A type of data analysis.", "A type of electrical outlet.", "A system capable of intelligent behaviour."), index=None)
 if question_one == "A system capable of intelligent behaviour.":
     st.success("Correct!")
+elif question_one == None:
+    st.write("")
 else:
     st.error("Try again!")
 
 question_two = st.radio(
     "How can ML algorithms benefit Healthcare?",
-    ("By giving patients an apple a day to keep the doctor away.", "By analysing medical images.", "By teleporting patients running late to their appointments."))
+    ("By giving patients an apple a day to keep the doctor away.", "By analysing medical images.", "By teleporting patients running late to their appointments."), index=None)
 if question_two == "By analysing medical images.":
     st.success("Correct!")
+elif question_two == None:
+    st.write("")
 else:
     st.error("Try again!")
 
 question_three = st.radio(
     "Which of these ML techniques does linear regression fall under?",
-    ("Unsupervised Learning.", "Superduper Learning.", "Supervised Learning."))
+    ("Unsupervised Learning.", "Superduper Learning.", "Supervised Learning."), index=None)
 if question_three == "Supervised Learning.":
     st.success("Correct!")
+elif question_three == None:
+    st.write("")
 else:
     st.error("Try again!")
 

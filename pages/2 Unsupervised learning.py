@@ -29,31 +29,51 @@ tab1, tab2 = st.tabs(["Unsupervised explanation", "Clustering Examples"])
 
 # Interactive graphs of the pre/post data for each marker. 
 with tab1:
-    st.markdown("This page explores unsupervised learning techniques. Unsupervised learning is a type of machine learning where the algorithm learns patterns from unlabelled data, uncovering hidden structures without predefined categories. This approach is particularly useful for exploring large datasets and discovering relationships or groupings within the data. On this page we firstly focus on Principle Component Analysis (PCA) and K-means clustering. By using example datasets, we can demonstrate how PCA can reduce dimensionality for easier visualisation, and how K-means helps identify clusters in data. We also explore how clustering can be applied to data with more complex shapes, highlighting the versatility of these techniques.")
+    st.markdown("Unsupervised learning is a type of machine learning where the algorithm learns patterns from unlabelled data, uncovering hidden structures without predefined categories. This approach is particularly useful for exploring large datasets and discovering relationships or groupings within the data.")
         
 
 
 
     st.subheader("PCA and K-means Clustering")
+    st.write("PCA simplifies complex datasets by reducing the number of features, while keeping as much of the important information so that the significancy of the data is not affected.")
+    with st.expander("PCA Process"):
+        st.markdown('''
+        Step 1: The data is standardised, so that all features are on the same scale. 
+        
+        Step 2: Key features are identified, through the combination of original features.
+        
+        Step 3: The dimensions are reduced, only the top few features are kept which retains the most significant information.
+        
+        ***PCA is usually followed by a clustering algorithm.***
+        ''')
+        
+    st.write("K-means clustering is a common way to group data into different categories based on how similar the data points are.")
+    with st. expander("K-Means Process"):
+        st.markdown('''
+        Step 1: The number of groups are picked, with random group centres. 
+        
+        Step 2: The data points are assigned to the nearest group.
+        
+        Step 3: Group centres are updated based on new groups.
+        
+        ***This is repeated until the best grouping is found.***
+        ''')
 
-    st.markdown("PCA simplifies complex datasets by reducing the number of features, while keeping as much of the important information so that the significancy of the data is not affected. First, the data is standardised, so that all features are on the same scale. Then key features are identified, through the combination of original features. Finally, the dimensions are reduced, only the top few features are kept which retains the most significant information.")
-
-    st.markdown("PCA is usually followed by a clustering algorithm. K-means clustering is a common way to group data into different categories based on how similar the data points are. It starts with picking the number of groups, with random group centres. The data points are then assigned to the nearest group and the group centres are updates. This is repeated until the best grouping is found.")
-
-    st.markdown("**Example:** Explore PCA and K-means clustering on the breast cancer dataset below.")
+    st.markdown("**:rainbow[Example:]** Explore PCA and K-means clustering on the dataset below!")
 
     st.subheader("Raw Breast Cancer Dataset")
+
+    st.write("The following dataset is a record of multiple medical measurements of breast cancer tumours. ")
+    st.write("Hopefully, using our clever unsupervised machine learning techniques, we can use this dataset to find a reliable way of diagnosing breast cancer!")
+    st.write("This is an example that shows the usefulness of machine learning, and its possibility to even save lives! :female-doctor:")
     
     bc_dat = pd.read_csv('datasets/breast-cancer.csv')
     scaled_bc = StandardScaler().fit_transform(bc_dat[bc_dat.columns[1:]])
 
-
-    # bc_dat = pd.read_csv('breast-cancer.csv')
-    # scaled_bc = StandardScaler().fit_transform(bc_dat[bc_dat.columns[1:]])
     st.dataframe(bc_dat.head())
-    st.markdown("The columns, or features, of the breast cancer dataset represent the variables measured for each data point. Whereas, the data points represent individual samples, with each row in the dataset being a different sample.")
+    st.markdown("The columns, or ***features***, of the breast cancer dataset represent the variables measured for each data point. Whereas the data points themselves represent individual samples, with each row in the dataset being a different sample.")
 
-    st.markdown("Have a look at how the different features of the dataset interact with eachother below!")
+    st.markdown("Have a :eyes: at how the different features of the dataset interact!")
 
 
     # Show original data (numerical columns)
@@ -75,6 +95,8 @@ with tab1:
     pc['Diagnosis'] = bc_dat['Diagnosis']
     st.dataframe(pc[['Diagnosis', 'PC1', 'PC2', 'PC3', 'PC4', 'PC5', 'PC6', 'PC7', 'PC8', 'PC9', 'PC10']].head())
 
+    st.markdown("PCA has transformed the original dataset into a new set of axes, known as principle components. The 1st principle component (PC1) captures the greatest variance in the data, the 2nd principle component (PC2) captures the second greatest variance and so on, capturing less and less variance for each principle component.")
+
     # Check variance ratio
     pc_var = pca.fit(scaled_bc)
     fig, ax = plt.subplots()
@@ -82,7 +104,7 @@ with tab1:
     ax.set(xlabel="Number of Components", ylabel="Cumulative Explained Variance")
     st.pyplot(fig)
 
-    st.markdown("PCA transforms the original dataset into a new set of axes, known as principle components. The 1st principle component (PC1) captures the greatest variance in the data, the 2nd principle component (PC2) captures the second greatest variance and so on, capturing less and less variance for each principle component. For this example we'll focus on the first two principle components, as that is where the majority of the variance is focused (over 80%!).")
+    st.markdown("For this example we'll focus on the first two principle components, as the majority of the variance of the dataset is covered (over 80%!:astonished:).")
 
     # Show PCA result
     st.markdown("**PCA Scatter Plot (PC1 vs PC2)**")
@@ -101,7 +123,7 @@ with tab1:
 
     # K-Means clustering
     st.subheader("K-Means Clustering")
-    st.markdown("Here you can see that K-means clustering has been applied with k=2 on the first two principle components (PC1 and PC2) of the breast cancer dataset. The model assigns each data point to one of two clusters, which we can visualise in a scatter plot. As this dataset includes labelled diagnoses (Malignant and Benign), we can compare the K-means clusters to the actual labels to assess how well the algorithm separates the two groups.")
+    st.markdown("As we know that there are two key groupings in the data, Malignant and Benign, K-means clustering will be applied with two clusters (k=2). This ensures that the model assigns each data point to one of two clusters.")
 
     num_clusters = 2
     kmeans = KMeans(n_clusters=num_clusters, random_state=42)
@@ -127,16 +149,17 @@ with tab1:
     st.title("K-Means Clustering Animation")
 
     st.write("Click the big button below to see how K-Means clustering determines the final clusters......")
-    st.write("Also press the expander to read about the clustering process in more detail")
+    st.write("Also press the expander to read about the K-Means clustering process in more detail.")
 
-    with st.expander("K-Means clustering process"):
+    with st.expander("Detailed K-Means Clustering Process"):
         st.write("**The Process**")
-        st.write("1. Randomly select two points of data as starting points for two cluster centres.")
-        st.write("2. Calculate which centre each point is closest to.")
-        st.write("3. Sort into the two clusters by which centre is closest.  :man-boy-boy:             :woman-girl-girl:")
-        st.write("4. Calculate the mean of each cluster, which is then set as the new cluster centre. :abacus:")
-        st.write("5. Repeat this process until the cluster centres stabilise.")
-        st.write("FINSIHED :trophy:")
+        st.write("1. Select the number of clusters (in this case **two**).")
+        st.write("2. Randomly select **two** points of data as starting points for the **two** cluster centres.")
+        st.write("3. Calculate which centre each point is closest to.")
+        st.write("4. Sort into the two clusters by which centre is closest.  :man-boy-boy:             :woman-girl-girl:")
+        st.write("5. Calculate the mean of each cluster, with the mean then set as the new cluster centre. :abacus:")
+        st.write("6. Repeat this process until the cluster centres stabilise, calculated with a given **tolerance** (in the animation, set as 0.1).")
+        st.write("FINISHED :trophy:")
 
 
     button_placeholder = st.empty()
@@ -209,25 +232,27 @@ with tab1:
                 ax.legend()
                 
                 placeholder.pyplot(fig)
-                time.sleep(2)  
+                time.sleep(1.5)  
             else:
                 st.write(f'Clustering Complete! Final Iteration: {iteration}')
                 break
 
 
+    st.subheader("Final Analysis")
+
+    st.write("Here, we run through how to anlayse our ML methods, and see if our method is an accurate way of diagnosing breast cancer.")
+    st.write("We sure hope so! :crossed_fingers:")
+
 
     # Check cluster accuracy
-    st.markdown("To measure the accuracy of the clustering, we can compare the assigned clusters with the actual diagnoses labels, Malignant = 0 and Benign = 1. While K-Means is not a supervised method, a strong alignment with true labels suggests that the data naturally separates into two distinct groups. However, if misclassification is high it may indicate an overlap in features, such as Malignant and Benign cases have similar characteristics in PC1 and PC2, suggesting a need for more features.")
+    st.write("As this dataset includes labelled diagnoses, Malignant and Benign, we can compare the K-means clusters to the actual labels (Malignant = 0 and Benign = 1) to assess how well the algorithm separates the two groups.")
+    with st.expander("Why is this useful? :thinking_face:"):
+        st.markdown('''
+        This is beneficial as while K-Means is not a supervised method, a strong alignment with true labels suggests that the data naturally separates into two distinct groups.  
+        However, if misclassification is high it may indicate an overlap in features, such as Malignant and Benign cases having similar characteristics in PC1 and PC2, potentially suggesting the need for more features.''')
 
+    # Confusion matrix
     st.markdown("**Confusion Matrix of Clustering Accuracy**")
-    st.markdown("""
-    - Top-left (0.79): 79% of Malignant cases were correctly clustered. 
-    - Top-right (0.21): 21% of Malignant cases were misclassified as Benign.
-    - Bottom-left (0.017): Only 1.7% of Benign cases were misclassified as Malignant.
-    - Bottom-right (0.98): 98% of Benign cases were correctly clustered. 
-
-    The clustering is aligned with the true labels. Most Benign cases are correctly classified (98%), with minimal misclassification. Malignant cases are also well-classified (79%), but there is still some overlap.""""")
-
     bc_true = pc["Diagnosis"].map({"Malignant": 0, "Benign": 1})
     bc_cluster = pc["Cluster"]
 
@@ -238,6 +263,23 @@ with tab1:
     bc_plot.plot(ax=ax)
     st.pyplot(fig)
 
+    st.markdown("""
+    :green[Top-left]: 79% of Malignant cases were correctly clustered. 
+    
+    :blue[Top-right]: 21% of Malignant cases were misclassified as Benign.
+    
+    :violet[Bottom-left]: 1.7% of Benign cases were misclassified as Malignant.
+    
+    :orange[Bottom-right]: 98% of Benign cases were correctly clustered. 
+
+    The K-means model was well aligned with the true labels. Most Benign cases were correctly classified (98%:astonished:), with minimal misclassification. Malignant cases were also well-classified (79%), but there is still some overlap.""""")
+
+    st.markdown("""
+    **:rainbow[Questions to think about!]**
+    - Given the results of the confusion matrix, what does this mean for the model?
+    - Could the model be used to diagnose real breast cancer cases?
+    - Could we include more principle components to hinder the overlap?
+    """)
 
 
 
