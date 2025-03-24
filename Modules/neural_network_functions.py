@@ -21,12 +21,13 @@ from PIL import Image
 from sklearn.datasets import make_moons, make_circles, make_blobs 
 from sklearn.model_selection import train_test_split
 import tensorflow as tf 
-from tensorflow.keras.models import Sequential 
-from tensorflow.keras.layers import Dense, Input
-from tensorflow.keras.regularizers import l1, l2
-from tensorflow.keras.optimizers import SGD, Adam
-from tensorflow.keras.utils import to_categorical
-from tensorflow.keras.callbacks import Callback 
+from tensorflow import keras
+from keras.models import Sequential 
+from keras.layers import Dense, Input
+from keras.regularizers import l1, l2
+from keras.optimizers import SGD, Adam
+from keras.utils import to_categorical
+from keras.callbacks import Callback 
 import io
 from time import time
 import plotly.graph_objs as go
