@@ -588,6 +588,8 @@ with tab3:
     st.subheader("Select Features for Prediction")
     selected_features_imdb = st.multiselect("Choose features", X_imdb.columns.tolist(), default=X_imdb.columns.tolist())
 
+    coefficients = None
+
     # Train Model if Features Are Selected
     if selected_features_imdb:
         X_train, X_test, y_train, y_test = train_test_split(X_imdb[selected_features_imdb], y_imdb, test_size=0.2, random_state=42)
@@ -627,7 +629,7 @@ with tab3:
     # Quiz: Least Important Feature (Smallest Absolute Coefficient)
     st.header("Quiz: Identify the Least Important Feature!")
 
-    if not coefficients.empty:
+    if not coefficients is not None and isinstance(coefficients, pd.DataFrame) and not coefficients.empty:
         # Get the feature with the smallest absolute coefficient
         least_important_feature = coefficients.iloc[-1]['Feature']
 
