@@ -529,7 +529,7 @@ with tab2:
         # Quiz: Most Important Feature
     st.header("Quiz: Identify the Most Important Feature!")
 
-    if not feature_importances.empty:
+    if feature_importances is not None and isinstance(feature_importances, pd.DataFrame) and not feature_importances.empty:
         # Get the most important feature
         most_important_feature = feature_importances.iloc[0]['Feature']
 
