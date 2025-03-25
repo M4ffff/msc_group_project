@@ -37,38 +37,26 @@ widgets_multi = """
     Throughout the rest of the notebook, there are many examples.\
     These examples are interactive, to make the learning more :blue[fun], :violet[effective] and :rainbow[ENGAGING]!
     
-    Below we have a few very simple demonstrations of some of the widgets,  
+    Below we have a few very simple demonstrations of some of the widgets,\
     to ensure you know how to operate them throughout the rest of this project. :male-scientist:
 """
 
+st.subheader("Widget demonstration")
 st.write(widgets_multi)
 
 x = np.arange(1,100,10)
 y=2*x
-# data1 = [x,y]
-data1 = pd.DataFrame({
-  'first column': x,
-  'second column': y
-})
-
-# print(data1)
-
-# st.line_chart(data1, x="first column", y="second column")
 
 st.subheader("Slider")
 # widget
-slider = st.slider('x')  
-st.write(slider, 'squared is', slider * slider)
+slider_val = st.slider('x')  
+st.write(slider_val, 'squared is', slider_val * slider_val)
 
 
 st.subheader("Checkbox")
 # checkbox
 if st.checkbox('Show dataframe'):
-    chart_data = pd.DataFrame(
-       np.random.randn(20, 3),
-       columns=['a', 'b', 'c'])
-
-    chart_data
+    st.image("images/dataframe.png")
     
 
 st.subheader("Quiz")
@@ -78,8 +66,16 @@ question_one = st.radio(
     
 if question_one == 4:
     st.success("Yeah! Great number :100:")
+elif question_one == 1:
+    st.error("SO WRONG :x:")
+elif question_one == 2:
+    st.error("You're halfway there!")
+elif question_one == 3 or question_one == 5:
+    st.error("So close yet so far :disappointed:")
+elif question_one == 6:
+    st.error("Ew, no.")
 else:
-    st.write("Ew, no.")
+    st.write("")
     
     
     
@@ -99,7 +95,7 @@ option = st.selectbox(
 
 st.subheader("Expander")
 with st.expander("Expand me!"):
-    st.write("BOO")
+    st.image("images/ghost.png")
 
 
 # add sidebar
