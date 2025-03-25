@@ -520,7 +520,7 @@ with tab2:
         feature_importances = pd.DataFrame({'Feature': selected_features, 'Importance': model.feature_importances_}).sort_values(by="Importance", ascending=False)
 
         fig, ax = plt.subplots(figsize=(8, 4))
-        sns.barplot(x="Importance", y="Feature", data=feature_importances, ax=ax, palette=sns.color_palette("virdis", len(feature_importances)))
+        sns.barplot(x="Importance", y="Feature", data=feature_importances, ax=ax, palette=sns.color_palette("viridis", len(feature_importances)))
         ax.set_title("Feature Importance")
         st.pyplot(fig)
     else:
