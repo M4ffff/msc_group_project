@@ -477,7 +477,7 @@ with tab2:
             st.stop()
 
         # Sliders for Model Parameters (Main Layout)
-        st.header("🔧 Adjust Model Parameters")
+        st.header("Adjust Model Parameters")
 
         col1, col2, col3 = st.columns(3)
 
@@ -525,7 +525,7 @@ with tab2:
         st.warning("Please select at least one feature to train the model.")
 
         # Quiz: Most Important Feature
-    st.header("🧠 Quiz: Identify the Most Important Feature!")
+    st.header("Quiz: Identify the Most Important Feature!")
 
     if not feature_importances.empty:
         # Get the most important feature
