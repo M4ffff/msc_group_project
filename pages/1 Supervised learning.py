@@ -470,6 +470,8 @@ with tab2:
     st.header("Select Features for Prediction")
     selected_features = st.multiselect("Choose features to include", X.columns.tolist(), default=X.columns.tolist())
 
+    feature_importances = None
+
     # Train Model on Selected Features
     if selected_features:
         if X[selected_features].shape[0] == 0:
