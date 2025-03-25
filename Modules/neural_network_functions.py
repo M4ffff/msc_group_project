@@ -20,8 +20,8 @@ from PIL import Image
 # Imports for 'Model Configuration and Training' tab 
 from sklearn.datasets import make_moons, make_circles, make_blobs 
 from sklearn.model_selection import train_test_split
-import tensorflow as tf 
-from tensorflow import keras
+# import tensorflow as tf 
+# from tensorflow import keras
 from keras.models import Sequential 
 from keras.layers import Dense, Input
 from keras.regularizers import l1, l2
