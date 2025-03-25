@@ -451,13 +451,13 @@ with tab2:
     st.header('Predicting Accident Severity - Random Forest Classifier')
 
     # Visualize Class Distribution of Severity Code
-    st.subheader(" Distribution of Accident Severity")
-    fig, ax = plt.subplots()
-    sns.countplot(x=df['SEVERITYCODE'], palette='viridis', ax=ax)
-    ax.set_xlabel("Severity Code")
-    ax.set_ylabel("Count")
-    ax.set_yscale('log')
-    st.pyplot(fig)
+    with st.expander("Distribution of Accident Severity - Seattle Collisions Data"):
+        fig, ax = plt.subplots()
+        sns.countplot(x=df['SEVERITYCODE'], palette='viridis', ax=ax)
+        ax.set_xlabel("Severity Code")
+        ax.set_ylabel("Count")
+        ax.set_yscale('log')
+        st.pyplot(fig)
 
     st.write('The plot above shows the severity distribution of car accidents in Seattle. 0 = Unknown, 1 = Prop damage, 2 = Minor injury, 3 = Serious injury, 4 = Fatality. What factors could we use to predict the outcome for a given accident?')
 
