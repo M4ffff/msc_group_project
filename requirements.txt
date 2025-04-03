@@ -8,3 +8,4 @@ scikit-learn
 tensorflow==2.17.0
 seaborn
 tabulate
+tensorboard==2.17.0
