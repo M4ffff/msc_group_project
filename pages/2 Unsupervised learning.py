@@ -311,7 +311,7 @@ with tab2:
     '''
     st.markdown(multi)
 
-    # st.image("images/funky_shapes.png", caption="Data with funky shapes", width=600)
+    # st.image("images/2_unsupervised_images/funky_shapes.png", caption="Data with funky shapes", width=600)
     with st.expander("**:orange[K-Means clustering]:**"):
         st.markdown(
             """

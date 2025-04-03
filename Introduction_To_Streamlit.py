@@ -56,7 +56,8 @@ st.write(slider_val, 'squared is', slider_val * slider_val)
 st.subheader("Checkbox")
 # checkbox
 if st.checkbox('Show dataframe'):
-    st.image("images/dataframe.png")
+    st.image("images/_intro_page/dataframe.png")
+    st.write("Sorry, I meant data *in* a frame here!")
     
 
 st.subheader("Quiz")
@@ -95,7 +96,7 @@ option = st.selectbox(
 
 st.subheader("Expander")
 with st.expander("Expand me!"):
-    st.image("images/ghost.png")
+    st.image("images/_intro_page/ghost.png")
 
 
 # add sidebar

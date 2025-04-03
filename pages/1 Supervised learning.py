@@ -375,7 +375,7 @@ with tab1:
     st.write("&nbsp;&nbsp;&nbsp;&nbsp;Medical Imaging Analysis: Used for disease diagnosis (e.g., cancer detection, X-ray image analysis).")
     col1, col2, col3 = st.columns([1, 2, 3])
     
-    st.image("images/Facial Recognition.jpg", caption="Facial Recognition", width=300)
+    st.image("images/1_supervised_images/Facial Recognition.jpg", caption="Facial Recognition", width=300)
 
     st.subheader("&nbsp;&nbsp;2. Natural Language Processing (NLP)")
     st.write("&nbsp;&nbsp;&nbsp;&nbsp;Sentiment Analysis: Analyzing the sentiment (positive, negative, or neutral) in text (e.g., social media posts, product reviews).")
@@ -384,14 +384,14 @@ with tab1:
     st.write("&nbsp;&nbsp;&nbsp;&nbsp;Text Classification: Categorizing text into different classes (e.g., news classification, spam detection).")
     col1, col2, col3 = st.columns([1, 2, 3])
     
-    st.image("images/ORC.png", caption="ORC", width=300)
+    st.image("images/1_supervised_images/ORC.png", caption="ORC", width=300)
 
     st.subheader("&nbsp;&nbsp;3.Gaming and Entertainment")
     st.write("&nbsp;&nbsp;&nbsp;&nbsp;Game Recommendation: Recommending games based on players' gaming history and preferences.")
     st.write("&nbsp;&nbsp;&nbsp;&nbsp;In-Game Character Behavior Prediction: Predicting character behavior based on player data to optimize the gaming experience.")
     col1, col2, col3 = st.columns([1, 2, 3])
     
-    st.image("images/OIP.jpg", caption="OIP", width=300)
+    st.image("images/1_supervised_images/OIP.jpg", caption="OIP", width=300)
 
     st.write("&nbsp;&nbsp;&nbsp;&nbsp;Of course, there are many other application scenarios. Supervised learning is widely applied and deeply integrated into various aspects of daily life, making it an accessible and practical tool rather than something distant or unattainable.")
 
@@ -464,7 +464,7 @@ with tab2:
 
     st.write("Dataset Preview:", df.head())  # Show first 5 rows
 
-    st.image('images/cars_onroad.jpg')
+    st.image('images/1_supervised_images/cars_onroad.jpg')
 
     # Streamlit Sidebar for Feature Selection
     st.header("Select Features for Prediction")
@@ -550,7 +550,7 @@ with tab3:
     # Streamlit UI
     st.header("Predicting IMDb Film Ratings with Linear Regression")
 
-    st.image('images/imdb.png')
+    st.image('images/1_supervised_images/imdb.png')
 
     st.write('As we are predicting a continuous variable (rating /10), here we use a regression approach instead of classification.')
     st.write('Dataset Preview:', df_imdb.head())

@@ -165,7 +165,7 @@ def display_image(img_filename):
     Loads the image corresponding to the current quiz question (overfitting/underfitting
     quiz in the regularisation section)
     """
-    path = os.path.join("images/reg_quiz_images", img_filename)
+    path = os.path.join("images/3_neural_network_images/reg_quiz_images", img_filename)
     image = Image.open(path)        # locate and open the image 
     st.image(image)         # insert the image 
 
