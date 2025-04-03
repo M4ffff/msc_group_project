@@ -551,19 +551,15 @@ with sections[2]:
             
             # Store the nn model in session state to access it for training
             st.session_state['model'] = model
-            
+        
             # Display model summary 
             st.markdown("**Model Summary:**")
             io_file = io.StringIO()
             model.summary(print_fn=lambda x: io_file.write(x + '\n'))
             summary_text = io_file.getvalue()
-            formatted_summary = f"""
-            <div style="max-width: 300px; overflow-x: auto;">
-                <pre>{summary_text}</pre>
-            </div>
-            """
+            formatted_summary = f"<pre>{summary_text}</pre>"
             st.markdown(formatted_summary, unsafe_allow_html=True)
-            #st.text(io_file.getvalue())
+            
 
             # Split into training and testing data and call the training function
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
