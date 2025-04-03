@@ -14,7 +14,7 @@ Acknowledgements.
 
 2. Create environment with:
 ```
-conda env create -f environment.yml
+conda env create -f conda_environment.yml
 ```
 
 3. Activate environment with:
