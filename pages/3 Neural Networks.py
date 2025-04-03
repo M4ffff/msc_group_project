@@ -560,10 +560,10 @@ with sections[2]:
             summary_text = io_file.getvalue()
 
             # If you want to add some styling or spacing, use Markdown formatting
-            formatted_summary = f"<pre>{summary_text}</pre>"
+            #formatted_summary = f"<pre>{summary_text}</pre>"
 
             # Display formatted summary using st.markdown
-            st.markdown(formatted_summary, unsafe_allow_html=True)
+            st.markdown(summary_text, unsafe_allow_html=True)
             #st.text(io_file.getvalue())
 
             # Split into training and testing data and call the training function
