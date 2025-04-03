@@ -564,6 +564,7 @@ with sections[2]:
             """
             st.markdown(formatted_summary, unsafe_allow_html=True)
 
+
             # Split into training and testing data and call the training function
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
             model_trained, history = train_nn_model(model, X_train, y_train, X_test, y_test, n_epochs)
