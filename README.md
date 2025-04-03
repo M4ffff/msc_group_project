@@ -10,7 +10,10 @@ Acknowledgements.
 
 ### To Run Locally (temporary)
 
-1. Clone repository 
+1. Clone repository
+```
+git clone git@github.com:M4ffff/msc_group_project.git
+``` 
 
 2. Create environment with:
 ```
