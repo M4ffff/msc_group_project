@@ -10,4 +10,3 @@ seaborn
 tabulate
 tensorboard==2.17.0
 tensorboard-data-server==0.7.0
-tensorflow-estimator==2.17.0
