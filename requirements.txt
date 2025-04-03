@@ -1,1 +1,10 @@
-
+streamlit 
+numpy 
+pandas 
+matplotlib
+plotly 
+altair
+scikit-learn
+tensorflow==2.17.0
+seaborn
+io
