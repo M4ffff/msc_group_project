@@ -1,67 +1,92 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from matplotlib.colors import ListedColormap
 from sklearn.decomposition import PCA
-from sklearn.mixture import GaussianMixture 
-from sklearn.preprocessing import scale
 import streamlit as st 
-import altair as alt
-from sklearn.datasets import make_blobs
-from random import randint
 import random
 from sklearn.cluster import KMeans
-import os
-from sklearn.preprocessing import StandardScaler
 import time
-
-
 from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from Modules.unsupervised_functions import run_kmeans_animation, plot_clusters
+
 
 st.title("Unsupervised Learning Page")
 
 
-tab1, tab2 = st.tabs(["Unsupervised explanation", "Clustering Examples"])
+tab1, tab2, tab3 = st.tabs(["Introduction", "Unsupervised explanation", "Clustering Examples"])
 
-
-
-# Interactive graphs of the pre/post data for each marker. 
 with tab1:
-    st.markdown("Unsupervised learning is a type of machine learning where the algorithm learns patterns from unlabelled data, uncovering hidden structures without predefined categories. This approach is particularly useful for exploring large datasets and discovering relationships or groupings within the data.")
+    st.subheader("Introduction to Unsupervised Learning")
+    
+    st.markdown("Unsupervised learning is a type of machine learning where the algorithm learns patterns from unlabelled data,\
+        uncovering hidden structures without predefined categories. This approach is particularly useful for exploring large datasets\
+        and discovering relationships or groupings within the data.")
         
+    st.subheader("Types of Unsupervised Learning")
+    
+    types_multi = """
+    Unsupervised learning consists of techniques such as ***dimensionality reduction*** and ***clustering***.
+    
+    But what do these mean?
+    
+    """
+    
+    st.write(types_multi)
+    
+    with st.expander("Dimensionality Reduction"):
+        st.write("""
+                 This is a method to reduce the number of features in a dataset, without losing lots of important information. 
+                 Often, datasets have many features. However, as humans we are unable to visualise data with more than 3 dimensions. 
+                 Dimensionality reduction allows us to reduce the number of dimensions to a number that can be visualised by us!
+                 
+                 
+                 The most important features of the dataset can also be determined, allowing future research to focus on these specific features and ignore irrelevant features.   
+                 
+                 There are both linear algorithms (eg principal component analysis (PCA)) and non-linear methods (eg t-SNE). 
+                 
+                 """)
+        
+    with st.expander("Clustering"):
+        st.write("""
+                 This is a method often used alongside dimensionality reduction.
+                 It is used to group unlabelled data based on data points' similarity to each other.
+                 
+                 The similarity of the datapoints can be determined in different ways.
+                 Some methods such as **K-means clustering** split the data into group purely based on distance to each other. 
+                 Other methods such as DBSCAN, base simlarity on the density of data. 
+                 
+                 The method you want to use depends on each case. 
+                 
+                 """)
+    
+    st.write("Flick through the tabs at the top to explore these methods in much more detail!")
+    
+    st.subheader("Uses of unsupervised learning")
 
-
-
-    st.subheader("PCA and K-means Clustering")
-    st.write("PCA simplifies complex datasets by reducing the number of features, while keeping as much of the important information so that the significancy of the data is not affected.")
-    with st.expander("PCA Process"):
-        st.markdown('''
-        Step 1: The data is standardised, so that all features are on the same scale. 
+    uses_multi = """
+    Unsupervised learning is particularly useful in data preparation and visualisation. 
+    Often, data scientists do not know what they're looking for in a set of data. 
+    Unsupervised learning allows them to determiine the most important features. 
+    Can also determined unknown patterns and relationships. 
+    
+    Also reduces the chance of human error. 
+    
+    - Anomaly detection
+    - Data preparation for supervised learning
+    - Recommendation systems
+    
+    """
+    st.write(uses_multi)
+    
+    
+# Interactive graphs of the pre/post data for each marker. 
+with tab2:
         
-        Step 2: Key features are identified, through the combination of original features.
-        
-        Step 3: The dimensions are reduced, only the top few features are kept which retains the most significant information.
-        
-        ***PCA is usually followed by a clustering algorithm.***
-        ''')
-        
-    st.write("K-means clustering is a common way to group data into different categories based on how similar the data points are.")
-    with st. expander("K-Means Process"):
-        st.markdown('''
-        Step 1: The number of groups are picked, with random group centres. 
-        
-        Step 2: The data points are assigned to the nearest group.
-        
-        Step 3: Group centres are updated based on new groups.
-        
-        ***This is repeated until the best grouping is found.***
-        ''')
-
-    st.markdown("**:rainbow[Example:]** Explore PCA and K-means clustering on the dataset below!")
-
-    st.subheader("Raw Breast Cancer Dataset")
+    st.subheader("A Real-Life Example!")
+    
+    st.write("Throughout the rest of this page, we will go through an example of using unsupervised techniques in a real-life example!")
 
     st.write("The following dataset is a record of multiple medical measurements of breast cancer tumours. ")
     st.write("Hopefully, using our clever unsupervised machine learning techniques, we can use this dataset to find a reliable way of diagnosing breast cancer!")
@@ -73,7 +98,9 @@ with tab1:
     st.dataframe(bc_dat.head())
     st.markdown("The columns, or ***features***, of the breast cancer dataset represent the variables measured for each data point. Whereas the data points themselves represent individual samples, with each row in the dataset being a different sample.")
 
-    st.markdown("Have a :eyes: at how the different features of the dataset interact!")
+    st.write("Because this page is demonstrating **unsupervised** learning, we are going to **drop** the diagnosis labelfrom the dataset. After we've used our unsupervised techniques, we will come back to these labels and see how our analysis did! ")
+
+    st.markdown("Have a :eyes: at how the different features of the dataset interact! Can you find any features which are strongly related to another feature?")
 
 
     # Show original data (numerical columns)
@@ -82,9 +109,66 @@ with tab1:
     y_axis = st.selectbox("Selection y-axis:", numeric_columns)
 
     fig, ax = plt.subplots()
-    sns.scatterplot(data=bc_dat, x=x_axis, y=y_axis, hue=bc_dat.columns[0], ax=ax, alpha=0.7)
+    sns.scatterplot(data=bc_dat, x=x_axis, y=y_axis, ax=ax, alpha=0.7)
     ax.set(xlabel=x_axis, ylabel=y_axis, title=f"{x_axis} vs {y_axis}")
     st.pyplot(fig)
+
+
+    st.write("Hopefully with a bit of exploration, you've found some features that seem to correlate with each other!\
+        If not, it may be worth going back to have another look...\
+        However, if you did, you can click the checkbox below to see if we found the same pair of highly correlated features!" )
+    
+    if st.checkbox('Show highly correlated features'):
+        feature1 = "*radius*"
+        feature2 = "*perimeter*"
+    else:
+        feature1 = "??????"
+        feature2 = "?????? "
+
+        
+    st.markdown(f"""
+    
+    But why does it matter if two features correlate?
+    Well, if two features are strongly related, there isn't much point in having both in the analysis.
+    For example, {feature1} and {feature2} are very strongly related.  
+
+    This means if we measure the {feature1}, we don't also need to take a measurement for the {feature2}, as the {feature2} can be determined pretty accurately from the {feature1}.  
+    This is how the number of features (aka the dimensions) can be reduced.
+    """)
+
+
+
+    st.subheader("Unsupervised techniques")
+    
+    st.write("In the analysis of this dataset, we will use Principal Component Analysis (PCA) and K-means clustering. ")
+    
+    
+    st.write("PCA will simplify the dataset by reducing the number of features, while retaining as much of the important information from the data as possible.")
+    with st.expander("PCA Process"):
+        st.markdown('''
+        Step 1: The data is standardised, preventing certain features from dominating the variance due to purely having a large magnitude. 
+        
+        Step 2: *Principal components* (a.k.a. new axes) are determined which attempt to maximise the amount of variance explained. these components are **linear combinations** of the original features.
+        
+        Step 3: The new prinicipal components are sorted by how much variance of the dataset they describe.
+        Only the top few PC axes are kept, retaining the maximum amount of information in the fewest possible number of features.
+        
+        ***PCA is usually followed by a clustering algorithm.***
+        ''')
+        
+    st.write("K-means clustering is a common way to group data into different categories based on how similar the data points are.")
+    with st.expander("K-Means Process"):
+        st.markdown('''
+        Step 1: The number of groups, *k*, to cluster into is picked, with *k* data points then randomly selected to be the starting points for the cluster centres.  
+        
+        Step 2: The other data points are assigned to their nearest cluster centre.
+        
+        Step 3: Cluster centres are updated based on the average of the members of their group.
+        
+        ***This is repeated until the cluster centre positions are stable.***
+        ''')
+
+    st.markdown("**:rainbow[Example:]** Explore PCA and K-means clustering on the dataset below!")
 
 
     # Apply PCA
@@ -92,23 +176,100 @@ with tab1:
     pca = PCA()
     transformed_bc = pca.fit_transform(scaled_bc)
     pc = pd.DataFrame(transformed_bc, columns=['PC{}'.format(i + 1) for i in range(transformed_bc.shape[1])])
+    st.dataframe(pc.head())
     pc['Diagnosis'] = bc_dat['Diagnosis']
-    st.dataframe(pc[['Diagnosis', 'PC1', 'PC2', 'PC3', 'PC4', 'PC5', 'PC6', 'PC7', 'PC8', 'PC9', 'PC10']].head())
 
     st.markdown("PCA has transformed the original dataset into a new set of axes, known as principle components. The 1st principle component (PC1) captures the greatest variance in the data, the 2nd principle component (PC2) captures the second greatest variance and so on, capturing less and less variance for each principle component.")
 
     # Check variance ratio
     pc_var = pca.fit(scaled_bc)
     fig, ax = plt.subplots()
-    ax.plot(np.cumsum(pc_var.explained_variance_ratio_))
+    ax.bar(pc.columns[:-1], height=pc_var.explained_variance_ratio_, label="Individual EV")
+    ax.plot(pc.columns[:-1], np.cumsum(pc_var.explained_variance_ratio_), linestyle="--", label="Cumulative EV")
     ax.set(xlabel="Number of Components", ylabel="Cumulative Explained Variance")
+    ax.legend()
     st.pyplot(fig)
 
     st.markdown("For this example we'll focus on the first two principle components, as the majority of the variance of the dataset is covered (over 80%!:astonished:).")
 
+
+    pcs_relevance = ['PC1', 'PC2']
+    num_pcs = len(pcs_relevance)
+    feature_relevance_matrix = pd.DataFrame(pca.components_[:num_pcs].T * np.sqrt(pca.explained_variance_[:num_pcs]), 
+                                columns=pcs_relevance, index=bc_dat.columns[1:])
+
+
+    fig, ax = plt.subplots()
+    for i in range(num_pcs):
+        if i == 0:
+            width=0.2
+        else:
+            width = -0.2
+        ax.bar(bc_dat.columns[1:], feature_relevance_matrix[feature_relevance_matrix.columns[i]], width=width, align='edge', label=f'{pcs_relevance[i]}')
+    ax.set_xlabel('Features')
+    ax.set_ylabel('Relevance')
+    plt.xticks(rotation=90)
+    ax.legend()
+    st.pyplot(fig)
+
+    ######################## NEED TO DO THIS
+    # st.write("This bar chart shows that texture and fractal dimension have the least variance explained by")
+
+    # Show PCA result
+    st.markdown("So, lets see what it looks like if we plot Principal Component 1 against Principal Component 2!")
+    
+    fig, ax = plt.subplots()
+    sns.scatterplot(data=pc, x="PC1", y="PC2", alpha=0.7, s=30)
+    ax.set(xlabel="PC1", ylabel="PC2", title="PCA Scatter Plot")
+    # ax.legend()
+    st.pyplot(fig)
+
+    st.write("It looks like there may be two groups forming - lets try clustering to put them into two clusters - maybe they'll relate to benign/malignant diagnoses....")
+
+
+    # K-Means clustering
+    st.subheader("K-Means Clustering")
+    st.markdown("As we know that there are two key groupings in the data, Malignant and Benign, therefore K-means clustering will be applied with two clusters (k=2). This ensures that the model assigns each data point to one of two clusters.")
+
+
+    # Show clustered data
+    st.markdown("Below we see the two clusters clearly defined. ")
+    
+    num_clusters = 2
+    plot_clusters(pc, num_clusters=num_clusters)
+
+    st.write("So, we've managed to produce two clusters. But how did this happen? Is there some hidden wizard who uses sorcery to determine the clusters for us? :magic_wand:")
+    st.write("**No.**")
+    st.write("Its the **K-Means clustering algorithm**. If you want to see how it works step-by-step, open the expander below for a more in-depth explanation \
+             including an :rainbow[animation]. ")
+    
+    
+    
+    with st.expander("Detailed K-Means Clustering Process"):
+
+        st.write("Click the big button :large_red_square::large_red_square: below to see how K-Means clustering determines the final clusters, \
+            but first read about the process in more detail......")
+        
+        st.write("**The Process**")
+        st.write(f"1. Select the number of clusters (in this case **{num_clusters}**).")
+        st.write(f"2. Randomly select **{num_clusters}** points of data as starting points for the **{num_clusters}** cluster centres.")
+        st.write("3. Calculate which centre each point is closest to.")
+        st.write(f"4. Sort into the {num_clusters} clusters by which centre is closest.  :man-boy-boy:             :woman-girl-girl:")
+        st.write("5. Calculate the mean of each cluster, with the mean then set as the new cluster centre. :abacus:")
+        st.write("6. Repeat this process until the cluster centres stabilise, calculated with a given **tolerance** (in the animation, set as 0.1).")
+        st.write("FINISHED :trophy:")
+
+        run_kmeans_animation(transformed_bc[:, :2])
+
+
+
+    st.write("But how do our clusters compare to the breast cancer diagnosis?? Do they correspond to benign/malignant tumours? Lets find out :point_right:")
+    
+
+    st.subheader("Clustering comparison")
     # Show PCA result
     st.markdown("**PCA Scatter Plot (PC1 vs PC2)**")
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(1,2, figsize=(10,4))
 
     palette = {"Malignant": "blue", "Benign": "orange"}
 
@@ -116,128 +277,18 @@ with tab1:
         subset = pc[pc["Diagnosis"] == diagnosis]
         sns.scatterplot(data=subset, x="PC1", y="PC2", hue="Diagnosis", palette=palette, alpha=0.7, s=30)
 
-    ax.set(xlabel="PC1", ylabel="PC2", title="PCA Scatter Plot")
-    ax.legend()
-    st.pyplot(fig)
-
-
-    # K-Means clustering
-    st.subheader("K-Means Clustering")
-    st.markdown("As we know that there are two key groupings in the data, Malignant and Benign, K-means clustering will be applied with two clusters (k=2). This ensures that the model assigns each data point to one of two clusters.")
-
-    num_clusters = 2
-    kmeans = KMeans(n_clusters=num_clusters, random_state=42)
-    kmeans.fit(pc[['PC1', 'PC2']])
-    pc["Cluster"] = kmeans.labels_
-
-    # Show clustered data
-    st.markdown("**K-Means Clustering Scatter Plot (PC1 vs PC2)**")
-    fig, ax = plt.subplots()
-    for cluster in range(2):
-        subset = pc[pc["Cluster"] == cluster]
-        ax.scatter(subset["PC1"], subset["PC2"], label=f"Cluster {cluster}", alpha=0.7, s=30)
-
-    # Plot cluster centers
-    centers = kmeans.cluster_centers_
-    ax.scatter(centers[:, 0], centers[:, 1], marker="x", s=100, c="black", label="Centroids")
-
-    ax.set(xlabel="PC1", ylabel="PC2", title=f"K-Means Clustering (k={num_clusters})")
-    ax.legend()
-    st.pyplot(fig)
-
-
-    st.title("K-Means Clustering Animation")
-
-    st.write("Click the big button below to see how K-Means clustering determines the final clusters......")
-    st.write("Also press the expander to read about the K-Means clustering process in more detail.")
-
-    with st.expander("Detailed K-Means Clustering Process"):
-        st.write("**The Process**")
-        st.write("1. Select the number of clusters (in this case **two**).")
-        st.write("2. Randomly select **two** points of data as starting points for the **two** cluster centres.")
-        st.write("3. Calculate which centre each point is closest to.")
-        st.write("4. Sort into the two clusters by which centre is closest.  :man-boy-boy:             :woman-girl-girl:")
-        st.write("5. Calculate the mean of each cluster, with the mean then set as the new cluster centre. :abacus:")
-        st.write("6. Repeat this process until the cluster centres stabilise, calculated with a given **tolerance** (in the animation, set as 0.1).")
-        st.write("FINISHED :trophy:")
-
-
-    button_placeholder = st.empty()
-
-    # Streamlit app
-    fig, ax = plt.subplots(figsize=(6, 4))
-
-    X = transformed_bc[:, :2]
-    n_clusters=2
-
-    # Initialize cluster centers, using random seed
-    np.random.seed(0)
-    i = np.random.randint(0, X.shape[0], size=n_clusters)
-    centres = X[i]
-
-    old_centres = []
-
-    max_iterations = 10
-    stop = False
-
-    # col1, col2 = st.columns([0.99, 0.01])
-    placeholder = st.empty()
+    ax[1].set(xlabel="PC1", ylabel="PC2", title="PCA Scatter Plot")
+    ax[1].legend()
     
-    # Plot initial data, with two (random) points chosen
-    ax.scatter(X[:, 0], X[:, 1], marker='.')
-    ax.scatter(centres[:, 0], centres[:, 1], marker='*', s=100, color='black', label='Current Centres', zorder=3 )
-    ax.legend()
-    placeholder.pyplot(fig)
-
-    # loop through number of iterations
-    if button_placeholder.button("Run animation", type="primary"):
-        for iteration in range(max_iterations):
-            if not stop:
-                ax.clear()
-                
-                # update centres
-                new_centres = centres
-                old_centres.append(centres)
-                
-                # plot previous centres
-                for i, centres in enumerate(old_centres):
-                    # fade previous centres more if they are older
-                    alpha = 0.5 * (1+ ((i+1)/len(old_centres) ))
-                    
-                    ax.scatter(centres[:, 0], centres[:, 1], marker='x', color='black', alpha=alpha, s=15, zorder=2)
-                
-                # Calculate distance from each point to each centre
-                vectors = X[:, np.newaxis] - centres
-                
-                # calculate magnitudes of vectors
-                magnitudes = np.linalg.norm(vectors, axis=-1)
-                
-                labels = magnitudes.argmin(axis=1)
-                
-                # ax.scatter(X[:, 0], X[:, 1], marker='.', c=labels)
-                for cluster in range(2):
-                    subset = X[labels == cluster]
-                    ax.plot(subset[:, 0], subset[:, 1], alpha=1, marker='.', linestyle='', zorder=1)
-                
-                # calculate average of each group (plot)
-                new_centres = np.array([X[labels == i].mean(axis=0) for i in range(n_clusters)])
-                
-                # stop if centres are close
-                stop = np.allclose(centres, new_centres, atol=0.1)
-                
-                # set new averages as new centre points (plot)
-                centres = new_centres
-                
-                ax.scatter(centres[:, 0], centres[:, 1], marker='*', s=100, color='black', label='Current Centres', zorder=3 )
-                ax.legend()
-                
-                placeholder.pyplot(fig)
-                time.sleep(1.5)  
-            else:
-                st.write(f'Clustering Complete! Final Iteration: {iteration}')
-                break
-
-
+    plot_clusters(pc, fig, ax[0], num_clusters = 2)
+    
+    
+    st.write("It can clearly be seen that the clusters determined by K-means clustering are very similar to the clusters produced if labelling by diagnoses.")
+    st.write("This suggests that a patient could have a breast cancer tumour effectively diagnosed as benign or malignant, \
+        by having these measurements taken and then seeing which cluster they would fall into after applying PCA.  ")
+    
+    st.write("But how accurate would the diagnosis be? All be explained below :point_down:")
+    
     st.subheader("Final Analysis")
 
     st.write("Here, we run through how to anlayse our ML methods, and see if our method is an accurate way of diagnosing breast cancer.")
@@ -283,7 +334,7 @@ with tab1:
 
 
 
-with tab2:
+with tab3:
     st.subheader("INTERACTIVE PLOT TO SEE HOW CLUSTERING WORKS WITH DIFFERENT DATASHAPES")
 
 
