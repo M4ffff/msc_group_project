@@ -80,6 +80,7 @@ Files and directory structure:
 - `Introduction_To_Streamlit.py`: Main script to run the app
 - `conda_environment.yml`: The conda environment to required to run the app locally
 - `requirements.txt`: Dependencies used by Streamlit community cloud to run remotely 
+- `app_installation_instructions`: This document contains the link to access the GitHub Pages (README) as an HTML, describing the app and outlining how to run the app locally and remotely
 
 
 #### Creators  
