@@ -23,6 +23,7 @@ conda env create -f conda_environment.yml
 ```
 
 3. Activate environment with:
+
 ``` python
 conda activate ml_platform_env
 ```
