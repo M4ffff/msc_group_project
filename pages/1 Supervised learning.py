@@ -93,11 +93,20 @@ with tab2:
     supervised_quiz()
 
 with tab3:
+    
+    
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        st.write("Here , we created a model using **real data** which can be used to classify the severity of some car crashes. used random forest. give a bit more background etc etc")
+    
+    with col2:
+        st.image('images/1_supervised_images/cars_onroad.jpg')
+    
     # Load Dataset
     @st.cache_data
-    def load_data():
-        df = pd.read_csv('datasets/Collisions.csv')
-        df = df[['SEVERITYCODE', 'WEATHER', 'ROADCOND', 'LIGHTCOND', 'SPEEDING']]  # Sample Features
+    def clean_data(df):
+        
+        # st.dataframe(df.head())
 
         df['SPEEDING'] = df['SPEEDING'].fillna('N')
         df['SPEEDING'] = df['SPEEDING'].replace(r'^\s*$', 'N', regex=True)
@@ -115,8 +124,22 @@ with tab3:
         df[categorical_features] = encoder.fit_transform(df[categorical_features])
         return df
 
+    data = pd.read_csv('datasets/Collisions.csv')
+    
+    # Sample Features
+    df = data[['SEVERITYCODE', 'WEATHER', 'ROADCOND', 'LIGHTCOND', 'SPEEDING']] # +junctiontype/ addrtype
+
+    st.write("This is the data we're using:")
+    st.dataframe(df.head())
+    
+    st.write("Some of the columns are categories. This does not work well in (something - rf clas?) because (reason). therefore we need to change them to numerical values")
+    st.write("There are also missing vlaues which need to be cleaned. [Explain how they were cleaned]")
+    
     # Load data
-    df = load_data()
+    df = clean_data(df)
+    
+    st.dataframe(df.head())
+
 
     df.fillna('0', inplace=True) 
 
@@ -125,23 +148,32 @@ with tab3:
 
     st.header('Predicting Accident Severity - Random Forest Classifier')
 
+    st.write("Lets have a look at the distribution of crash severity values")
+
     # Visualize Class Distribution of Severity Code
     st.subheader(" Distribution of Accident Severity")
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(8,5))
     sns.countplot(x=df['SEVERITYCODE'], palette='viridis', ax=ax)
     ax.set_xlabel("Severity Code")
     ax.set_ylabel("Count")
-    ax.set_yscale('log')
+    # ax.set_yscale('log')
     st.pyplot(fig)
 
     st.write('The plot above shows the severity distribution of car accidents in Seattle. 0 = Unknown, 1 = Prop damage, 2 = Minor injury, 3 = Serious injury, 4 = Fatality. What factors could we use to predict the outcome for a given accident?')
 
-    st.write("Dataset Preview:", df.head())  # Show first 5 rows
+    st.write("We can clearly see that the majority of crashes have severity of 1 or 2. Very low or very high severity crashes are rare. ")
 
-    st.image('images/1_supervised_images/cars_onroad.jpg')
+    # st.write("Dataset Preview:", df.head())  # Show first 5 rows
+
+    
 
     # Streamlit Sidebar for Feature Selection
     st.header("Select Features for Prediction")
+    
+    st.write("GIVE OVERVIEW OF WHATS HAPPENING HERE. ")
+    st.write("go step by step through what you're doing, why you're doing it, and what it shows. ")
+    
+    
     selected_features = st.multiselect("Choose features to include", X.columns.tolist(), default=X.columns.tolist())
 
     # Train Model on Selected Features
@@ -164,7 +196,7 @@ with tab3:
         with col3:
             min_samples_split = st.slider("Min Samples Split", min_value=2, max_value=20, value=2, step=1)        
     
-        X_train, X_test, y_train, y_test = train_test_split(X[selected_features], y, test_size=0.2, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(X[selected_features], y, test_size=0.2, random_state=1)
         
         model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, min_samples_split=min_samples_split, random_state=42)
         model.fit(X_train, y_train)
@@ -176,6 +208,8 @@ with tab3:
         
         # Display Performance Metrics
         st.write("## Model Performance")
+        
+        st.write("EXPLAIN WHAT THIS MEANS AND WHAT IT SHOWS")
         st.write(f"**Model Accuracy with Selected Features:** {accuracy:.4f}")
         
         feature_importances = pd.DataFrame({
@@ -197,6 +231,11 @@ with tab3:
         st.pyplot(fig)
     else:
         st.warning("Please select at least one feature to train the model.")
+
+    st.write("Explain what this shows.")
+    
+    st.write("Also reiterate what they've learnt/ why this is useful. ")
+
 
 with tab4:
     @st.cache_data
@@ -224,9 +263,13 @@ with tab4:
     # Streamlit UI
     st.header("Predicting IMDb Film Ratings with Linear Regression")
 
-    st.image('images/1_supervised_images/imdb.png')
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        st.write("intro to the page, what are you doingn here, what tool are you using, and why.")
+    with col2:
+        st.image('images/1_supervised_images/imdb.png')
 
-    st.write('As we are predicting a continuous variable (rating /10), here we use a regression approach instead of classification.')
+    st.write('As we are predicting a continuous variable (rating /10), here we use a **regression** approach instead of classification. EXPLAIN WHY THERES A DIFFERENCE?')
     st.write('Dataset Preview:', df_imdb.head())
 
     # Feature Selection
@@ -265,6 +308,8 @@ with tab4:
         sns.barplot(x="Coefficient", y="Feature", data=coefficients, ax=ax)
         ax.set_title("Feature Coefficients")
         st.pyplot(fig)
+        
+        st.write("Explain here what this shows eg longer/older films => better rated")
 
     else:
         st.warning("Please select at least one feature to train the model.")
@@ -282,12 +327,15 @@ with tab4:
         # Ask the question
         selected_answer = st.radio(
             "Which feature has the **least** impact (smallest absolute coefficient) in the model?",
-            quiz_options
+            quiz_options, index=None
         )
 
         # Check if the answer is correct
         if st.button("Submit Answer 2"):
             if selected_answer == least_important_feature:
                 st.success(f"✅ Correct! The least important feature is **{least_important_feature}**.")
+            # leave blank if no answer selected
+            elif selected_answer==None:
+                st.write("")
             else:
                 st.error(f"❌ Incorrect. The least important feature is **{least_important_feature}**.")    
