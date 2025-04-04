@@ -209,7 +209,7 @@ def subpage3(method):
     st.write(method)
 
     st.subheader("Formula")
-    st.latex(r"f(x) = \text{sign}(w \cdot x + b)")
+    st.latex(r"f(x) = \text{sin}(w \cdot x + b)")
 
     st.subheader("Data Generation")
     seed = st.slider("Choose a random seed", 0.0, 100.0, 50.0)

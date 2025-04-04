@@ -20,7 +20,7 @@ from Modules.supervised_functions import subpage1, subpage2, subpage3, subpage4
 
 st.title("Supervised Learning ")
 
-tab1, tab2, tab3 = st.tabs(['Introduction', 'Car Accident Prediction', 'Film Rating Prediction'])
+tab1, tab2, tab3, tab4 = st.tabs(['Introduction', 'Different models', 'Car Accident Prediction', 'Film Rating Prediction'])
 
 
 with tab1:
@@ -61,6 +61,7 @@ with tab1:
 
     st.write("&nbsp;&nbsp;&nbsp;&nbsp;Of course, there are many other application scenarios. Supervised learning is widely applied and deeply integrated into various aspects of daily life, making it an accessible and practical tool rather than something distant or unattainable.")
 
+with tab2:
     st.header("3.What kind of Supervised Learning do you like")
     st.write("&nbsp;&nbsp;&nbsp;&nbsp;But no matter where it is applied, the underlying logic is consistent. Starting from the basics is a necessary path to becoming a master. Choose a direction that interests you and dive in.")
 
@@ -84,7 +85,7 @@ with tab1:
     elif selected_method == "Random Forest":
         subpage4(summaries[selected_method])
 
-with tab2:
+with tab3:
     # Load Dataset
     @st.cache_data
     def load_data():
@@ -190,7 +191,7 @@ with tab2:
     else:
         st.warning("Please select at least one feature to train the model.")
 
-with tab3:
+with tab4:
     @st.cache_data
     def load_imdb_data():
         df = pd.read_csv('datasets/IMDb_Dataset.csv')  # Update path
