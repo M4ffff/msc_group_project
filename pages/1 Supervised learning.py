@@ -63,7 +63,7 @@ with tab1:
 
 with tab2:
     st.header("3.What kind of Supervised Learning do you like")
-    st.write("&nbsp;&nbsp;&nbsp;&nbsp;But no matter where it is applied, the underlying logic is consistent. Starting from the basics is a necessary path to becoming a master. Choose a direction that interests you and dive in.")
+    st.write("&nbsp;&nbsp;&nbsp;&nbsp; No matter where it is applied, the underlying logic is consistent. Starting from the basics is a necessary path to becoming a master. Choose a direction that interests you and dive in. :diving_mask: ")
 
     summaries = {
         "Linear Regression": "&nbsp;&nbsp;&nbsp;&nbsp;Linear regression is one of the most fundamental supervised learning algorithms, primarily used for predicting continuous target variables. It assumes a linear relationship between input features and the target variable and attempts to find the best-fitting line to describe this relationship.",
@@ -85,6 +85,7 @@ with tab2:
     elif selected_method == "Random Forest":
         subpage4(summaries[selected_method])
 
+    st.divider()
 
     st.subheader("Quiz time!")
     st.write("How much have you learnt?!?")
