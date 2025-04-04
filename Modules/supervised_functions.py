@@ -15,8 +15,21 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import OrdinalEncoder
 
 
-
+#
 def plot_decision_boundary(X, y, model, alpha=0.8, cmap='viridis'):
+    """
+       Plot the decision boundary of a classification model on a 2D feature space.
+
+       Parameters:
+       - X: numpy array of shape (n_samples), the feature data.
+       - y: numpy array of shape (n_samples), the target labels.
+       - model: a trained classification model with a predict method.
+       - alpha: float, the transparency level of the contour plot (default=0.8).
+       - cmap: str, the colormap for the decision boundary (default='viridis').
+
+       This function creates a contour plot of the decision boundary and overlays
+       the training data points colored by their class labels.
+       """
     x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
     y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
     xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
@@ -33,6 +46,17 @@ def plot_decision_boundary(X, y, model, alpha=0.8, cmap='viridis'):
     st.pyplot(fig)
 
 def plot_decision_boundary_with_hyperplane(X, y, model):
+    """
+    Plot the decision boundary, hyperplane, and support vectors of an SVM model on a 2D feature space.
+
+    Parameters:
+    - X: numpy array of shape (n_samples, 2), the feature data.
+    - y: numpy array of shape (n_samples,), the target labels.
+    - model: a trained SVM model with attributes coef_ and intercept_.
+
+    This function visualizes the decision boundary, the hyperplane, and the support vectors of the SVM model.
+    It also includes the margin boundaries and labels the support vectors.
+    """
     x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
     y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
     xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
