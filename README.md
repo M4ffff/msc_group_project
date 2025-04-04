@@ -38,8 +38,8 @@ To access the app remotely, click this link: [![ML Platform](https://static.stre
 </p>
 
 **Example Interfaces:**
-![](./images/unsupervised.png)
-![](./images/neural_network.png)
+![](./images/readme/unsupervised.png)
+![](./images/readme/neural_network.png)
 
 
 
@@ -73,7 +73,6 @@ streamlit run Introduction_to_Streamlit.py
 ## Navigating the Repository
 Files and directory structure:
 
-- 'Introduction
 - `pages/`: Code for each streamlit page
 - `Modules/`: Modules containing functions used in each page
 - `images/`: Images used in each page with the app
@@ -84,9 +83,5 @@ Files and directory structure:
 
 
 #### Creators  
-Matthew Parker
-Elliot Ayliffe 
-Jasmine Dehaney 
-Ben Mitchell
-ZeShu Li 
+Matthew Parker, Elliot Ayliffe, Jasmine Dehaney, Ben Mitchell, ZeShu Li 
 
