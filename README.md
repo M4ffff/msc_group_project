@@ -67,7 +67,7 @@ conda activate ml_platform_env
 4. Run the Streamlit app with:
 
 ``` python
-streamlit run Introduction_to_Streamlit.py
+streamlit run Introduction_To_Streamlit.py
 ```
 
 ## Navigating the Repository
