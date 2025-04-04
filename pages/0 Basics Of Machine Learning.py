@@ -28,7 +28,7 @@ st.markdown("-  **:blue[Shallow Learning]**: A branch of ML which uses models th
 st.markdown("-	**:blue[Generative AI]**: A type of AI focused on generating new data, such as text, images, or audio, based on training examples, such as ChatGPT or DALL-E.")
 
 
-st.image("images/0_basics_images/AI-venn-diagram.png", caption="A diagram showing the relationship between AI, ML, deep learning, and generative AI.", use_column_width=True)
+st.image("images/0_basics_images/AI-venn-diagram.png", caption="A diagram showing the relationship between AI, ML, deep learning, and generative AI.", use_container_width=True)
 
 
 # Introduction to content.
@@ -66,19 +66,19 @@ fields_choice = st.selectbox("**Pick one!**", fields)
 
 if fields_choice == "Healthcare":
     st.write("ML algorithms can help diagnose diseases, analyse medical images, and predict patient outcomes.")
-    st.image("images/0_basics_images/ML-in-healthcare.jpg", caption=" ", use_column_width=True)
+    st.image("images/0_basics_images/ML-in-healthcare.jpg", caption=" ", use_container_width=True)
 
 elif fields_choice == "Finance":
     st.write("ML can be used in fraud detection, algorithmic trading, and credit scoring.")
-    st.image("images/0_basics_images/ML-in-finance.jpg", caption=" ", use_column_width=True)
+    st.image("images/0_basics_images/ML-in-finance.jpg", caption=" ", use_container_width=True)
     
 elif fields_choice == "Transportation":
     st.write("ML systems help create autonomous vehicles, route optimisation, and predictive maintenance.")
-    st.image("images/0_basics_images/ML-in-transportation.png", caption=" ", use_column_width=True)
+    st.image("images/0_basics_images/ML-in-transportation.png", caption=" ", use_container_width=True)
     
 elif fields_choice == "Entertainment":
     st.write("ML algorithms also give us content recommendation systems, generative art, and virtual reality.")
-    st.image("images/0_basics_images/ML-in-entertainment.jpg", caption=" ", use_column_width=True)
+    st.image("images/0_basics_images/ML-in-entertainment.jpg", caption=" ", use_container_width=True)
 
 
 # Brief insight into AI.
