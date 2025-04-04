@@ -11,21 +11,25 @@ Acknowledgements.
 ### To Run Locally (temporary)
 
 1. Clone repository
-```
+
+``` python
 git clone git@github.com:M4ffff/msc_group_project.git
 ``` 
 
 2. Create environment with:
-```
+
+``` python
 conda env create -f conda_environment.yml
 ```
 
 3. Activate environment with:
-```
+
+``` python
 conda activate ML_platform_env
 ```
 
 4. Run the Streamlit app with:
-```
+
+``` python
 streamlit run Introduction_to_Streamlit.py
 ```
