@@ -9,7 +9,8 @@ import time
 from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
-
+from sklearn.mixture import GaussianMixture
+from sklearn.cluster import DBSCAN, HDBSCAN
 
 def plot_clusters(pc, fig=None, ax=None, num_clusters = 2):
       
@@ -106,3 +107,161 @@ def run_kmeans_animation(X, n_clusters=2):
             else:
                 st.write(f'Clustering Complete! Final Iteration: {iteration}')
                 break
+            
+
+
+def get_data(seed, cluster_dict): 
+    """
+    Get a random file from the funky-shaped datasets. 
+
+    Args:
+        seed (int): random seed
+        cluster_dict (dict): dictionary of cluster filenames
+
+    Returns:
+        random_file: name of file
+        random_data: data of file
+    """
+    random.seed(seed)
+    random_file = random.choice(list(cluster_dict.keys())) 
+
+    random_data = pd.read_csv(f"datasets/cluster data/{random_file}")
+    
+    # drop color column if it exists
+    random_data = random_data.drop(columns=["color"], errors='ignore')
+    
+    # normalise data    
+    random_data = pd.DataFrame( StandardScaler().fit_transform(random_data.values), columns=random_data.columns )
+            
+    return random_file, random_data
+
+
+
+def kmeans_cluster(data, num_centres):
+    """
+    Cluster data using kmeans clustering
+
+    Args:
+        data (df): input data to cluster
+        num_centres (int): Number of clusters
+
+    Returns:
+        labels: labels for each datapoint of which cluster they are in
+        cluster_centres: coordinates of cluster centres
+    """
+    kmeans = KMeans(n_clusters=num_centres)
+    kmeans.fit(data)
+    
+    labels = kmeans.labels_
+    cluster_centres = kmeans.cluster_centers_
+    
+    return labels, cluster_centres
+
+
+
+def gmm_cluster(data, num_centres):     
+    """
+    Cluster data using gmm clustering
+
+    Args:
+        data (df): input data to cluster
+        num_centres (int): Number of clusters
+
+    Returns:
+        size: Size proportional to probabilty of data being in given cluster
+        colour_labels: labels for each datapoint of which cluster they are in
+    """   
+
+    gmm = GaussianMixture(n_components=num_centres).fit(data)
+    colour_labels = gmm.predict(data)
+    
+    probabilities = gmm.predict_proba(data)
+    size = 15 * probabilities.max(axis=1) ** 2
+    
+    return size, colour_labels
+
+
+def dbscan_cluster(data, eps, min_samples):
+    """
+    Cluster data using dbscan clustering
+
+    Args:
+        data (df): input data to cluster
+        eps (int): Max distance for points to be neighbours.
+        min_samples (int): Minimum number of points needed to form a cluster.
+
+    Returns:
+        labels: labels for each datapoint of which cluster they are in
+    """   
+    
+    dbscan = DBSCAN(eps=eps, min_samples=min_samples).fit(data)
+    labels = dbscan.labels_
+    
+    num_labels = len(np.unique(labels))
+    st.write(f"Number of unique labels: {num_labels}")
+
+    return labels
+
+
+def hdbscan_cluster(data):
+    """
+    Cluster data using hdbscan clustering
+
+    Args:
+        data (df): input data to cluster
+
+    Returns:
+        labels: labels for each datapoint of which cluster they are in
+    """   
+    
+    labels = HDBSCAN().fit_predict(data)
+
+    return labels
+
+
+def basic_plot(data, ax, size=10, colour_labels=None, cluster_centres=None):
+    """
+    Plot of data with coloured labels representing different clusters
+
+    Args:
+        data (df): input data to plot
+        ax (ax): axis to plot on
+        size (int, optional): Size of scatter points. Defaults to 10.
+        colour_labels (arr, optional): labels of colours describing clusters. Defaults to None.
+        cluster_centres (arr, optional): coordinates of cluster centres. Defaults to None.
+    """
+    if colour_labels is not None:
+        colour_labels=colour_labels
+    else:
+        colour_labels=np.zeros(len(data))
+    
+    ax.clear()
+    
+    ax.scatter(data["x"], data["y"], c=colour_labels, s=size, cmap="gist_rainbow")
+    ax.set_aspect("equal")
+    
+    # Plot cluster centres if they exist
+    if isinstance( cluster_centres, np.ndarray):
+        ax.scatter(cluster_centres[:, 0], cluster_centres[:, 1], s=size, marker='s', c="black")
+
+
+def pros_and_cons(multi_pros, multi_cons):
+    """
+    Write pros and cons of a method in two columns
+
+    Args:
+        multi_pros (str): Multi line string containing list of pros
+        multi_cons (str): multi line string containing list of cons
+    """
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.header("Pros")
+    with col2:
+        st.header("Cons")
+    with st.container(border=True, height=200):
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown(multi_pros)
+        with col2:
+            st.write(multi_cons)

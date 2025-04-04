@@ -9,8 +9,9 @@ import time
 from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
-from Modules.unsupervised_functions import run_kmeans_animation, plot_clusters
 
+from Modules.unsupervised_functions import run_kmeans_animation, plot_clusters, get_data, basic_plot, pros_and_cons
+from Modules.unsupervised_functions import kmeans_cluster, gmm_cluster, dbscan_cluster, hdbscan_cluster
 
 st.title("Unsupervised Learning Page")
 
@@ -490,21 +491,7 @@ with tab3:
 
     ################################################## 
 
-    def get_data(seed):
-        random.seed(seed)
-        random_file = random.choice(list(cluster_dict.keys())) 
-        # random_file = (list(cluster_dict.keys()))[6]
-        # st.write(random_file)
 
-        random_data = pd.read_csv(f"datasets/cluster data/{random_file}")
-        
-        # drop color column if it exists
-        random_data = random_data.drop(columns=["color"], errors='ignore')
-        
-        # normalise data    
-        random_data = pd.DataFrame( StandardScaler().fit_transform(random_data.values), columns=random_data.columns )
-                
-        return random_file, random_data
 
     
     # determine random starting seed of session if first run
@@ -522,7 +509,7 @@ with tab3:
     # st.write(f"Session seed counter: {session_counter}")
 
 
-    random_file, random_data = get_data(st.session_state["counter"])
+    random_file, random_data = get_data(st.session_state["counter"], cluster_dict)
 
     # Select and plot random file of funky data
     col1, col2 = st.columns([0.2, 0.8])
@@ -530,13 +517,15 @@ with tab3:
         if st.button("Get new data", type="primary"):
             
             st.session_state["counter"] += 1
-            random_file, random_data = get_data(st.session_state["counter"])
+            random_file, random_data = get_data(st.session_state["counter"], cluster_dict)
+            
+    # allows going to look back at previous data
     with col2:
         if st.session_state["counter"] > st.session_state["initial_seed"]:
             if st.button("Review previous data", type="secondary"):
                 
                 st.session_state["counter"] -= 1
-                random_file, random_data = get_data(st.session_state["counter"])
+                random_file, random_data = get_data(st.session_state["counter"], cluster_dict)
 
 
 
@@ -556,72 +545,12 @@ with tab3:
     col1, col2 = st.columns([0.7, 0.3])
 
 
-    def basic_plot(data, ax, size=10, colour_labels=np.zeros(len(random_data)), cluster_centres=None):
-        """
-        Basic scatter plot of some data
-        
-        """
-        
-        ax.clear()
-        import matplotlib.cm as cm
-        
-        # colors = cm.rainbow(np.linspace(0, 1, len(ys)))
-        # for y, c in zip(ys, colors):
-        #     plt.scatter(x, y, color=c)
-        
-        ax.scatter(data["x"], data["y"], c=colour_labels, s=size, cmap="gist_rainbow")
-        ax.set_aspect("equal")
-        
-        if isinstance( cluster_centres, np.ndarray):
-            ax.scatter(cluster_centres[:, 0], cluster_centres[:, 1], s=size, marker='s', c="cyan")
+
 
         # st.pyplot(fig)
 
         
-    def kmeans_cluster(data, num_centres):
-        kmeans = KMeans(n_clusters=num_centres)
-        kmeans.fit(data)
-        
-        labels = kmeans.labels_
-        cluster_centres = kmeans.cluster_centers_
-        
-        return labels, cluster_centres
 
-    def gmm_cluster(data, num_centres):        
-        from sklearn.mixture import GaussianMixture
-
-        gmm = GaussianMixture(n_components=num_centres).fit(data)
-        colour_labels = gmm.predict(data)
-        
-        probabilities = gmm.predict_proba(data)
-        size = 15 * probabilities.max(axis=1) ** 2
-        
-        return size, colour_labels
-
-
-    def dbscan_cluster(data, eps, min_samples):
-        from sklearn.cluster import DBSCAN
-        
-        dbscan = DBSCAN(eps=eps, min_samples=min_samples).fit(data)
-        labels = dbscan.labels_
-        
-        num_labels = len(np.unique(labels))
-        st.write(f"Number of unique labels: {num_labels}")
-
-        return labels
-
-
-    # not sure if this works
-    def hdbscan_cluster(data):
-        from sklearn.cluster import HDBSCAN
-        
-        labels = HDBSCAN().fit_predict(data)
-        # labels = hdbscan.labels_
-        
-        # num_labels = len(np.unique(labels))
-        # st.write(f"Number of unique labels: {num_labels}")
-
-        return labels
 
     with col1:
         fig1, ax1 = plt.subplots(figsize=(6,6))
@@ -747,19 +676,7 @@ with tab3:
 
     st.markdown(end_multi)
 
-    def pros_and_cons(multi_pros, multi_cons):
-       
-        col1, col2 = st.columns(2)
-        with col1:
-            st.header("Pros")
-        with col2:
-            st.header("Cons")
-        with st.container(border=True, height=200):
-            col1, col2 = st.columns(2)
-            with col1:
-                st.markdown(multi_pros)
-            with col2:
-                st.write(multi_cons)
+
             
     
     kmeans_tab, gmm_tab, dbscan_tab, hdbscan_tab = st.tabs(["K-means", "GMM", "DBSCAN", "HDBSCAN"])

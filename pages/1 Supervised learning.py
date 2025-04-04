@@ -15,7 +15,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import OrdinalEncoder
 
 
-from Modules.supervised_functions import plot_decision_boundary, plot_decision_boundary_with_hyperplane, subpage1, subpage2, subpage3, subpage4
+from Modules.supervised_functions import subpage1, subpage2, subpage3, subpage4
 
 
 st.title("Supervised Learning ")
