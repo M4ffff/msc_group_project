@@ -18,6 +18,69 @@ st.title("Supervised Learning ")
 
 tab1, tab2, tab3 = st.tabs(['Introduction', 'Car Accident Prediction', 'Film Rating Prediction'])
 
+
+def plot_decision_boundary(X, y, model, alpha=0.8, cmap='viridis'):
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
+                        np.arange(y_min, y_max, 0.1))
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    
+    fig = plt.figure(figsize=(8, 6))
+    plt.contourf(xx, yy, Z, alpha=alpha)
+    plt.scatter(X[:, 0], X[:, 1], c=y, cmap=cmap, edgecolor='k')
+    plt.xlabel('Feature 1')
+    plt.ylabel('Feature 2')
+    plt.title('Decision Boundary')
+    st.pyplot(fig)
+
+def plot_decision_boundary_with_hyperplane(X, y, model):
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
+                        np.arange(y_min, y_max, 0.1))
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+
+    fig, ax = plt.subplots(figsize=(10, 8))
+
+    ax.contourf(xx, yy, Z, alpha=0.8, cmap='coolwarm')
+    ax.contour(xx, yy, Z, colors='k', linestyles='--', levels=[-1, 0, 1], linewidths=1)
+
+    scatter = ax.scatter(X[:, 0], X[:, 1], c=y, cmap='coolwarm', edgecolor='k', s=50, label='Data Points')
+
+    w = model.coef_[0]
+    b = model.intercept_[0]
+    x_values = np.linspace(x_min, x_max, 100)
+    y_values = -(w[0] * x_values + b) / w[1]
+
+    ax.plot(x_values, y_values, color='black', linestyle='-', linewidth=2, label='Hyperplane')
+
+    margin = 1 / np.sqrt(np.sum(w ** 2))
+    y_values_upper = y_values + margin * (w[1] / np.linalg.norm(w))
+    y_values_lower = y_values - margin * (w[1] / np.linalg.norm(w))
+
+    ax.plot(x_values, y_values_upper, color='gray', linestyle='--', linewidth=1, label='Margin')
+    ax.plot(x_values, y_values_lower, color='gray', linestyle='--', linewidth=1)
+
+    ax.scatter(model.support_vectors_[:, 0], model.support_vectors_[:, 1],
+            facecolors='none', edgecolors='black', s=120, linewidths=1.5, label='Support Vectors')
+
+    ax.set_xlabel('Feature 1')
+    ax.set_ylabel('Feature 2')
+    ax.set_title('Decision Boundary with Hyperplane and Support Vectors')
+    ax.legend()
+
+    st.pyplot(fig)
+
+
+
+
+
+
+
+
 with tab1:
 
     # def about subpage
@@ -127,18 +190,7 @@ with tab1:
 
         st.subheader("Decision Boundary")
 
-        def plot_decision_boundary(X, y, model):
-            x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-            y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-            xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1), np.arange(y_min, y_max, 0.1))
-            Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
-            Z = Z.reshape(xx.shape)
-            plt.contourf(xx, yy, Z, alpha=0.8)
-            plt.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis', edgecolor='k')
-            plt.xlabel('Feature 1')
-            plt.ylabel('Feature 2')
-            plt.title('Decision Boundary')
-            plt.show()
+
 
         plot_decision_boundary(X_train, y_train, model)
 
@@ -204,20 +256,8 @@ with tab1:
 
         st.subheader("Decision Boundary")
 
-        def plot_decision_boundary(X, y, model):
-            x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-            y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-            xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
-                                np.arange(y_min, y_max, 0.1))
-            Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
-            Z = Z.reshape(xx.shape)
-            plt.contourf(xx, yy, Z, alpha=0.8)
-            plt.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis', edgecolor='k')
-            plt.xlabel('Feature 1')
-            plt.ylabel('Feature 2')
-            plt.title('Decision Boundary')
-            plt.show()
 
+        # svc
         plot_decision_boundary(X_train, y_train, model)
 
         st.subheader("Interactive Prediction")
@@ -231,44 +271,7 @@ with tab1:
 
         st.subheader("Decision Boundary with Hyperplane and Support Vectors")
 
-        def plot_decision_boundary_with_hyperplane(X, y, model):
-            x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-            y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-            xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
-                                np.arange(y_min, y_max, 0.1))
-            Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
-            Z = Z.reshape(xx.shape)
 
-            fig, ax = plt.subplots(figsize=(10, 8))
-
-            ax.contourf(xx, yy, Z, alpha=0.8, cmap='coolwarm')
-            ax.contour(xx, yy, Z, colors='k', linestyles='--', levels=[-1, 0, 1], linewidths=1)
-
-            scatter = ax.scatter(X[:, 0], X[:, 1], c=y, cmap='coolwarm', edgecolor='k', s=50, label='Data Points')
-
-            w = model.coef_[0]
-            b = model.intercept_[0]
-            x_values = np.linspace(x_min, x_max, 100)
-            y_values = -(w[0] * x_values + b) / w[1]
-
-            ax.plot(x_values, y_values, color='black', linestyle='-', linewidth=2, label='Hyperplane')
-
-            margin = 1 / np.sqrt(np.sum(w ** 2))
-            y_values_upper = y_values + margin * (w[1] / np.linalg.norm(w))
-            y_values_lower = y_values - margin * (w[1] / np.linalg.norm(w))
-
-            ax.plot(x_values, y_values_upper, color='gray', linestyle='--', linewidth=1, label='Margin')
-            ax.plot(x_values, y_values_lower, color='gray', linestyle='--', linewidth=1)
-
-            ax.scatter(model.support_vectors_[:, 0], model.support_vectors_[:, 1],
-                    facecolors='none', edgecolors='black', s=120, linewidths=1.5, label='Support Vectors')
-
-            ax.set_xlabel('Feature 1')
-            ax.set_ylabel('Feature 2')
-            ax.set_title('Decision Boundary with Hyperplane and Support Vectors')
-            ax.legend()
-
-            st.pyplot(fig)
 
         plot_decision_boundary_with_hyperplane(X_train, y_train, model)
 
@@ -327,21 +330,9 @@ with tab1:
 
         st.subheader("Decision Boundary")
 
-        def plot_decision_boundary(X, y, model):
-            x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-            y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-            xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
-                                np.arange(y_min, y_max, 0.1))
-            Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
-            Z = Z.reshape(xx.shape)
 
-            plt.figure(figsize=(8, 6))
-            plt.contourf(xx, yy, Z, alpha=0.4, cmap='coolwarm')
-            plt.scatter(X[:, 0], X[:, 1], c=y, edgecolor='k', cmap='coolwarm', alpha=0.8)
-            plt.title('Decision Boundary')
-            st.pyplot(plt)
 
-        plot_decision_boundary(X_train, y_train, rf)
+        plot_decision_boundary(X_train, y_train, rf, alpha=0.4, cmap='coolwarm')
 
         st.subheader("Question 4: Random Forest")
         st.write("Which of the following statements is true about Random Forest?")
