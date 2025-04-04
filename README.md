@@ -22,7 +22,7 @@ conda env create -f conda_environment.yml
 
 3. Activate environment with:
 ```
-conda activate ML_platform_env
+conda activate ml_platform_env
 ```
 
 4. Run the Streamlit app with:
