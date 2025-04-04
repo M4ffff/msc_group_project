@@ -20,13 +20,14 @@ from PIL import Image
 # Imports for 'Model Configuration and Training' tab 
 from sklearn.datasets import make_moons, make_circles, make_blobs 
 from sklearn.model_selection import train_test_split
-import tensorflow as tf 
-from tensorflow.keras.models import Sequential 
-from tensorflow.keras.layers import Dense, Input
-from tensorflow.keras.regularizers import l1, l2
-from tensorflow.keras.optimizers import SGD, Adam
-from tensorflow.keras.utils import to_categorical
-from tensorflow.keras.callbacks import Callback 
+# import tensorflow as tf 
+# from tensorflow import keras
+from keras.models import Sequential 
+from keras.layers import Dense, Input
+from keras.regularizers import l1, l2
+from keras.optimizers import SGD, Adam
+from keras.utils import to_categorical
+from keras.callbacks import Callback 
 import io
 from time import time
 import plotly.graph_objs as go
@@ -164,7 +165,7 @@ def display_image(img_filename):
     Loads the image corresponding to the current quiz question (overfitting/underfitting
     quiz in the regularisation section)
     """
-    path = os.path.join("images/reg_quiz_images", img_filename)
+    path = os.path.join("images/3_neural_network_images/reg_quiz_images", img_filename)
     image = Image.open(path)        # locate and open the image 
     st.image(image)         # insert the image 
 

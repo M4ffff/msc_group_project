@@ -14,349 +14,16 @@ import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import OrdinalEncoder
 
+
+from Modules.supervised_functions import subpage1, subpage2, subpage3, subpage4, supervised_quiz
+
+
 st.title("Supervised Learning ")
 
-tab1, tab2, tab3 = st.tabs(['Introduction', 'Car Accident Prediction', 'Film Rating Prediction'])
+tab1, tab2, tab3, tab4 = st.tabs(['Introduction', 'Different models', 'Car Accident Prediction', 'Film Rating Prediction'])
+
 
 with tab1:
-
-    # def about subpage
-    def subpage1():
-        st.write(summaries[selected_method])
-        # Formula
-        st.subheader("Formula")
-        st.latex(r"y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_n x_n + \epsilon")
-
-        # data
-        st.subheader("Data Generation")
-        st.write("Let's generate some synthetic data to demonstrate linear regression.")
-        seed = st.slider("Choose a random seed", 0.0, 100.0, 50.0)
-
-        np.random.seed(int(seed))
-        X = 2.5 * np.random.rand(100, 1)
-        y = 2 + 3 * X + np.random.randn(100, 1)
-
-        # draw
-        st.subheader("Data Visualization")
-        fig, ax = plt.subplots()
-        ax.scatter(X, y, color='blue', label='Data Points')
-        plt.xlabel('X')
-        plt.ylabel('y')
-        plt.title('Scatter Plot of X vs y')
-        st.pyplot(fig)
-
-        # train
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-        model = LinearRegression()
-        model.fit(X_train, y_train)
-
-
-        st.subheader("Model Evaluation")
-        y_pred = model.predict(X_test)
-        mse = mean_squared_error(y_test, y_pred)
-        st.write(f"Mean Squared Error: {mse}")
-
-
-        fig, ax = plt.subplots()
-        ax.scatter(X, y, color='blue', label='Data Points')
-        ax.plot(X, model.predict(X), color='red', label='Regression Line')
-        plt.xlabel('X')
-        plt.ylabel('y')
-        plt.title('Linear Regression Fit')
-        plt.legend()
-        st.pyplot(fig)
-
-
-        st.subheader("Interactive Prediction")
-        x_value = st.slider("Choose a value for X", 0.0, 1.0, 0.5)
-        y_pred = model.predict([[x_value]])
-        st.write(f"Predicted y for X = {x_value}: {y_pred[0][0]:.2f}")
-
-        # Question 1: Linear Regression
-        st.subheader("Question 1: Linear Regression")
-        st.write("Which of the following statements is true about Linear Regression?")
-        options_1 = ["A. Linear Regression is used for classification tasks.",
-                     "B. Linear Regression models the relationship between a dependent variable and one or more independent variables using a linear function.",
-                     "C. Linear Regression assumes that the data is not linearly separable.",
-                     "D. Linear Regression cannot be used for predicting continuous values."]
-        selected_option_1 = st.radio("Select your answer:", options_1, key="q1", index=None)
-
-        if selected_option_1 is None:
-            st.write("")
-        elif selected_option_1== options_1[1]:
-            st.success("Correct! Linear Regression models the relationship using a linear function.")
-        else:
-            st.error("Incorrect. The correct answer is B.")
-    def subpage2():
-        st.write(summaries[selected_method])
-
-        st.subheader("Formula")
-        st.latex(r"P(y=1|x) = \frac{1}{1 + e^{-(w_1x_1 + w_2x_2 + ... + w_nx_n + b)}}")
-
-
-        st.subheader("Data Generation")
-        st.write("Let's generate some synthetic data to demonstrate logistic regression.")
-        seed = st.slider("Choose a random seed", 0.0, 100.0, 50.0)
-        intseed=int(seed)
-        X, y = make_classification(n_samples=100, n_features=2, n_redundant=0, n_clusters_per_class=1, flip_y=0.1,
-                                random_state=intseed)
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-
-        st.subheader("Data Visualization")
-        fig, ax = plt.subplots()
-        ax.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap='viridis', label='Training Data')
-        plt.xlabel('Feature 1')
-        plt.ylabel('Feature 2')
-        plt.title('Training Data Scatter Plot')
-        st.pyplot(fig)
-
-
-        model = LogisticRegression()
-        model.fit(X_train, y_train)
-
-
-        st.subheader("Model Evaluation")
-        y_pred = model.predict(X_test)
-        accuracy = accuracy_score(y_test, y_pred)
-        conf_matrix = confusion_matrix(y_test, y_pred)
-        st.write(f"Accuracy: {accuracy:.2f}")
-        st.write("Confusion Matrix:")
-        st.write(conf_matrix)
-
-        st.subheader("Decision Boundary")
-
-        def plot_decision_boundary(X, y, model):
-            x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-            y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-            xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1), np.arange(y_min, y_max, 0.1))
-            Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
-            Z = Z.reshape(xx.shape)
-            plt.contourf(xx, yy, Z, alpha=0.8)
-            plt.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis', edgecolor='k')
-            plt.xlabel('Feature 1')
-            plt.ylabel('Feature 2')
-            plt.title('Decision Boundary')
-            plt.show()
-
-        plot_decision_boundary(X_train, y_train, model)
-
-        st.subheader("Interactive Prediction")
-        feature1 = st.slider("Choose a value for Feature 1", X[:, 0].min(), X[:, 0].max(), (X[:, 0].mean()))
-        feature2 = st.slider("Choose a value for Feature 2", X[:, 1].min(), X[:, 1].max(), (X[:, 1].mean()))
-        input_features = np.array([[feature1, feature2]])
-        prediction = model.predict(input_features)
-        st.write(f"Predicted class for input ({feature1:.2f}, {feature2:.2f}): {prediction[0]}")
-
-        # Question 2: Logistic Regression
-        st.subheader("Question 2: Logistic Regression")
-        st.write("Which of the following statements is true about Logistic Regression?")
-        options_2 = ["A. Logistic Regression is used for predicting continuous numerical values.",
-                     "B. Logistic Regression uses a linear function to model the relationship between variables.",
-                     "C. Logistic Regression is a type of regression algorithm that outputs probabilities for classification tasks.",
-                     "D. Logistic Regression assumes that the data is linearly separable."]
-        selected_option_2 = st.radio("Select your answer:", options_2, key="q2",index=None)
-
-        if selected_option_2 is None:
-            st.write("")
-        elif selected_option_2 == options_2[2]:
-            st.success("Correct! Logistic Regression outputs probabilities for classification tasks.")
-        else:
-            st.error("Incorrect. The correct answer is C.")
-    def subpage3():
-        st.write(summaries[selected_method])
-
-        st.subheader("Formula")
-        st.latex(r"f(x) = \text{sign}(w \cdot x + b)")
-
-        st.subheader("Data Generation")
-        seed = st.slider("Choose a random seed", 0.0, 100.0, 50.0)
-        intseed=int(seed)
-        X, y = make_blobs(n_samples=100, centers=2, random_state= intseed, cluster_std=1.05)
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state= intseed)
-
-        st.subheader("Data Visualization")
-        fig, ax = plt.subplots()
-        ax.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis', label='Data Points')
-        plt.xlabel('Feature 1')
-        plt.ylabel('Feature 2')
-        plt.title('Scatter Plot of X vs y')
-        st.pyplot(fig)
-
-
-        model = svm.SVC(kernel='linear')
-        model.fit(X_train, y_train)
-
-        st.subheader("Model Evaluation")
-        y_pred = model.predict(X_test)
-        accuracy = accuracy_score(y_test, y_pred)
-        st.write("Accuracy:", accuracy)
-
-        st.subheader("Confusion Matrix")
-        conf_matrix = confusion_matrix(y_test, y_pred)
-        plt.figure(figsize=(8, 6))
-        sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues')
-        plt.xlabel('Predicted Label')
-        plt.ylabel('True Label')
-        plt.title('Confusion Matrix')
-        st.pyplot(plt)
-
-        st.subheader("Decision Boundary")
-
-        def plot_decision_boundary(X, y, model):
-            x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-            y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-            xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
-                                np.arange(y_min, y_max, 0.1))
-            Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
-            Z = Z.reshape(xx.shape)
-            plt.contourf(xx, yy, Z, alpha=0.8)
-            plt.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis', edgecolor='k')
-            plt.xlabel('Feature 1')
-            plt.ylabel('Feature 2')
-            plt.title('Decision Boundary')
-            plt.show()
-
-        plot_decision_boundary(X_train, y_train, model)
-
-        st.subheader("Interactive Prediction")
-        feature1 = st.slider("Choose a value for Feature 1", float(X[:, 0].min()), float(X[:, 0].max()),
-                            float(X[:, 0].mean()))
-        feature2 = st.slider("Choose a value for Feature 2", float(X[:, 1].min()), float(X[:, 1].max()),
-                            float(X[:, 1].mean()))
-        input_features = np.array([[feature1, feature2]])
-        prediction = model.predict(input_features)
-        st.write(f"Predicted class for input ({feature1:.2f}, {feature2:.2f}): {prediction[0]}")
-
-        st.subheader("Decision Boundary with Hyperplane and Support Vectors")
-
-        def plot_decision_boundary_with_hyperplane(X, y, model):
-            x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-            y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-            xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
-                                np.arange(y_min, y_max, 0.1))
-            Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
-            Z = Z.reshape(xx.shape)
-
-            fig, ax = plt.subplots(figsize=(10, 8))
-
-            ax.contourf(xx, yy, Z, alpha=0.8, cmap='coolwarm')
-            ax.contour(xx, yy, Z, colors='k', linestyles='--', levels=[-1, 0, 1], linewidths=1)
-
-            scatter = ax.scatter(X[:, 0], X[:, 1], c=y, cmap='coolwarm', edgecolor='k', s=50, label='Data Points')
-
-            w = model.coef_[0]
-            b = model.intercept_[0]
-            x_values = np.linspace(x_min, x_max, 100)
-            y_values = -(w[0] * x_values + b) / w[1]
-
-            ax.plot(x_values, y_values, color='black', linestyle='-', linewidth=2, label='Hyperplane')
-
-            margin = 1 / np.sqrt(np.sum(w ** 2))
-            y_values_upper = y_values + margin * (w[1] / np.linalg.norm(w))
-            y_values_lower = y_values - margin * (w[1] / np.linalg.norm(w))
-
-            ax.plot(x_values, y_values_upper, color='gray', linestyle='--', linewidth=1, label='Margin')
-            ax.plot(x_values, y_values_lower, color='gray', linestyle='--', linewidth=1)
-
-            ax.scatter(model.support_vectors_[:, 0], model.support_vectors_[:, 1],
-                    facecolors='none', edgecolors='black', s=120, linewidths=1.5, label='Support Vectors')
-
-            ax.set_xlabel('Feature 1')
-            ax.set_ylabel('Feature 2')
-            ax.set_title('Decision Boundary with Hyperplane and Support Vectors')
-            ax.legend()
-
-            st.pyplot(fig)
-
-        plot_decision_boundary_with_hyperplane(X_train, y_train, model)
-
-        # Question 3: Support Vector Machine (SVM)
-        st.subheader("Question 3: Support Vector Machine (SVM)")
-        st.write("Which of the following statements is true about Support Vector Machine (SVM)?")
-        options_3 = ["A. SVM is primarily used for unsupervised learning tasks.",
-                     "B. SVM aims to find the hyperplane that maximizes the margin between two classes.",
-                     "C. SVM cannot handle non-linear data without using kernel functions.",
-                     "D. SVM is not suitable for classification tasks with high-dimensional data."]
-        selected_option_3 = st.radio("Select your answer:", options_3, key="q3",index=None)
-
-        if selected_option_3 is None:
-            st.write("")
-        elif selected_option_3 == options_3[1]:
-            st.success("Correct! SVM aims to find the hyperplane that maximizes the margin between two classes.")
-        else:
-            st.error("Incorrect. The correct answer is B.")
-    def subpage4():
-        st.write(summaries[selected_method])
-        st.subheader("Data Generation")
-        seed = st.slider("Choose a random seed", 0.0, 100.0, 50.0)
-        intseed=int(seed)
-        X, y = make_classification(n_samples=1000, n_features=4,
-                                n_informative=2, n_redundant=2,
-                                random_state=intseed, shuffle=False)
-
-        X_train, X_test, y_train, y_test = train_test_split(X[:, :2], y, test_size=0.2, random_state=  intseed)
-
-        rf = RandomForestClassifier(n_estimators=100, random_state=intseed)
-        rf.fit(X_train, y_train)
-
-        st.subheader("Data Visualization")
-        fig, ax = plt.subplots()
-        ax.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis', label='Data Points')
-        plt.xlabel('Feature 1')
-        plt.ylabel('Feature 2')
-        plt.title('Scatter Plot of X vs y')
-        st.pyplot(fig)
-
-        st.subheader("Feature Importance")
-        feature_importances = rf.feature_importances_
-        feature_names = ['Feature 1', 'Feature 2']
-        plt.figure(figsize=(10, 6))
-        sns.barplot(x=feature_importances, y=feature_names)
-        plt.title('Feature Importance')
-        st.pyplot(plt)
-
-        st.subheader("Model Evaluation")
-        y_pred = rf.predict(X_test)
-        cm = confusion_matrix(y_test, y_pred)
-        plt.figure(figsize=(8, 6))
-        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
-        plt.title('Confusion Matrix')
-        st.pyplot(plt)
-
-        st.subheader("Decision Boundary")
-
-        def plot_decision_boundary(X, y, model):
-            x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-            y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-            xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
-                                np.arange(y_min, y_max, 0.1))
-            Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
-            Z = Z.reshape(xx.shape)
-
-            plt.figure(figsize=(8, 6))
-            plt.contourf(xx, yy, Z, alpha=0.4, cmap='coolwarm')
-            plt.scatter(X[:, 0], X[:, 1], c=y, edgecolor='k', cmap='coolwarm', alpha=0.8)
-            plt.title('Decision Boundary')
-            st.pyplot(plt)
-
-        plot_decision_boundary(X_train, y_train, rf)
-
-        st.subheader("Question 4: Random Forest")
-        st.write("Which of the following statements is true about Random Forest?")
-        options_4 = ["A. Random Forest is a type of neural network.",
-                     "B. Random Forest builds multiple decision trees and merges them to get a more accurate prediction.",
-                     "C. Random Forest is not suitable for classification tasks.",
-                     "D. Random Forest requires a large amount of data to be effective."]
-        selected_option_4 = st.radio("Select your answer:", options_4, key="q4",index=None)
-
-        if selected_option_4 is None:
-            st.write("")
-        elif selected_option_4 == options_4[1]:
-            st.success("Correct! Random Forest builds multiple decision trees for more accurate predictions.")
-        else:
-            st.error("Incorrect. The correct answer is B.")
-
 
     st.write("🎉🎉🎉If you've made it this far, it means you're genuinely interested in this topic, and the content ahead is definitely worth looking forward to!🎉🎉🎉")
 
@@ -374,7 +41,7 @@ with tab1:
     st.write("&nbsp;&nbsp;&nbsp;&nbsp;Medical Imaging Analysis: Used for disease diagnosis (e.g., cancer detection, X-ray image analysis).")
     col1, col2, col3 = st.columns([1, 2, 3])
     
-    st.image("images/Facial Recognition.jpg", caption="Facial Recognition", width=300)
+    st.image("images/1_supervised_images/Facial Recognition.jpg", caption="Facial Recognition", width=300)
 
     st.subheader("&nbsp;&nbsp;2. Natural Language Processing (NLP)")
     st.write("&nbsp;&nbsp;&nbsp;&nbsp;Sentiment Analysis: Analyzing the sentiment (positive, negative, or neutral) in text (e.g., social media posts, product reviews).")
@@ -383,19 +50,20 @@ with tab1:
     st.write("&nbsp;&nbsp;&nbsp;&nbsp;Text Classification: Categorizing text into different classes (e.g., news classification, spam detection).")
     col1, col2, col3 = st.columns([1, 2, 3])
     
-    st.image("images/ORC.png", caption="ORC", width=300)
+    st.image("images/1_supervised_images/ORC.png", caption="ORC", width=300)
 
     st.subheader("&nbsp;&nbsp;3.Gaming and Entertainment")
     st.write("&nbsp;&nbsp;&nbsp;&nbsp;Game Recommendation: Recommending games based on players' gaming history and preferences.")
     st.write("&nbsp;&nbsp;&nbsp;&nbsp;In-Game Character Behavior Prediction: Predicting character behavior based on player data to optimize the gaming experience.")
     col1, col2, col3 = st.columns([1, 2, 3])
     
-    st.image("images/OIP.jpg", caption="OIP", width=300)
+    st.image("images/1_supervised_images/OIP.jpg", caption="OIP", width=300)
 
     st.write("&nbsp;&nbsp;&nbsp;&nbsp;Of course, there are many other application scenarios. Supervised learning is widely applied and deeply integrated into various aspects of daily life, making it an accessible and practical tool rather than something distant or unattainable.")
 
+with tab2:
     st.header("3.What kind of Supervised Learning do you like")
-    st.write("&nbsp;&nbsp;&nbsp;&nbsp;But no matter where it is applied, the underlying logic is consistent. Starting from the basics is a necessary path to becoming a master. Choose a direction that interests you and dive in.")
+    st.write("&nbsp;&nbsp;&nbsp;&nbsp; No matter where it is applied, the underlying logic is consistent. Starting from the basics is a necessary path to becoming a master. Choose a direction that interests you and dive in. :diving_mask: ")
 
     summaries = {
         "Linear Regression": "&nbsp;&nbsp;&nbsp;&nbsp;Linear regression is one of the most fundamental supervised learning algorithms, primarily used for predicting continuous target variables. It assumes a linear relationship between input features and the target variable and attempts to find the best-fitting line to describe this relationship.",
@@ -409,20 +77,36 @@ with tab1:
     )
 
     if selected_method == "Linear Regression":
-        subpage1()
+        subpage1(summaries[selected_method])
     elif selected_method == "Logistic Regression":
-        subpage2()
+        subpage2(summaries[selected_method])
     elif selected_method == "Support Vector Machine":
-        subpage3()
+        subpage3(summaries[selected_method])
     elif selected_method == "Random Forest":
-        subpage4()
+        subpage4(summaries[selected_method])
 
-with tab2:
+    st.divider()
+
+    st.subheader("Quiz time!")
+    st.write("How much have you learnt?!?")
+
+    supervised_quiz()
+
+with tab3:
+    
+    
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        st.write("Here , we created a model using **real data** which can be used to classify the severity of some car crashes. used random forest. give a bit more background etc etc")
+    
+    with col2:
+        st.image('images/1_supervised_images/cars_onroad.jpg')
+    
     # Load Dataset
     @st.cache_data
-    def load_data():
-        df = pd.read_csv('datasets/Collisions.csv')
-        df = df[['SEVERITYCODE', 'WEATHER', 'ROADCOND', 'LIGHTCOND', 'SPEEDING']]  # Sample Features
+    def clean_data(df):
+        
+        # st.dataframe(df.head())
 
         df['SPEEDING'] = df['SPEEDING'].fillna('N')
         df['SPEEDING'] = df['SPEEDING'].replace(r'^\s*$', 'N', regex=True)
@@ -440,8 +124,22 @@ with tab2:
         df[categorical_features] = encoder.fit_transform(df[categorical_features])
         return df
 
+    data = pd.read_csv('datasets/Collisions.csv')
+    
+    # Sample Features
+    df = data[['SEVERITYCODE', 'WEATHER', 'ROADCOND', 'LIGHTCOND', 'SPEEDING']] # +junctiontype/ addrtype
+
+    st.write("This is the data we're using:")
+    st.dataframe(df.head())
+    
+    st.write("Some of the columns are categories. This does not work well in (something - rf clas?) because (reason). therefore we need to change them to numerical values")
+    st.write("There are also missing vlaues which need to be cleaned. [Explain how they were cleaned]")
+    
     # Load data
-    df = load_data()
+    df = clean_data(df)
+    
+    st.dataframe(df.head())
+
 
     df.fillna('0', inplace=True) 
 
@@ -450,27 +148,33 @@ with tab2:
 
     st.header('Predicting Accident Severity - Random Forest Classifier')
 
+    st.write("Lets have a look at the distribution of crash severity values")
+
     # Visualize Class Distribution of Severity Code
-    with st.expander("Distribution of Accident Severity - Seattle Collisions Data"):
-        fig, ax = plt.subplots()
-        sns.countplot(x=df['SEVERITYCODE'], palette='viridis', ax=ax)
-        ax.set_xlabel("Severity Code")
-        ax.set_ylabel("Count")
-        ax.set_yscale('log')
-        st.pyplot(fig)
+    st.subheader(" Distribution of Accident Severity")
+    fig, ax = plt.subplots(figsize=(8,5))
+    sns.countplot(x=df['SEVERITYCODE'], palette='viridis', ax=ax)
+    ax.set_xlabel("Severity Code")
+    ax.set_ylabel("Count")
+    # ax.set_yscale('log')
+    st.pyplot(fig)
 
     st.write('The plot above shows the severity distribution of car accidents in Seattle. 0 = Unknown, 1 = Prop damage, 2 = Minor injury, 3 = Serious injury, 4 = Fatality. What factors could we use to predict the outcome for a given accident?')
 
-    with st.expander("Dataset Preview"):
-        st.write (df.head())  # Show first 5 rows
+    st.write("We can clearly see that the majority of crashes have severity of 1 or 2. Very low or very high severity crashes are rare. ")
 
-    st.image('images/cars_onroad.jpg')
+    # st.write("Dataset Preview:", df.head())  # Show first 5 rows
+
+    
 
     # Streamlit Sidebar for Feature Selection
     st.header("Select Features for Prediction")
+    
+    st.write("GIVE OVERVIEW OF WHATS HAPPENING HERE. ")
+    st.write("go step by step through what you're doing, why you're doing it, and what it shows. ")
+    
+    
     selected_features = st.multiselect("Choose features to include", X.columns.tolist(), default=X.columns.tolist())
-
-    feature_importances = None
 
     # Train Model on Selected Features
     if selected_features:
@@ -479,7 +183,7 @@ with tab2:
             st.stop()
 
         # Sliders for Model Parameters (Main Layout)
-        st.header("Adjust Model Parameters")
+        st.header("🔧 Adjust Model Parameters")
 
         col1, col2, col3 = st.columns(3)
 
@@ -492,9 +196,9 @@ with tab2:
         with col3:
             min_samples_split = st.slider("Min Samples Split", min_value=2, max_value=20, value=2, step=1)        
     
-        X_train, X_test, y_train, y_test = train_test_split(X[selected_features], y, test_size=0.2, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(X[selected_features], y, test_size=0.2, random_state=1)
         
-        model = RandomForestClassifier(n_estimators=100, random_state=42)
+        model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, min_samples_split=min_samples_split, random_state=42)
         model.fit(X_train, y_train)
 
         st.write("Feature Importances:", model.feature_importances_)
@@ -504,6 +208,8 @@ with tab2:
         
         # Display Performance Metrics
         st.write("## Model Performance")
+        
+        st.write("EXPLAIN WHAT THIS MEANS AND WHAT IT SHOWS")
         st.write(f"**Model Accuracy with Selected Features:** {accuracy:.4f}")
         
         feature_importances = pd.DataFrame({
@@ -520,38 +226,18 @@ with tab2:
         feature_importances = pd.DataFrame({'Feature': selected_features, 'Importance': model.feature_importances_}).sort_values(by="Importance", ascending=False)
 
         fig, ax = plt.subplots(figsize=(8, 4))
-        sns.barplot(x="Importance", y="Feature", data=feature_importances, ax=ax, palette=sns.color_palette("viridis", len(feature_importances)))
+        sns.barplot(x="Importance", y="Feature", data=feature_importances, ax=ax)
         ax.set_title("Feature Importance")
         st.pyplot(fig)
     else:
         st.warning("Please select at least one feature to train the model.")
 
-        # Quiz: Most Important Feature
-    st.header("Quiz: Identify the Most Important Feature!")
+    st.write("Explain what this shows.")
+    
+    st.write("Also reiterate what they've learnt/ why this is useful. ")
 
-    if feature_importances is not None and isinstance(feature_importances, pd.DataFrame) and not feature_importances.empty:
-        # Get the most important feature
-        most_important_feature = feature_importances.iloc[0]['Feature']
 
-        # Shuffle feature names for quiz options
-        quiz_options = feature_importances['Feature'].tolist()
-
-        # Ask the question
-        selected_answer = st.radio(
-            "Which feature has the **highest** importance in the model?",
-            quiz_options, index=None
-        )
-
-        # Check if the answer is correct
-        if st.button("Submit Answer"):
-            if selected_answer == most_important_feature:
-                st.success(f"Correct! **{most_important_feature}** is the most important feature in the model.")
-            elif selected_answer == None:
-                st.write("")    
-            else:
-                st.error(f"Incorrect. The most important feature is **{most_important_feature}**.")    
-
-with tab3:
+with tab4:
     @st.cache_data
     def load_imdb_data():
         df = pd.read_csv('datasets/IMDb_Dataset.csv')  # Update path
@@ -577,18 +263,18 @@ with tab3:
     # Streamlit UI
     st.header("Predicting IMDb Film Ratings with Linear Regression")
 
-    st.image('images/imdb.png')
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        st.write("intro to the page, what are you doingn here, what tool are you using, and why.")
+    with col2:
+        st.image('images/1_supervised_images/imdb.png')
 
-    st.write('As we are predicting a continuous variable (rating /10), here we use a regression approach instead of classification.')
-
-    with st.expander("Dataset Preview"):
-        st.write(df_imdb.head())
+    st.write('As we are predicting a continuous variable (rating /10), here we use a **regression** approach instead of classification. EXPLAIN WHY THERES A DIFFERENCE?')
+    st.write('Dataset Preview:', df_imdb.head())
 
     # Feature Selection
     st.subheader("Select Features for Prediction")
     selected_features_imdb = st.multiselect("Choose features", X_imdb.columns.tolist(), default=X_imdb.columns.tolist())
-
-    coefficients = None
 
     # Train Model if Features Are Selected
     if selected_features_imdb:
@@ -619,17 +305,19 @@ with tab3:
 
         st.write("**Feature Coefficients**")
         fig, ax = plt.subplots(figsize=(8, 4))
-        sns.barplot(x="Coefficient", y="Feature", data=coefficients, ax=ax, palette=sns.color_palette("coolwarm", len(coefficients)))
+        sns.barplot(x="Coefficient", y="Feature", data=coefficients, ax=ax)
         ax.set_title("Feature Coefficients")
         st.pyplot(fig)
+        
+        st.write("Explain here what this shows eg longer/older films => better rated")
 
     else:
         st.warning("Please select at least one feature to train the model.")
 
     # Quiz: Least Important Feature (Smallest Absolute Coefficient)
-    st.header("Quiz: Identify the Least Important Feature!")
+    st.header("🧠 Quiz: Identify the Least Important Feature!")
 
-    if not coefficients is not None and isinstance(coefficients, pd.DataFrame) and not coefficients.empty:
+    if not coefficients.empty:
         # Get the feature with the smallest absolute coefficient
         least_important_feature = coefficients.iloc[-1]['Feature']
 
@@ -645,8 +333,9 @@ with tab3:
         # Check if the answer is correct
         if st.button("Submit Answer 2"):
             if selected_answer == least_important_feature:
-                st.success(f" Correct! The least important feature is **{least_important_feature}**.")
-            elif selected_answer == None:
-                st.write("")                   
+                st.success(f"✅ Correct! The least important feature is **{least_important_feature}**.")
+            # leave blank if no answer selected
+            elif selected_answer==None:
+                st.write("")
             else:
-                st.error(f"Incorrect. The least important feature is **{least_important_feature}**.")    
+                st.error(f"❌ Incorrect. The least important feature is **{least_important_feature}**.")    

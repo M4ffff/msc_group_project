@@ -135,7 +135,7 @@ with sections[0]:
                     """)
 
     # Insert an image of a basic architecture 
-    st.image("images/nn_architecture.svg")
+    st.image("images/3_neural_network_images/nn_architecture.svg")
 
 # Background information section describing the main components of Neural Networks 
 with sections[1]:
@@ -168,7 +168,7 @@ with sections[1]:
         """)
 
         # Insert Neuron image 
-        st.image("images/Neuron.png")
+        st.image("images/3_neural_network_images/Neuron.png")
 
     # Explain what a layer is 
     with st.expander("**WHAT IS A LAYER?**"):
@@ -309,7 +309,7 @@ with sections[1]:
                     """)
         
         # Insert Loss diagram 
-        st.image("images/loss.png")
+        st.image("images/3_neural_network_images/loss.png")
 
     # Allow user to explore different types of Loss function
     user_loss = st.selectbox("Select a Loss Function:", ["Mean Squared Error", "Binary Cross-Entropy", "Categorical Cross-Entropy"])
@@ -371,7 +371,7 @@ with sections[1]:
                     """)
         
         # Insert gradient descent image
-        st.image("images/gradient_descent.png")
+        st.image("images/3_neural_network_images/gradient_descent.png")
 
     
     # Allow user to explore information on two different optimisation algorithms
@@ -556,7 +556,14 @@ with sections[2]:
             st.markdown("**Model Summary:**")
             io_file = io.StringIO()
             model.summary(print_fn=lambda x: io_file.write(x + '\n'))
-            st.text(io_file.getvalue())
+            summary_text = io_file.getvalue()
+            formatted_summary = f"""
+            <div style="max-width: 320px; overflow-x: auto;">
+                <pre>{summary_text}</pre>
+            </div>
+            """
+            st.markdown(formatted_summary, unsafe_allow_html=True)
+
 
             # Split into training and testing data and call the training function
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
@@ -580,7 +587,7 @@ with sections[2]:
             
     with column2:
         st.markdown(""" -----""")
-        st.image("images/brain.png")
+        st.image("images/3_neural_network_images/brain.png")
 
 
 
