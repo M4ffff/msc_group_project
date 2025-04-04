@@ -15,7 +15,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import OrdinalEncoder
 
 
-from Modules.supervised_functions import subpage1, subpage2, subpage3, subpage4
+from Modules.supervised_functions import subpage1, subpage2, subpage3, subpage4, supervised_quiz
 
 
 st.title("Supervised Learning ")
@@ -84,6 +84,12 @@ with tab2:
         subpage3(summaries[selected_method])
     elif selected_method == "Random Forest":
         subpage4(summaries[selected_method])
+
+
+    st.subheader("Quiz time!")
+    st.write("How much have you learnt?!?")
+
+    supervised_quiz()
 
 with tab3:
     # Load Dataset
