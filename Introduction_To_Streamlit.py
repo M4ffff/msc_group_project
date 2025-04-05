@@ -49,8 +49,11 @@ y=2*x
 
 st.subheader("Slider")
 # widget
-slider_val = st.slider('x')  
-st.write(slider_val, 'squared is', slider_val * slider_val)
+slider_val = st.slider('x', 1, 60)  
+snake = slider_val*'--' + '8<'
+st.write(snake)
+hs = slider_val*'h'
+st.write(f"a{hs} a snake")
 
 
 st.subheader("Checkbox")
