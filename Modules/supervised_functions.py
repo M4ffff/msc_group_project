@@ -237,6 +237,32 @@ def subpage1(method):
         """)
     y_pred = model.predict(X_test)
     mse = mean_squared_error(y_test, y_pred)
+    with st.expander("**What is Mean Squared Error:**"):
+        st.markdown(
+            """
+         Mean Squared Error is a widely used measure of the difference between the estimated values and the actual values in statistics and machine learning. Here is a detailed explanation:\n
+         # Definition\n
+         Mean Squared Error is the average of the squares of the differences between the predicted values and the actual values. It quantifies the average squared magnitude of the errors.\n
+         # Formula \n
+        If we have a set of n observations, where yi represents the actual value and  y^i represents the predicted value for the i-th observation, the Mean Squared Error (MSE) is calculated as: \n
+             """)
+        st.latex(r"MSE = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2")
+        st.markdown(
+            """
+        is the error for the i-th observation, and squaring this error ensures that all errors are positive and magnifies larger errors.\n
+         # Properties\n
+        Non-negativity: MSE is always non-negative because it involves squaring the differences. A value of zero indicates a perfect fit where all predictions match the actual values exactly.\n
+        Sensitivity to outliers: Since MSE involves squaring the errors, it is more sensitive to larger errors. This means that a few large errors can significantly increase the overall MSE value.\n
+        Units: The units of MSE are the square of the units of the dependent variable. For example, if the dependent variable is measured in meters, the MSE will be in square meters.\n
+         # Applications\n
+        Regression Analysis: MSE is commonly used as a loss function in regression models to evaluate the performance of the model. It helps in optimizing the model parameters to minimize the prediction errors.\n
+        Model Selection: In model selection, MSE can be used to compare different models. A model with a lower MSE is generally considered to have better predictive accuracy.\n
+        Forecasting: In time series forecasting, MSE is used to assess the accuracy of forecasts by comparing the predicted values with the actual values over time.\n
+         # Limitations\n
+        Interpretability: The squared units of MSE can make it difficult to interpret directly. For example, it may not be immediately clear how an MSE of 100 compares to an MSE of 1000 in terms of practical significance.\n
+        Overemphasis on large errors: Because MSE squares the errors, it may overemphasize the impact of outliers or large errors. In some cases, other metrics like Mean Absolute Error (MAE) might be more appropriate if the goal is to minimize the average error magnitude rather than the squared error.\n
+        In summary, Mean Squared Error is a fundamental metric used to evaluate the accuracy of predictions in various fields such as statistics, machine learning, and econometrics. Its simplicity and mathematical properties make it a popular choice, but it is important to consider its limitations and choose the appropriate metric based on the specific problem and data characteristics.\n
+              """)
     st.write(f"Mean Squared Error: {mse}")
     # Evaluate the model using Mean Squared Error
 
@@ -370,7 +396,32 @@ def subpage2(method):
     y_pred = model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
     conf_matrix = confusion_matrix(y_test, y_pred)
+    with st.expander("**What is Accuracy:**"):
+        st.markdown(
+            """
+        # Definition:\n 
+        Accuracy is a measure of how often the model makes the correct prediction. It is the ratio of the number of correct predictions to the total number of predictions made.\n
+        # Formula: 
+        If TP is the number of true positives, TN is the number of true negatives, FP is the number of false positives, and FN is the number of false negatives, then accuracy is calculated as:\n
+             """)
+        st.latex(r"\text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}")
+        st.markdown(
+            """
+        Explanation: In the case, Accuracy:0.XX  means that the model has an accuracy of XX%, indicating that the account of predictions made by the model are correct.
+              """)
     st.write(f"Accuracy: {accuracy:.2f}")
+    with st.expander("**What is Confusion Matrix:**"):
+        st.latex(r"\begin{array}{c|cc}& \text{Predicted Positive} & \text{Predicted Negative} \\\hline\text{Actual Positive} & TP & FN \\\text{Actual Negative} & FP & TN \\\end{array}")
+        st.markdown(
+            """
+        # Definition:\n
+        A confusion matrix is a table used to evaluate the performance of a classification model. It shows the counts of true positives, true negatives, false positives, and false negatives.\n
+        # Structure:\n
+        True Positives (TP): The number of instances that were correctly predicted as positive.\n
+        True Negatives (TN): The number of instances that were correctly predicted as negative.\n
+        False Positives (FP): The number of instances that were incorrectly predicted as positive (Type I error).\n
+        False Negatives (FN): The number of instances that were incorrectly predicted as negative (Type II error).\n
+              """)
     st.write("Confusion Matrix:")
     st.write(conf_matrix)
     # Evaluate the model using accuracy and confusion matrix
@@ -500,10 +551,35 @@ def subpage3(method):
 
     y_pred = model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
+    with st.expander("**What is Accuracy:**"):
+        st.markdown(
+            """
+        # Definition:\n 
+        Accuracy is a measure of how often the model makes the correct prediction. It is the ratio of the number of correct predictions to the total number of predictions made.\n
+        # Formula: 
+        If TP is the number of true positives, TN is the number of true negatives, FP is the number of false positives, and FN is the number of false negatives, then accuracy is calculated as:\n
+             """)
+        st.latex(r"\text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}")
+        st.markdown(
+            """
+        Explanation: In the case, Accuracy:0.XX  means that the model has an accuracy of XX%, indicating that the account of predictions made by the model are correct.
+              """)
     st.write("Accuracy:", accuracy)
     # Evaluate the model using accuracy
 
     # Confusion Matrix section
+    with st.expander("**What is Confusion Matrix:**"):
+        st.latex(r"\begin{array}{c|cc}& \text{Predicted Positive} & \text{Predicted Negative} \\\hline\text{Actual Positive} & TP & FN \\\text{Actual Negative} & FP & TN \\\end{array}")
+        st.markdown(
+            """
+        # Definition:\n
+        A confusion matrix is a table used to evaluate the performance of a classification model. It shows the counts of true positives, true negatives, false positives, and false negatives.\n
+        # Structure:\n
+        True Positives (TP): The number of instances that were correctly predicted as positive.\n
+        True Negatives (TN): The number of instances that were correctly predicted as negative.\n
+        False Positives (FP): The number of instances that were incorrectly predicted as positive (Type I error).\n
+        False Negatives (FN): The number of instances that were incorrectly predicted as negative (Type II error).\n
+              """)
     st.subheader("Confusion Matrix")
     conf_matrix = confusion_matrix(y_test, y_pred)
     plt.figure(figsize=(8, 6))
@@ -618,6 +694,36 @@ def subpage4(method):
 
     # Feature Importance section
     st.subheader("Feature Importance")
+    with st.expander("**Feature Importance in Random Forest:**"):
+        st.markdown(
+            """
+        Feature Importance is a critical concept in machine learning, especially when using ensemble methods like Random Forest. It helps in understanding which features contribute the most to the prediction of the target variable. In Random Forest, feature importance is typically calculated using one of the following methods:\n
+        # 1. Gini Importance (Mean Decrease in Impurity)\n
+        Gini Importance, also known as Mean Decrease in Impurity (MDI), measures the total reduction in node impurity (such as Gini impurity or entropy) brought by a feature across all trees in the forest. The steps to calculate Gini Importance are:\n
+        Compute Node Impurity: Calculate the decrease in impurity for each feature when it is used to split a node.\n
+        Weight by Node Probability: Multiply the reduction in impurity by the probability of reaching that node.\n
+        Sum Across Trees: Sum these values across all trees in the forest for each feature.\n
+        However, Gini Importance can be biased towards high cardinality features (features with many unique values) because they tend to create more splits and thus appear more important.\n
+        # 2. Permutation Importance\n
+        Permutation Importance evaluates the impact of each feature on the model's performance by randomly shuffling the values of a single feature and measuring the resulting decrease in accuracy. The steps are:\n
+        Train Model: Train the Random Forest on the original dataset and observe the accuracy.\n
+        Permute Feature Values: Randomly permute the values of a single feature.\n
+        Measure Performance Drop: Test the model on the permuted dataset and measure the performance drop.\n
+        Repeat: Repeat the process for all features and average the results.\n
+        This method is more computationally expensive but provides a more accurate measure of feature importance, especially in the presence of correlated features.\n
+        # 3. SHAP Values (SHapley Additive exPlanations)\n
+        SHAP Values are based on cooperative game theory and provide a unified measure of feature importance by explaining the contribution of each feature to individual predictions. The steps to calculate SHAP Values are:\n
+        Coalitional Game Theory: Treat all features as players in a cooperative game where the goal is to predict the target variable.\n
+        Shapley Values: Calculate the marginal contribution of each feature across all possible subsets of features.\n
+        Aggregate: Aggregate these contributions to get the overall feature importance.\n
+        SHAP Values offer a comprehensive understanding of feature importance across various data points and are particularly useful for interpreting complex models.\n
+        # Why Feature Importance Matters\n
+        Understanding feature importance in Random Forest models is important for several reasons:\n
+        Feature Selection: Identifying the most relevant features can improve model performance and reduce overfitting.\n
+        Model Interpretability: Knowing which features are most important aids in interpreting the model's behavior and explaining its decisions to stakeholders.\n
+        Enhancing Domain Knowledge: Analyzing feature importance can provide insights into the underlying patterns in the data and contribute to domain knowledge.\n
+        In summary, feature importance in Random Forest models helps in identifying the most influential features, improving model performance, and providing interpretability. Methods like Gini Importance, Permutation Importance, and SHAP Values each offer unique insights into feature contributions\n
+        """)
     feature_importances = rf.feature_importances_
     feature_names = ['Feature 1', 'Feature 2']
     plt.figure(figsize=(10, 6))
@@ -632,6 +738,18 @@ def subpage4(method):
     cm = confusion_matrix(y_test, y_pred)
     plt.figure(figsize=(8, 6))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+    with st.expander("**What is Confusion Matrix:**"):
+        st.latex(r"\begin{array}{c|cc}& \text{Predicted Positive} & \text{Predicted Negative} \\\hline\text{Actual Positive} & TP & FN \\\text{Actual Negative} & FP & TN \\\end{array}")
+        st.markdown(
+            """
+        # Definition:\n
+        A confusion matrix is a table used to evaluate the performance of a classification model. It shows the counts of true positives, true negatives, false positives, and false negatives.\n
+        # Structure:\n
+        True Positives (TP): The number of instances that were correctly predicted as positive.\n
+        True Negatives (TN): The number of instances that were correctly predicted as negative.\n
+        False Positives (FP): The number of instances that were incorrectly predicted as positive (Type I error).\n
+        False Negatives (FN): The number of instances that were incorrectly predicted as negative (Type II error).\n
+              """)
     plt.title('Confusion Matrix')
     st.pyplot(plt)
     # Evaluate the model using a confusion matrix
