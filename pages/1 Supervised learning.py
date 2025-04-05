@@ -32,7 +32,7 @@ with tab1:
     st.write("&nbsp;&nbsp;&nbsp;&nbsp;The task of a supervised learner is to predict the output of this function for any possible input after observing some pre-labeled training examples (inputs and expected outputs). To achieve this, the learner must generalize from the existing data to unobserved cases in a reasonable manner (see inductive bias). In human and animal perception, this is commonly referred to as concept learning.")
     st.write("Description from [Wikipedia](https://en.wikipedia.org/wiki/Supervised_learning)")
 
-    st.header("2. What is Supervised Learning ")
+    st.header("2.Where is supervised learning applied?")
     st.write("&nbsp;&nbsp;&nbsp;&nbsp;Supervised learning is one of the most common methods in machine learning. It trains models using labeled training data, enabling the models to make predictions or classifications on new, unseen data. ")
     st.write("&nbsp;&nbsp;&nbsp;&nbsp;Due to its powerful predictive capabilities and broad applicability, supervised learning has a wide range of applications in many fields. Here are some of the main application areas:")
     st.subheader("&nbsp;&nbsp;1. Image Recognition")
@@ -65,17 +65,21 @@ with tab2:
     st.header("3.What kind of Supervised Learning do you like")
     st.write("&nbsp;&nbsp;&nbsp;&nbsp; No matter where it is applied, the underlying logic is consistent. Starting from the basics is a necessary path to becoming a master. Choose a direction that interests you and dive in. :diving_mask: ")
 
+    #
     summaries = {
         "Linear Regression": "&nbsp;&nbsp;&nbsp;&nbsp;Linear regression is one of the most fundamental supervised learning algorithms, primarily used for predicting continuous target variables. It assumes a linear relationship between input features and the target variable and attempts to find the best-fitting line to describe this relationship.",
         "Logistic Regression": "&nbsp;&nbsp;&nbsp;&nbsp;Logistic regression is mainly used for binary classification problems. It maps the results of linear regression to values between 0 and 1 using a logistic function, thereby predicting the probability of an event occurring.",
         "Support Vector Machine": "&nbsp;&nbsp;&nbsp;&nbsp;Support Vector Machine (SVM) is a powerful classification algorithm that maximizes the margin between different classes by finding an optimal decision boundary. SVM can also be used for regression problems.",
         "Random Forest": "&nbsp;&nbsp;&nbsp;&nbsp;Random Forest is an ensemble learning method that improves the generalization ability of the model by constructing multiple decision trees and averaging or voting on their results."
     }
+
+    #
     selected_method = st.selectbox(
         "Choose an option that you like",
         options=list(summaries.keys())
     )
 
+    #
     if selected_method == "Linear Regression":
         subpage1(summaries[selected_method])
     elif selected_method == "Logistic Regression":
