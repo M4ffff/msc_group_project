@@ -32,8 +32,19 @@ with tab1:
     st.write("After being trained on labeled examples, the model can then make educated guesses on new, unseen data. This ability to generalize is key, and it mirrors how humans learn to recognize patterns and form concepts.")
     st.write("(*Based on [Wikipedia](https://en.wikipedia.org/wiki/Supervised_learning)*)")
 
+<<<<<<< HEAD
     st.header("Supervised Learning in the ***:rainbow[real-world]***")
     st.write("Due to its powerful predictive capabilities and broad applicability, supervised learning has a wide range of applications in many fields. Here are some of the main application areas:")
+=======
+    st.header("2.Where is supervised learning applied?")
+    st.write("&nbsp;&nbsp;&nbsp;&nbsp;Supervised learning is one of the most common methods in machine learning. It trains models using labeled training data, enabling the models to make predictions or classifications on new, unseen data. ")
+    st.write("&nbsp;&nbsp;&nbsp;&nbsp;Due to its powerful predictive capabilities and broad applicability, supervised learning has a wide range of applications in many fields. Here are some of the main application areas:")
+    st.subheader("&nbsp;&nbsp;1. Image Recognition")
+    st.write("&nbsp;&nbsp;&nbsp;&nbsp;Facial Recognition: Used in security systems and social media (e.g., for automatic photo tagging).")
+    st.write("&nbsp;&nbsp;&nbsp;&nbsp;Object Detection: Detecting pedestrians and vehicles in autonomous driving, and abnormal behaviors in security surveillance.")
+    st.write("&nbsp;&nbsp;&nbsp;&nbsp;Medical Imaging Analysis: Used for disease diagnosis (e.g., cancer detection, X-ray image analysis).")
+    col1, col2, col3 = st.columns([1, 2, 3])
+>>>>>>> 9af049312b7e73d6a2f3d9b90564ab3107a9accf
     
     st.subheader("Image Recognition")
     st.write("Facial Recognition: Used in security systems and social media (e.g., for automatic photo tagging).")
@@ -69,17 +80,21 @@ with tab2:
     st.header("Which Supervised Learning model would you like?")
     st.write("No matter where it is applied, the underlying logic is consistent. Starting from the basics is a necessary path to becoming a master. Choose a direction that interests you and dive in. :diving_mask: ")
 
+    #
     summaries = {
         "Linear Regression": "Linear regression is one of the most fundamental supervised learning algorithms, primarily used for predicting continuous target variables. It assumes a linear relationship between input features and the target variable and attempts to find the best-fitting line to describe this relationship.",
         "Logistic Regression": "Logistic regression is mainly used for binary classification problems. It maps the results of linear regression to values between 0 and 1 using a logistic function, thereby predicting the probability of an event occurring.",
         "Support Vector Machine": "Support Vector Machine (SVM) is a powerful classification algorithm that maximizes the margin between different classes by finding an optimal decision boundary. SVM can also be used for regression problems.",
         "Random Forest": "Random Forest is an ensemble learning method that improves the generalization ability of the model by constructing multiple decision trees and averaging or voting on their results."
     }
+
+    #
     selected_method = st.selectbox(
         "Pick a model!",
         options=list(summaries.keys())
     )
 
+    #
     if selected_method == "Linear Regression":
         subpage1(summaries[selected_method])
     elif selected_method == "Logistic Regression":

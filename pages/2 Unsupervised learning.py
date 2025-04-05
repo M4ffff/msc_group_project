@@ -16,7 +16,11 @@ from Modules.unsupervised_functions import kmeans_cluster, gmm_cluster, dbscan_c
 st.title("Unsupervised Learning Page")
 
 
+<<<<<<< HEAD
 tab1, tab2, tab3 = st.tabs(["Introduction", "Real-World Application", "Clustering Examples"])
+=======
+tab1, tab2, tab3, tab4 = st.tabs(["Introduction", "Unsupervised explanation", "Clustering Examples", "Python Implementation"])
+>>>>>>> 9af049312b7e73d6a2f3d9b90564ab3107a9accf
 
 with tab1:
     st.subheader("What ***is*** Unsupervised Learning:question::exclamation:")
@@ -735,5 +739,101 @@ with tab3:
     st.write(conclusion_multi)
 
 
+with tab4:
+    st.subheader("Python implementation")
+    
+    st.write("Here, we'll run through how to implement the tools used on this page in **Python**")
+    st.write("If you have no experience in coding or just don't want to know how to implement these concepts in Python, that is *completely fine*, just skip on to the next page.\
+        However, if you're an ***advanced learner*** crack on through this page.")
+    st.write("Be warned, a basic understanding knowledge of Python is required to understand this page. ")
+    
+    python_implementation_multi = """
+    
+    Here, I give a little function showing how to implement K-means clustering on a set of data.
+    We use a module called ***sklearn*** to implement the clustering technique.
+    This does all the hard work for you!
+    
+    ``` python
+    from sklearn.cluster import KMeans
+    
+    def kmeans_cluster(data, num_centres):
+        \"""
+        Cluster data using kmeans clustering
 
+        Args:
+            data (df): input data to cluster
+            num_centres (int): Number of clusters
 
+        Returns:
+            labels: labels for each datapoint of which cluster they are in
+            cluster_centres: coordinates of cluster centres
+        \"""
+        kmeans = KMeans(n_clusters=num_centres)
+        kmeans.fit(data)
+        
+        labels = kmeans.labels_
+        cluster_centres = kmeans.cluster_centers_
+        
+        return labels, cluster_centres
+    ```
+    Notice how you must define the number of clusters. 
+    
+    The Gaussian Mixture Model is very similar:
+    
+    ``` python
+    from sklearn.mixture import GaussianMixture
+    
+    def gmm_cluster(data, num_centres):     
+        \"""
+        Cluster data using gmm clustering
+
+        Args:
+            data (df): input data to cluster
+            num_centres (int): Number of clusters
+
+        Returns:
+            size: Size proportional to probabilty of data being in given cluster
+            colour_labels: labels for each datapoint of which cluster they are in
+        \"""   
+
+        gmm = GaussianMixture(n_components=num_centres).fit(data)
+        colour_labels = gmm.predict(data)
+        
+        probabilities = gmm.predict_proba(data)
+        size = 15 * probabilities.max(axis=1) ** 2
+        
+        return size, colour_labels
+    
+    ```
+    
+    The DBSCAN method is a little different, as you do not need to input the number of clusters, and can the hyperparameters 'eps' and 'min_samples'.
+    
+    ``` python
+    from sklearn.cluster import DBSCAN
+    
+    def dbscan_cluster(data, eps, min_samples):
+        \"""
+        Cluster data using dbscan clustering
+
+        Args:
+            data (df): input data to cluster
+            eps (int): Max distance for points to be neighbours.
+            min_samples (int): Minimum number of points needed to form a cluster.
+
+        Returns:
+            labels: labels for each datapoint of which cluster they are in
+        \"""   
+        
+        dbscan = DBSCAN(eps=eps, min_samples=min_samples).fit(data)
+        labels = dbscan.labels_
+        
+        num_labels = len(np.unique(labels))
+        st.write(f"Number of unique labels: {num_labels}")
+
+        return labels
+    ```
+    
+    """
+
+    st.write(python_implementation_multi)
+    
