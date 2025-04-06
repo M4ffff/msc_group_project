@@ -281,7 +281,7 @@ with tab4:
         cert_map = {'G': 0, 'PG-13': 1, 'R': 3}
         df['Certificates'] = df['Certificates'].map(cert_map)
 
-        df = df[['IMDb Rating', 'Certificates', 'Duration (minutes)', 'Year']]
+        df = df[['IMDb Rating', 'Certificates', 'Duration (minutes)', 'Year', 'MetaScore']]
         df = df.dropna()
 
         return df
