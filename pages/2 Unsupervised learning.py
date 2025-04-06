@@ -16,7 +16,7 @@ from Modules.unsupervised_functions import kmeans_cluster, gmm_cluster, dbscan_c
 st.title("Unsupervised Learning Page")
 
 
-tab1, tab2, tab3, tab4 = st.tabs(["Introduction", "Unsupervised explanation", "Clustering Examples", "Python Implementation"])
+tab1, tab2, tab3, tab4 = st.tabs(["Introduction", "Real-life Example", "Clustering Explorations", "Python Implementation"])
 
 with tab1:
     st.subheader("What ***is*** Unsupervised Learning:question::exclamation:")
@@ -65,7 +65,7 @@ with tab1:
     
     st.subheader("Unsupervised Learning applications")
 
-    st.markdown("Unsupervised learning is particularly valuable in the early stages of data analysis, especially for data preparation and visualisation. It is often used when data scientists do not have predefined labels or clear hypotheses, allowing them to explore the data freely.")
+    st.markdown("Unsupervised learning is particularly valuable in the *early stages* of data analysis, especially for data preparation and visualisation. It is often used when data scientists do not have predefined labels or clear hypotheses, allowing them to explore the data freely.")
     st.markdown("By uncovering the most relevant features and revealing hidden patterns or relationships, unsupervised learning helps reduce the risk of human bias or oversight. Common applications include anomaly detection, preparing datasets for supervised learning, and powering recommendation systems by identifying natural groupings or preferences within the data.")
     
     
