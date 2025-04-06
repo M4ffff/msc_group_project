@@ -30,7 +30,6 @@ with tab1:
     st.header("What is Supervised Learning ")
     st.write("Supervised learning is one of the core techniques in machine learning. Think of it like teaching a model with examples: you provide it with data (the inputs) along with the correct answers (the outputs), and it learns to make predictions based on that. These predictions can be continuous values (like predicting house prices—this is called regression) or categories (like identifying if an email is spam or not—this is called classification).")
     st.write("After being trained on labeled examples, the model can then make educated guesses on new, unseen data. This ability to generalize is key, and it mirrors how humans learn to recognize patterns and form concepts.")
-    st.write("(*Based on [Wikipedia](https://en.wikipedia.org/wiki/Supervised_learning)*)")
 
     st.header("Supervised Learning in the ***:rainbow[real-world]***")
     st.write("Due to its powerful predictive capabilities and broad applicability, supervised learning has a wide range of applications in many fields. Here are some of the main application areas:")
