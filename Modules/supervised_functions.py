@@ -174,21 +174,23 @@ def subpage1(method):
     # Data Generation section
     st.subheader("Data Generation")
     with st.expander("**How we get random data:**"):
+        st.code("np.random.seed(int(seed))")
         st.markdown(
             """
-        #### np.random.seed(int(seed))\n
         Purpose:\n
         Sets the seed for the random number generator.\n
         Explanation:\n
         By setting a seed, the random numbers generated will be reproducible. This means that every time you run the code with the same seed, you will get the same sequence of random numbers. This is useful for debugging and ensuring consistent results.\n
-        #### X/Y= 2.5 * np.random.rand(100, 1)  # Random feature values\n
-        Purpose: \n
-        Generates random feature values for the independent variable X.\n
-        Explanation:\n
-        np.random.rand(100, 1) generates 100 random numbers between 0 and 1, forming a 100x1 array (matrix).\n
-        Multiplying by 2.5 scales these random numbers to a range between 0 and 2.5. This creates the feature values for X.\n
-        \n
         """)
+        st.code("X/Y= 2.5 * np.random.rand(100, 1)  # Random feature values")
+        st.markdown(
+            """
+            Purpose: \n
+            Generates random feature values for the independent variable X.\n
+            Explanation:\n
+            np.random.rand(100, 1) generates 100 random numbers between 0 and 1, forming a 100x1 array (matrix).\n
+            Multiplying by 2.5 scales these random numbers to a range between 0 and 2.5. This creates the feature values for X.\n
+            """)
 
     st.write("Let's generate some synthetic data to demonstrate linear regression.")
     seed = st.slider("Choose a random seed", 0, 100, 1)
@@ -221,44 +223,52 @@ def subpage1(method):
     with st.expander("**What we have done:**"):
         st.markdown(
             """
-       # Splitting the Data:\n
-       X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\n
-       The dataset is divided into training and testing sets using the train_test_split function.\n
-       X and y are the feature and target arrays, respectively.\n
-       test_size=0.2 means that 20% of the data is used for testing, while the remaining 80% is used for training.\n
-       random_state=42 ensures reproducibility by setting a fixed seed for the random splitting process.\n
-       # Training the Model:\n
-       model = LinearRegression()\n
-       model.fit(X_train, y_train)\n
-       A LinearRegression model is created.\n
-       The model is trained using the training data (X_train and y_train) by calling the fit method. This step finds the best-fitting line (or hyperplane) that minimizes the error between the predicted and actual values in the training set.\n
-       # Summary\n
-       This code splits the data into training and testing sets and trains a linear regression model on the training data. The model is then ready to make predictions on the test set, which is used to evaluate its performance.
-        """)
+       #### Splitting the Data:\n
+       """)
+        st.code("X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)")
+        st.markdown(
+            """
+            The dataset is divided into training and testing sets using the train_test_split function.\n
+            X and y are the feature and target arrays, respectively.\n
+            test_size=0.2 means that 20% of the data is used for testing, while the remaining 80% is used for training.\n
+            random_state=42 ensures reproducibility by setting a fixed seed for the random splitting process.\n
+            ##### Training the Model:\n
+            """)
+        st.code("""    
+            model = LinearRegression()\n
+            model.fit(X_train, y_train)\n
+               """)
+        st.markdown(
+                     """
+             A LinearRegression model is created.\n
+             The model is trained using the training data (X_train and y_train) by calling the fit method. This step finds the best-fitting line (or hyperplane) that minimizes the error between the predicted and actual values in the training set.\n
+              #### Summary\n
+              This code splits the data into training and testing sets and trains a linear regression model on the training data. The model is then ready to make predictions on the test set, which is used to evaluate its performance.
+""")
     y_pred = model.predict(X_test)
     mse = mean_squared_error(y_test, y_pred)
     with st.expander("**What is Mean Squared Error:**"):
         st.markdown(
             """
          Mean Squared Error is a widely used measure of the difference between the estimated values and the actual values in statistics and machine learning. Here is a detailed explanation:\n
-         # Definition\n
+         #### Definition\n
          Mean Squared Error is the average of the squares of the differences between the predicted values and the actual values. It quantifies the average squared magnitude of the errors.\n
-         # Formula \n
+         #### Formula \n
         If we have a set of n observations, where yi represents the actual value and  y^i represents the predicted value for the i-th observation, the Mean Squared Error (MSE) is calculated as: \n
              """)
         st.latex(r"MSE = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2")
         st.markdown(
             """
         is the error for the i-th observation, and squaring this error ensures that all errors are positive and magnifies larger errors.\n
-         # Properties\n
+         #### Properties\n
         Non-negativity: MSE is always non-negative because it involves squaring the differences. A value of zero indicates a perfect fit where all predictions match the actual values exactly.\n
         Sensitivity to outliers: Since MSE involves squaring the errors, it is more sensitive to larger errors. This means that a few large errors can significantly increase the overall MSE value.\n
         Units: The units of MSE are the square of the units of the dependent variable. For example, if the dependent variable is measured in meters, the MSE will be in square meters.\n
-         # Applications\n
+         #### Applications\n
         Regression Analysis: MSE is commonly used as a loss function in regression models to evaluate the performance of the model. It helps in optimizing the model parameters to minimize the prediction errors.\n
         Model Selection: In model selection, MSE can be used to compare different models. A model with a lower MSE is generally considered to have better predictive accuracy.\n
         Forecasting: In time series forecasting, MSE is used to assess the accuracy of forecasts by comparing the predicted values with the actual values over time.\n
-         # Limitations\n
+         #### Limitations\n
         Interpretability: The squared units of MSE can make it difficult to interpret directly. For example, it may not be immediately clear how an MSE of 100 compares to an MSE of 1000 in terms of practical significance.\n
         Overemphasis on large errors: Because MSE squares the errors, it may overemphasize the impact of outliers or large errors. In some cases, other metrics like Mean Absolute Error (MAE) might be more appropriate if the goal is to minimize the average error magnitude rather than the squared error.\n
         In summary, Mean Squared Error is a fundamental metric used to evaluate the accuracy of predictions in various fields such as statistics, machine learning, and econometrics. Its simplicity and mathematical properties make it a popular choice, but it is important to consider its limitations and choose the appropriate metric based on the specific problem and data characteristics.\n
@@ -318,37 +328,37 @@ def subpage2(method):
     with st.expander("**Principle of Logistic Regression:**"):
         st.markdown(
             """
-        # 1.Linear Combination: \n
+        #### 1.Linear Combination: \n
         The input features x1,x2,…,xn are combined linearly with their respective coefficients w1,w2,…,wn,and the bias term b is added. This results in a linear score:z=w1x1+w2x2+…+wnxn+b\n
-        # 2.Logistic Function:\n 
+        #### 2.Logistic Function:\n 
         The linear score z is then passed through the logistic function (also known as the sigmoid function):\n
         The logistic function maps the linear score z to a value between 0 and 1, which can be interpreted as a probability.\n
         As z approaches positive infinity, P(y=1∣x) approaches 1.\n
         As z approaches negative infinity, P(y=1∣x) approaches 0.\n
          When z=0, P(y=1∣x)=0.5.\n
-         # Summary\n
+         #### Summary\n
          The formula represents the logistic regression model, which is used for binary classification problems. It calculates the probability that the target variable y is 1 given the input features x by applying the logistic function to a linear combination of the features and the bias term.
         """)
-    # Explanation of the logistic regression formula
+    #### Explanation of the logistic regression formula
 
     # Data Generation section
     st.subheader("Data Generation")
     with st.expander("**How we get random data:**"):
+        st.code("np.random.seed(int(seed))")
         st.markdown(
-            """
-        # np.random.seed(int(seed))\n
+        """
         Purpose:\n
         Sets the seed for the random number generator.\n
         Explanation:\n
         By setting a seed, the random numbers generated will be reproducible. This means that every time you run the code with the same seed, you will get the same sequence of random numbers. This is useful for debugging and ensuring consistent results.\n
-        # X, y = make_classification(n_samples=100, n_features=2, \n
-        #                            n_redundant=0, n_clusters_per_class=1, \n
-        #                             flip_y=0.1,random_state=intseed)\n
+        """)
+        st.code("X, y = make_classification(n_samples=100, n_features=2,n_redundant=0, n_clusters_per_class=1, flip_y=0.1,random_state=intseed)")
+        st.markdown("""
         Purpose: \n
         Generates random feature values for the independent variable X.\n
         Explanation:\n
         Synthetic classification data is generated with 100 samples and 2 features. The data is designed to be linearly separable with minimal redundancy and some label noise (flip_y=0.1).\n
-        """)
+         """)
     st.write("Let's generate some synthetic data to demonstrate logistic regression.")
     seed = st.slider("Choose a random seed", 0, 100, 1)
     intseed = int(seed)
@@ -377,20 +387,23 @@ def subpage2(method):
     # Model Evaluation section
     st.subheader("Model Evaluation")
     with st.expander("**What we have done:**"):
-        st.markdown(
-            """
-       # Data Generation:\n
-       X, y = make_classification(n_samples=100, n_features=2, n_redundant=0, n_clusters_per_class=1, flip_y=0.1, random_state=intseed)\n
+       st.markdown(
+       """
+       #### Data Generation:\n
+       """)
+       st.code("X, y = make_classification(n_samples=100, n_features=2, n_redundant=0, n_clusters_per_class=1, flip_y=0.1, random_state=intseed)")
+       st.markdown(
+       """
        Synthetic classification data is generated with 100 samples and 2 features. The data is designed to be linearly separable with minimal redundancy and some label noise (flip_y=0.1).Synthetic classification data is generated with 100 samples and 2 features. The data is designed to be linearly separable with minimal redundancy and some label noise (flip_y=0.1).\n
-       # Splitting the Data:\n
-       X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\n
+       #### Splitting the Data:\n
+           X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\n
        The dataset is divided into training and testing sets using the train_test_split function.\n
        X and y are the feature and target arrays, respectively.\n
        test_size=0.2 means that 20% of the data is used for testing, while the remaining 80% is used for training.\n
        random_state=42 ensures reproducibility by setting a fixed seed for the random splitting process.\n
-       # Training the Model:\n
-       model = LogisticRegression()\n
-       model.fit(X_train, y_train)\n
+       #### Training the Model:\n
+           model = LogisticRegression()\n
+           model.fit(X_train, y_train)\n
        A logistic regression model is trained on the training data..\n
         """)
     y_pred = model.predict(X_test)
@@ -398,36 +411,47 @@ def subpage2(method):
     conf_matrix = confusion_matrix(y_test, y_pred)
     with st.expander("**What is Accuracy:**"):
         st.markdown(
-            """
-        # Definition:\n 
+        """
+        #### Definition:\n 
         Accuracy is a measure of how often the model makes the correct prediction. It is the ratio of the number of correct predictions to the total number of predictions made.\n
-        # Formula: 
+        #### Formula: 
         If TP is the number of true positives, TN is the number of true negatives, FP is the number of false positives, and FN is the number of false negatives, then accuracy is calculated as:\n
-             """)
+        """)
         st.latex(r"\text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}")
         st.markdown(
-            """
+        """
         Explanation: In the case, Accuracy:0.XX  means that the model has an accuracy of XX%, indicating that the account of predictions made by the model are correct.
-              """)
+        """)
     st.write(f"Accuracy: {accuracy:.2f}")
     with st.expander("**What is Confusion Matrix:**"):
         st.latex(r"\begin{array}{c|cc}& \text{Predicted Positive} & \text{Predicted Negative} \\\hline\text{Actual Positive} & TP & FN \\\text{Actual Negative} & FP & TN \\\end{array}")
         st.markdown(
-            """
-        # Definition:\n
+        """
+        #### Definition:\n
         A confusion matrix is a table used to evaluate the performance of a classification model. It shows the counts of true positives, true negatives, false positives, and false negatives.\n
-        # Structure:\n
+        #### Structure:\n
         True Positives (TP): The number of instances that were correctly predicted as positive.\n
         True Negatives (TN): The number of instances that were correctly predicted as negative.\n
         False Positives (FP): The number of instances that were incorrectly predicted as positive (Type I error).\n
         False Negatives (FN): The number of instances that were incorrectly predicted as negative (Type II error).\n
-              """)
+        """)
     st.write("Confusion Matrix:")
     st.write(conf_matrix)
     # Evaluate the model using accuracy and confusion matrix
 
     # Decision Boundary section
     st.subheader("Decision Boundary")
+    with st.expander("**What is Decision Boundary:**"):
+        st.markdown(
+        """
+        #### Definition of Decision Boundary:\n
+        A decision boundary is a boundary line or hyper-surface in a classification problem that separates different classes. It divides the feature space into multiple regions, each corresponding to a specific class. The model uses the decision boundary to determine the class of a sample based on its position in the feature space.\n
+        In a geometric sense, the decision boundary is a hyper-surface. For linear classification problems, the decision boundary is a hyper-plane. For example, in a two-dimensional feature space, the decision boundary is a straight line; in a three-dimensional space, it is a plane.\n
+        #### Decision Boundaries in Different Supervised Learning Algorithms:\n
+        Although the essence of the decision boundary is to separate different classes, its shape and properties can vary across different supervised learning algorithms:\n
+        #### Linear Models:\n
+        Logistic Regression: The decision boundary is linear, defined by a hyper-plane that divides the feature space into two classes. For example, in a two-dimensional space, the decision boundary is a straight line.\n
+        """)
 
     plot_decision_boundary(X_train, y_train, model)
     # Visualize the decision boundary of the logistic regression model
@@ -466,7 +490,7 @@ def subpage3(method):
     st.subheader("Formula")
     with st.expander("**Components of the Formula:**"):
         st.markdown(
-            """
+        """
         f(x): This represents the function of x.\n
         w is the normal vector to the hyperplane (it determines the direction of the hyperplane).\n
         x is the input feature vector.\n
@@ -476,13 +500,12 @@ def subpage3(method):
     st.latex(r"f(x)=sign(w⋅x+b)")
     with st.expander("**Principle of SVM:**"):
         st.markdown(
-            """
+        """
         The core idea of SVM is to maximize the margin, which is the distance between the hyperplane and the nearest data points. The margin is defined as:\n
         """)
         st.latex(r"Margin= \frac{2}{∥w∥}")
         st.markdown(
         """
-        
          where ∥w∥ is the Euclidean norm of w.\n
         """)
     # Explanation of the SVM formula (Note: This is a placeholder formula; SVMs use a different formula.)
@@ -490,14 +513,17 @@ def subpage3(method):
     # Data Generation section
     st.subheader("Data Generation")
     with st.expander("**How we get random data:**"):
+        st.code("np.random.seed(int(seed))")
         st.markdown(
-            """
-        # np.random.seed(int(seed))\n
+        """
         Purpose:\n
         Sets the seed for the random number generator.\n
         Explanation:\n
         By setting a seed, the random numbers generated will be reproducible. This means that every time you run the code with the same seed, you will get the same sequence of random numbers. This is useful for debugging and ensuring consistent results.\n
-        # X, y = make_blobs(n_samples=100, centers=2, random_state=intseed, cluster_std=1.05)\n
+        """)
+        st.code("X, y = make_blobs(n_samples=100, centers=2, random_state=intseed, cluster_std=1.05)")
+        st.markdown(
+        """
         Function: make_blobs \n
         This function generates synthetic data points that form distinct clusters. It is commonly used for creating datasets for clustering or classification tasks.\n
         Explanation:\n
@@ -535,35 +561,38 @@ def subpage3(method):
     # Model Evaluation section
     st.subheader("Model Evaluation")
     with st.expander("**What we have done:**"):
-        st.markdown(
-            """
-       # Splitting the Data:\n
-       X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\n
+       st.markdown(
+       """
+       #### Splitting the Data:\n
+       """)
+       st.code("X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)")
+       st.markdown(
+       """
        The dataset is divided into training and testing sets using the train_test_split function.\n
        X and y are the feature and target arrays, respectively.\n
        test_size=0.2 means that 20% of the data is used for testing, while the remaining 80% is used for training.\n
        random_state=42 ensures reproducibility by setting a fixed seed for the random splitting process.\n
-       # Training the Model:\n
-       model = SVC(kernel='linear')\n
-       model.fit(X_train, y_train)\n
+       #### Training the Model:\n
+           model = SVC(kernel='linear')\n
+           model.fit(X_train, y_train)\n
        A SVC model is trained on the training data..\n
-        """)
+       """)
 
     y_pred = model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
     with st.expander("**What is Accuracy:**"):
         st.markdown(
-            """
-        # Definition:\n 
+        """
+        #### Definition:\n 
         Accuracy is a measure of how often the model makes the correct prediction. It is the ratio of the number of correct predictions to the total number of predictions made.\n
-        # Formula: 
+        #### Formula: 
         If TP is the number of true positives, TN is the number of true negatives, FP is the number of false positives, and FN is the number of false negatives, then accuracy is calculated as:\n
-             """)
+        """)
         st.latex(r"\text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}")
         st.markdown(
-            """
+        """
         Explanation: In the case, Accuracy:0.XX  means that the model has an accuracy of XX%, indicating that the account of predictions made by the model are correct.
-              """)
+        """)
     st.write("Accuracy:", accuracy)
     # Evaluate the model using accuracy
 
@@ -571,15 +600,15 @@ def subpage3(method):
     with st.expander("**What is Confusion Matrix:**"):
         st.latex(r"\begin{array}{c|cc}& \text{Predicted Positive} & \text{Predicted Negative} \\\hline\text{Actual Positive} & TP & FN \\\text{Actual Negative} & FP & TN \\\end{array}")
         st.markdown(
-            """
-        # Definition:\n
+        """
+        #### Definition:\n
         A confusion matrix is a table used to evaluate the performance of a classification model. It shows the counts of true positives, true negatives, false positives, and false negatives.\n
-        # Structure:\n
+        #### Structure:\n
         True Positives (TP): The number of instances that were correctly predicted as positive.\n
         True Negatives (TN): The number of instances that were correctly predicted as negative.\n
         False Positives (FP): The number of instances that were incorrectly predicted as positive (Type I error).\n
         False Negatives (FN): The number of instances that were incorrectly predicted as negative (Type II error).\n
-              """)
+        """)
     st.subheader("Confusion Matrix")
     conf_matrix = confusion_matrix(y_test, y_pred)
     plt.figure(figsize=(8, 6))
@@ -592,6 +621,17 @@ def subpage3(method):
 
     # Decision Boundary section
     st.subheader("Decision Boundary")
+    with st.expander("**What is Decision Boundary:**"):
+        st.markdown(
+        """
+        #### Definition of Decision Boundary:\n
+        A decision boundary is a boundary line or hyper-surface in a classification problem that separates different classes. It divides the feature space into multiple regions, each corresponding to a specific class. The model uses the decision boundary to determine the class of a sample based on its position in the feature space.\n
+        In a geometric sense, the decision boundary is a hyper-surface. For linear classification problems, the decision boundary is a hyper-plane. For example, in a two-dimensional feature space, the decision boundary is a straight line; in a three-dimensional space, it is a plane.\n
+        #### Decision Boundaries in Different Supervised Learning Algorithms:\n
+        Although the essence of the decision boundary is to separate different classes, its shape and properties can vary across different supervised learning algorithms:\n
+        #### Linear Models:\n
+        Linear Support Vector Machine (SVM): It seeks an optimal hyper-plane that maximizes the margin between data points of different classes.\n
+        """)
     plot_decision_boundary(X_train, y_train, model)
     # Visualize the decision boundary of the SVM model
 
@@ -611,7 +651,6 @@ def subpage3(method):
 
     # Decision Boundary with Hyperplane and Support Vectors section
     st.subheader("Decision Boundary with Hyperplane and Support Vectors")
-
     # Plot decision boundary with hyperplane and support vectors
     plot_decision_boundary_with_hyperplane(X_train, y_train, model)
     # Visualize the decision boundary with the hyperplane and support vectors
@@ -631,32 +670,33 @@ def subpage4(method):
     st.write(method)
     with st.expander("**Principle of Random Forest:**"):
         st.markdown(
-            """
-            Random Forests do not have a single, unified formula like linear regression or logistic regression. Instead, they are an ensemble learning method that combines multiple decision trees to make predictions. Here’s how it works conceptually:\n
-            # 1.Decision Trees:\n
-            A Random Forest is composed of many individual decision trees. Each tree is trained on a random subset of the data (a process called bootstrapping).\n
-            Each tree also considers a random subset of features at each split (a process called feature bagging).\n
-            # 2.Bootstrapping:\n
-            For each tree, a random sample of the training data (with replacement) is selected. This means that each tree sees a slightly different version of the data.\n
-            # 3.Feature Bagging:\n
-            At each split in the tree, only a random subset of features is considered. This helps to reduce the correlation between trees and improve the model’s robustness.\n
-            # 4.Aggregation:
-            For classification tasks, the predictions from all the trees are aggregated by majority voting. The class that gets the most votes from the trees is the final prediction.\n
-            For regression tasks, the predictions from all the trees are averaged to produce the final prediction.\n
+        """
+        Random Forests do not have a single, unified formula like linear regression or logistic regression. Instead, they are an ensemble learning method that combines multiple decision trees to make predictions. Here’s how it works conceptually:\n
+        #### 1.Decision Trees:\n
+        A Random Forest is composed of many individual decision trees. Each tree is trained on a random subset of the data (a process called bootstrapping).\n
+        Each tree also considers a random subset of features at each split (a process called feature bagging).\n
+        #### 2.Bootstrapping:\n
+        For each tree, a random sample of the training data (with replacement) is selected. This means that each tree sees a slightly different version of the data.\n
+        #### 3.Feature Bagging:\n
+        At each split in the tree, only a random subset of features is considered. This helps to reduce the correlation between trees and improve the model’s robustness.\n
+        #### 4.Aggregation:
+        For classification tasks, the predictions from all the trees are aggregated by majority voting. The class that gets the most votes from the trees is the final prediction.\n
+        For regression tasks, the predictions from all the trees are averaged to produce the final prediction.\n
         """)
     # Data Generation section
     st.subheader("Data Generation")
     with st.expander("**How we get random data:**"):
+        st.code("np.random.seed(int(seed))")
         st.markdown(
-            """
-        # np.random.seed(int(seed))\n
+        """
         Purpose:\n
         Sets the seed for the random number generator.\n
         Explanation:\n
         By setting a seed, the random numbers generated will be reproducible. This means that every time you run the code with the same seed, you will get the same sequence of random numbers. This is useful for debugging and ensuring consistent results.\n
-        # X, y = make_classification(n_samples=1000, n_features=4,\n
-        #                                n_informative=2, n_redundant=2,\n
-        #                                random_state=intseed, shuffle=False)\n
+        """)
+        st.code("X, y = make_classification(n_samples=1000, n_features=4,n_informative=2, n_redundant=2,random_state=intseed, shuffle=False)\n")
+        st.markdown(
+        """
         Purpose: \n
         Generates random feature values for the independent variable X.\n
         Explanation:\n
@@ -696,28 +736,28 @@ def subpage4(method):
     st.subheader("Feature Importance")
     with st.expander("**Feature Importance in Random Forest:**"):
         st.markdown(
-            """
+        """
         Feature Importance is a critical concept in machine learning, especially when using ensemble methods like Random Forest. It helps in understanding which features contribute the most to the prediction of the target variable. In Random Forest, feature importance is typically calculated using one of the following methods:\n
-        # 1. Gini Importance (Mean Decrease in Impurity)\n
+        #### 1. Gini Importance (Mean Decrease in Impurity)\n
         Gini Importance, also known as Mean Decrease in Impurity (MDI), measures the total reduction in node impurity (such as Gini impurity or entropy) brought by a feature across all trees in the forest. The steps to calculate Gini Importance are:\n
         Compute Node Impurity: Calculate the decrease in impurity for each feature when it is used to split a node.\n
         Weight by Node Probability: Multiply the reduction in impurity by the probability of reaching that node.\n
         Sum Across Trees: Sum these values across all trees in the forest for each feature.\n
         However, Gini Importance can be biased towards high cardinality features (features with many unique values) because they tend to create more splits and thus appear more important.\n
-        # 2. Permutation Importance\n
+        #### 2. Permutation Importance\n
         Permutation Importance evaluates the impact of each feature on the model's performance by randomly shuffling the values of a single feature and measuring the resulting decrease in accuracy. The steps are:\n
         Train Model: Train the Random Forest on the original dataset and observe the accuracy.\n
         Permute Feature Values: Randomly permute the values of a single feature.\n
         Measure Performance Drop: Test the model on the permuted dataset and measure the performance drop.\n
         Repeat: Repeat the process for all features and average the results.\n
         This method is more computationally expensive but provides a more accurate measure of feature importance, especially in the presence of correlated features.\n
-        # 3. SHAP Values (SHapley Additive exPlanations)\n
+        #### 3. SHAP Values (SHapley Additive exPlanations)\n
         SHAP Values are based on cooperative game theory and provide a unified measure of feature importance by explaining the contribution of each feature to individual predictions. The steps to calculate SHAP Values are:\n
         Coalitional Game Theory: Treat all features as players in a cooperative game where the goal is to predict the target variable.\n
         Shapley Values: Calculate the marginal contribution of each feature across all possible subsets of features.\n
         Aggregate: Aggregate these contributions to get the overall feature importance.\n
         SHAP Values offer a comprehensive understanding of feature importance across various data points and are particularly useful for interpreting complex models.\n
-        # Why Feature Importance Matters\n
+        #### Why Feature Importance Matters\n
         Understanding feature importance in Random Forest models is important for several reasons:\n
         Feature Selection: Identifying the most relevant features can improve model performance and reduce overfitting.\n
         Model Interpretability: Knowing which features are most important aids in interpreting the model's behavior and explaining its decisions to stakeholders.\n
@@ -741,22 +781,40 @@ def subpage4(method):
     with st.expander("**What is Confusion Matrix:**"):
         st.latex(r"\begin{array}{c|cc}& \text{Predicted Positive} & \text{Predicted Negative} \\\hline\text{Actual Positive} & TP & FN \\\text{Actual Negative} & FP & TN \\\end{array}")
         st.markdown(
-            """
-        # Definition:\n
+        """
+        #### Definition:\n
         A confusion matrix is a table used to evaluate the performance of a classification model. It shows the counts of true positives, true negatives, false positives, and false negatives.\n
-        # Structure:\n
+        #### Structure:\n
         True Positives (TP): The number of instances that were correctly predicted as positive.\n
         True Negatives (TN): The number of instances that were correctly predicted as negative.\n
         False Positives (FP): The number of instances that were incorrectly predicted as positive (Type I error).\n
         False Negatives (FN): The number of instances that were incorrectly predicted as negative (Type II error).\n
-              """)
+        """)
     plt.title('Confusion Matrix')
     st.pyplot(plt)
     # Evaluate the model using a confusion matrix
 
     # Decision Boundary section
     st.subheader("Decision Boundary")
-
+    with st.expander("**What is Decision Boundary:**"):
+        st.markdown(
+        """
+        #### Definition of Decision Boundary:\n
+        A decision boundary is a boundary line or hyper-surface in a classification problem that separates different classes. It divides the feature space into multiple regions, each corresponding to a specific class. The model uses the decision boundary to determine the class of a sample based on its position in the feature space.\n
+        In a geometric sense, the decision boundary is a hyper-surface. For linear classification problems, the decision boundary is a hyper-plane. For example, in a two-dimensional feature space, the decision boundary is a straight line; in a three-dimensional space, it is a plane.\n
+        #### Decision Boundaries in Different Supervised Learning Algorithms:\n
+        Although the essence of the decision boundary is to separate different classes, its shape and properties can vary across different supervised learning algorithms:\n
+        #### Linear Models:\n
+        Logistic Regression: The decision boundary is linear, defined by a hyper-plane that divides the feature space into two classes. For example, in a two-dimensional space, the decision boundary is a straight line.\n
+        Linear Support Vector Machine (SVM): It seeks an optimal hyper-plane that maximizes the margin between data points of different classes.\n
+        #### Non-linear Models
+        Polynomial Regression: By introducing polynomial features, the decision boundary can become non-linear.\n
+        K-Nearest Neighbors (KNN): The decision boundary is determined by the local neighborhood of training data points and is usually complex and discontinuous.\n
+        Decision Trees: The decision boundary is formed by a series of rules (typically axis-parallel) and appears as a step-like or zigzag shape.\n
+        Neural Networks: They can learn complex non-linear decision boundaries, the shape of which depends on the network structure and training process.\n
+        #### Summary\n
+        The shape and complexity of the decision boundary depend on the classification algorithm used and the distribution of the data. Linear models typically produce simple linear boundaries, while non-linear models can adapt to more complex data distributions and produce non-linear boundaries. Understanding the decision boundaries of different algorithms helps in selecting the appropriate model and optimizing classification performance.\n
+        """)
     # Plot decision boundary
     plot_decision_boundary(X_train, y_train, rf, alpha=0.4, cmap='coolwarm')
     # Visualize the decision boundary of the Random Forest model

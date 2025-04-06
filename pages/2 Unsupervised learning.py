@@ -21,7 +21,7 @@ tab1, tab2, tab3, tab4 = st.tabs(["Introduction", "Unsupervised explanation", "C
 with tab1:
     st.subheader("What ***is*** Unsupervised Learning:question::exclamation:")
     
-    st.markdown("Unsupervised learning is a type of machine learning where the algorithm learns patterns from unlabelled data. Unlike supervised learning, there are no predefined outputs. The goal is to explore the underlying structure of the dataset, uncovering hidden relationships or groupings without predefined categories. This approach is particularly useful for larger datasets.")
+    st.markdown("Unsupervised learning is a type of machine learning where the algorithm learns patterns from ***unlabelled*** data. Unlike supervised learning, there are no predefined outputs. The goal is to explore the underlying structure of the dataset, uncovering hidden relationships or groupings without predefined categories.")
         
     st.subheader("Types of Unsupervised Learning")
     
@@ -38,25 +38,26 @@ with tab1:
         st.write("""
                  This is a method to reduce the number of features in a dataset, without losing lots of important information. 
                  Often, datasets have many features. However, as humans we are unable to visualise data with more than 3 dimensions. 
-                 Dimensionality reduction allows us to reduce the number of dimensions to a number that can be visualised by us!
-                 
+                 Dimensionality reduction allows us to **reduce the number of dimensions** to a number that can be visualised by us (i.e. 2D, or 3D)!
+                 It is also useful for reducing the size of large datasets, making analysis less computationally intensive. :fast_forward:
                  
                  The most important features of the dataset can also be determined, allowing future research to focus on these specific features and ignore irrelevant features.   
                  
-                 There are both linear algorithms (eg principal component analysis (PCA)) and non-linear methods (eg t-SNE). 
+                 There are both *linear* algorithms (eg principal component analysis (PCA)) and *non-linear* methods (eg t-SNE). 
+                 In this resource, we only really cover linear algorithms :disappointed: However, if you're interested in non-linear methods they're definitely worth looking into!
                  
                  """)
         
     with st.expander("Clustering"):
         st.write("""
                  This is a method often used alongside dimensionality reduction.
-                 It is used to group unlabelled data based on the data points' similarity to each other.
+                 It is used to **group** unlabelled data based on the data points' similarity to each other.
                  
                  The similarity of the datapoints can be determined in different ways.
                  Some methods, such as **K-means clustering**, split the data into group purely based on distance to each other. 
-                 Other methods, such as DBSCAN, base simlarity on the density of data. 
+                 Other methods, such as DBSCAN, base similarity on the density of data. 
                  
-                 The method you want to use depends on each case. 
+                 The method you want to use depends on each case - as we will explore in the next few tabs... 
                  
                  """)
     
