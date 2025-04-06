@@ -272,102 +272,123 @@ with tab3:
 with tab4:
     @st.cache_data
     def load_imdb_data():
-        df = pd.read_csv('datasets/IMDb_Dataset.csv')  # Update path
-        df = df[['IMDb Rating', 'Genre', 'Duration (minutes)', 'Year']]  # Sample Features
+        df = pd.read_csv('datasets/IMDb_Dataset.csv')
+        
+        # Only keep selected certificates
+        valid_certificates = ['G', 'PG-13', 'R']
+        df = df[df['Certificates'].isin(valid_certificates)]
 
-        # Handle Missing Values
+        # Encode 'Certificates'
+        cert_map = {'G': 0, 'PG-13': 1, 'R': 3}
+        df['Certificates'] = df['Certificates'].map(cert_map)
+
+        df = df[['IMDb Rating', 'Certificates', 'Duration (minutes)', 'Year']]
         df = df.dropna()
-
-        # Encode Categorical Features
-        categorical_features = ['Genre']
-        encoder = OrdinalEncoder()
-        df[categorical_features] = encoder.fit_transform(df[categorical_features])
 
         return df
 
-    # Load IMDb data
+    # Load data
     df_imdb = load_imdb_data()
 
-    # Split Features and Target
+    # Split features and target
     X_imdb = df_imdb.drop(columns=['IMDb Rating'])
     y_imdb = df_imdb['IMDb Rating']
 
-    # Streamlit UI
     st.header("Predicting IMDb Film Ratings with Linear Regression")
 
     col1, col2 = st.columns([2, 1])
     with col1:
-        st.write("intro to the page, what are you doingn here, what tool are you using, and why.")
+        st.write("""
+        In this section, we're using **real movie data** from IMDb to build a regression model that predicts a film’s rating out of 10.
+        Since ratings are continuous values (not categories), we use a **regression model**—specifically, Linear Regression.
+
+        This allows us to explore how features like **film duration**, **release year**, and **age certificate** relate to the overall score.
+        """)
     with col2:
         st.image('images/1_supervised_images/imdb.png')
 
-    st.write('As we are predicting a continuous variable (rating /10), here we use a **regression** approach instead of classification. EXPLAIN WHY THERES A DIFFERENCE?')
-    st.write('Dataset Preview:', df_imdb.head())
+    st.subheader("Data Preview")
+    st.write("Here’s a preview of the dataset used for training:")
+    st.dataframe(df_imdb.head())
 
-    # Feature Selection
     st.subheader("Select Features for Prediction")
+    st.write("Choose which features to include in the model. This helps us explore their influence on the final rating.")
     selected_features_imdb = st.multiselect("Choose features", X_imdb.columns.tolist(), default=X_imdb.columns.tolist())
 
-    # Train Model if Features Are Selected
     if selected_features_imdb:
         X_train, X_test, y_train, y_test = train_test_split(X_imdb[selected_features_imdb], y_imdb, test_size=0.2, random_state=42)
 
-        # Train Linear Regression Model
+        # Train model
         model = LinearRegression()
         model.fit(X_train, y_train)
 
-        # Predictions
         y_pred = model.predict(X_test)
 
-        # Performance Metrics
+        # Metrics
         mae = mean_absolute_error(y_test, y_pred)
         mse = mean_squared_error(y_test, y_pred)
         r2 = r2_score(y_test, y_pred)
 
-        st.write("## Model Performance")
+        st.subheader("Model Performance")
+        st.write("""
+        These values tell us how well the model is performing:
+        - **MAE (Mean Absolute Error)**: Average absolute difference between predicted and actual ratings.
+        - **MSE (Mean Squared Error)**: Penalizes larger errors more heavily.
+        - **R² Score**: Indicates how much variance in the rating is explained by the model (closer to 1 is better).
+        """)
         st.write(f"**Mean Absolute Error (MAE):** {mae:.4f}")
         st.write(f"**Mean Squared Error (MSE):** {mse:.4f}")
         st.write(f"**R² Score:** {r2:.4f}")
 
-        # Coefficients (Feature Importance in Linear Regression)
+        # Scatter plot: actual vs predicted
+        st.subheader("Actual vs Predicted Ratings")
+        fig, ax = plt.subplots(figsize=(6, 6))
+        ax.scatter(y_test, y_pred, alpha=0.6, color='teal')
+        ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--')  # Diagonal line
+        ax.set_xlabel("Actual IMDb Rating")
+        ax.set_ylabel("Predicted IMDb Rating")
+        ax.set_title("Actual vs Predicted Ratings")
+        st.pyplot(fig)
+
+        # Coefficients
         coefficients = pd.DataFrame({
             'Feature': selected_features_imdb,
             'Coefficient': model.coef_
-        }).sort_values(by="Coefficient", key=abs, ascending=False)  # Sort by absolute value
+        }).sort_values(by="Coefficient", key=abs, ascending=False)
 
-        st.write("**Feature Coefficients**")
+        st.subheader("Feature Coefficients")
+        st.write("""
+        These coefficients indicate how much each feature affects the predicted rating. 
+        A **positive value** means the feature increases the predicted score, while a **negative value** means it reduces it.
+        Larger absolute values indicate more influence.
+        """)
+
         fig, ax = plt.subplots(figsize=(8, 4))
         sns.barplot(x="Coefficient", y="Feature", data=coefficients, ax=ax)
-        ax.set_title("Feature Coefficients")
+        ax.set_title("Feature Coefficients (Linear Regression)")
         st.pyplot(fig)
-        
-        st.write("Explain here what this shows eg longer/older films => better rated")
 
+        st.write("For example, a longer movie might have a slightly higher predicted rating, or older movies may tend to score better.")
+
+        # Quiz
+        st.header("Quiz: Identify the Least Important Feature!")
+
+        if not coefficients.empty:
+            least_important_feature = coefficients.iloc[-1]['Feature']
+            quiz_options = coefficients['Feature'].tolist()
+
+            selected_answer = st.radio(
+                "Which feature has the **least** impact (smallest absolute coefficient) in the model?",
+                quiz_options, index=None
+            )
+
+            if st.button("Submit Answer 2"):
+                if selected_answer == least_important_feature:
+                    st.success(f"✅ Correct! The least important feature is **{least_important_feature}**.")
+                elif selected_answer is None:
+                    st.write("")
+                else:
+                    st.error(f"❌ Incorrect. The least important feature is **{least_important_feature}**.")
     else:
         st.warning("Please select at least one feature to train the model.")
-
-    # Quiz: Least Important Feature (Smallest Absolute Coefficient)
-    st.header("🧠 Quiz: Identify the Least Important Feature!")
-
-    if not coefficients.empty:
-        # Get the feature with the smallest absolute coefficient
-        least_important_feature = coefficients.iloc[-1]['Feature']
-
-        # Quiz options (fixed order)
-        quiz_options = coefficients['Feature'].tolist()
-
-        # Ask the question
-        selected_answer = st.radio(
-            "Which feature has the **least** impact (smallest absolute coefficient) in the model?",
-            quiz_options, index=None
-        )
-
-        # Check if the answer is correct
-        if st.button("Submit Answer 2"):
-            if selected_answer == least_important_feature:
-                st.success(f"✅ Correct! The least important feature is **{least_important_feature}**.")
-            # leave blank if no answer selected
-            elif selected_answer==None:
-                st.write("")
-            else:
-                st.error(f"❌ Incorrect. The least important feature is **{least_important_feature}**.")    
+    
