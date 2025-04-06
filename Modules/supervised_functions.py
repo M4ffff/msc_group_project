@@ -176,12 +176,12 @@ def subpage1(method):
     with st.expander("**How we get random data:**"):
         st.markdown(
             """
-        # np.random.seed(int(seed))\n
+        #### np.random.seed(int(seed))\n
         Purpose:\n
         Sets the seed for the random number generator.\n
         Explanation:\n
         By setting a seed, the random numbers generated will be reproducible. This means that every time you run the code with the same seed, you will get the same sequence of random numbers. This is useful for debugging and ensuring consistent results.\n
-        # X/Y= 2.5 * np.random.rand(100, 1)  # Random feature values\n
+        #### X/Y= 2.5 * np.random.rand(100, 1)  # Random feature values\n
         Purpose: \n
         Generates random feature values for the independent variable X.\n
         Explanation:\n
@@ -191,7 +191,7 @@ def subpage1(method):
         """)
 
     st.write("Let's generate some synthetic data to demonstrate linear regression.")
-    seed = st.slider("Choose a random seed", 0.0, 100.0, 50.0)
+    seed = st.slider("Choose a random seed", 0, 100, 1)
     # Slider to choose a random seed for reproducibility
 
     # Generate synthetic data
@@ -350,7 +350,7 @@ def subpage2(method):
         Synthetic classification data is generated with 100 samples and 2 features. The data is designed to be linearly separable with minimal redundancy and some label noise (flip_y=0.1).\n
         """)
     st.write("Let's generate some synthetic data to demonstrate logistic regression.")
-    seed = st.slider("Choose a random seed", 0.0, 100.0, 50.0)
+    seed = st.slider("Choose a random seed", 0, 100, 1)
     intseed = int(seed)
 
     # Generate synthetic data
@@ -509,7 +509,7 @@ def subpage3(method):
         X: A 2D array where each row corresponds to a data point and each column corresponds to a feature. In this case, X will have 100 rows (samples) and 2 columns (features) by default.\n
         y: A 1D array where each element corresponds to the cluster label of the corresponding data point. In this case, y will have 100 elements.\n
         """)
-    seed = st.slider("Choose a random seed", 0.0, 100.0, 50.0)
+    seed = st.slider("Choose a random seed", 0, 100, 1)
     intseed = int(seed)
 
     # Generate synthetic data
@@ -667,7 +667,7 @@ def subpage4(method):
         n_random_state=intseed:Specifies the seed for the random number generator. This ensures reproducibility by setting a fixed seed for the random splitting process.\n
         shuffle=False:Specifies whether or not to shuffle the data before splitting it into training and testing sets. Here, the data will not be shuffled. This is useful for reproducibility.\n
         """)
-    seed = st.slider("Choose a random seed", 0.0, 100.0, 50.0)
+    seed = st.slider("Choose a random seed", 0, 100, 1)
     intseed = int(seed)
 
     # Generate synthetic data
