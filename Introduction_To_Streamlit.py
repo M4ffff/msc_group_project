@@ -49,8 +49,11 @@ y=2*x
 
 st.subheader("Slider")
 # widget
-slider_val = st.slider('x')  
-st.write(slider_val, 'squared is', slider_val * slider_val)
+slider_val = st.slider('x', 1, 60)  
+snake = slider_val*'--' + '8<'
+st.write(snake)
+hs = slider_val*'h'
+st.write(f"a{hs} a snake")
 
 
 st.subheader("Checkbox")
@@ -81,26 +84,19 @@ else:
     
     
 # dropdown menu
-df = pd.DataFrame({
-    'first column': [1, 2, 3, 4],
-    'second column': [10, 20, 30, 40]
-    })
+animals = ['dog', 'giraffe', 'tiger', 'walrus']
 
 st.subheader("Select box")
 option = st.selectbox(
-    'Which number do you like best?',
-     df['first column'])
+    'Pick an animal?',
+     animals, index=None)
 
-'You selected: ', option
+if option in animals:
+    st.image(f"images/_intro_page/{option}.png")
 
 
+# expander
 st.subheader("Expander")
 with st.expander("Expand me!"):
     st.image("images/_intro_page/ghost.png")
 
-
-# add sidebar
-# add_selectbox = st.sidebar.selectbox(
-#     'How would you like to be contacted?',
-#     ('Email', 'Home phone', 'Mobile phone')
-# )

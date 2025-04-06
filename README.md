@@ -1,7 +1,7 @@
 # Interactive Machine Learning Education Platform
 
 ## App Description
-Welcome to the Interactive Machine Learning Platform. This Streamlit web application enables is designed for users of all skill levels to explore machine learning through an intuitive, hands-on interface. Navigate through the various sections spanning supervised learning, unsupervised learning and neural networks to understand concepts, algorithms and model behaviour. This tool provides a visual and engaging learning experience offering hidden ML insights without the need for complex coding. For those curious about the technical programming side, code examples are available to help you take that next step in your Data Science education.
+Welcome to the Interactive Machine Learning Platform. This Streamlit web application is designed for users of all skill levels to explore machine learning through an intuitive, hands-on interface. Navigate through the various sections spanning supervised learning, unsupervised learning and neural networks to understand concepts, algorithms and model behaviour. This tool provides a visual and engaging learning experience offering hidden ML insights without the need for complex coding. For those curious about the technical programming side, code examples are available to help you take that next step in your Data Science education.
 
 We hope you enjoy!
 

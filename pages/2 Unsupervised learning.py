@@ -16,19 +16,17 @@ from Modules.unsupervised_functions import kmeans_cluster, gmm_cluster, dbscan_c
 st.title("Unsupervised Learning Page")
 
 
-tab1, tab2, tab3 = st.tabs(["Introduction", "Unsupervised explanation", "Clustering Examples"])
+tab1, tab2, tab3, tab4 = st.tabs(["Introduction", "Unsupervised explanation", "Clustering Examples", "Python Implementation"])
 
 with tab1:
-    st.subheader("Introduction to Unsupervised Learning")
+    st.subheader("What ***is*** Unsupervised Learning:question::exclamation:")
     
-    st.markdown("Unsupervised learning is a type of machine learning where the algorithm learns patterns from unlabelled data,\
-        uncovering hidden structures without predefined categories. This approach is particularly useful for exploring large datasets\
-        and discovering relationships or groupings within the data.")
+    st.markdown("Unsupervised learning is a type of machine learning where the algorithm learns patterns from unlabelled data. Unlike supervised learning, there are no predefined outputs. The goal is to explore the underlying structure of the dataset, uncovering hidden relationships or groupings without predefined categories. This approach is particularly useful for larger datasets.")
         
     st.subheader("Types of Unsupervised Learning")
     
     types_multi = """
-    Unsupervised learning consists of techniques such as ***dimensionality reduction*** and ***clustering***.
+    Two core techniques of unsupervised learning are ***dimensionality reduction*** and ***clustering***.
     
     But what do these mean?
     
@@ -52,11 +50,11 @@ with tab1:
     with st.expander("Clustering"):
         st.write("""
                  This is a method often used alongside dimensionality reduction.
-                 It is used to group unlabelled data based on data points' similarity to each other.
+                 It is used to group unlabelled data based on the data points' similarity to each other.
                  
                  The similarity of the datapoints can be determined in different ways.
-                 Some methods such as **K-means clustering** split the data into group purely based on distance to each other. 
-                 Other methods such as DBSCAN, base simlarity on the density of data. 
+                 Some methods, such as **K-means clustering**, split the data into group purely based on distance to each other. 
+                 Other methods, such as DBSCAN, base simlarity on the density of data. 
                  
                  The method you want to use depends on each case. 
                  
@@ -64,28 +62,16 @@ with tab1:
     
     st.write("Flick through the tabs at the top to explore these methods in much more detail!")
     
-    st.subheader("Uses of unsupervised learning")
+    st.subheader("Unsupervised Learning applications")
 
-    uses_multi = """
-    Unsupervised learning is particularly useful in data preparation and visualisation. 
-    Often, data scientists do not know what they're looking for in a set of data. 
-    Unsupervised learning allows them to determiine the most important features. 
-    Can also determined unknown patterns and relationships. 
-    
-    Also reduces the chance of human error. 
-    
-    - Anomaly detection
-    - Data preparation for supervised learning
-    - Recommendation systems
-    
-    """
-    st.write(uses_multi)
+    st.markdown("Unsupervised learning is particularly valuable in the early stages of data analysis, especially for data preparation and visualisation. It is often used when data scientists do not have predefined labels or clear hypotheses, allowing them to explore the data freely.")
+    st.markdown("By uncovering the most relevant features and revealing hidden patterns or relationships, unsupervised learning helps reduce the risk of human bias or oversight. Common applications include anomaly detection, preparing datasets for supervised learning, and powering recommendation systems by identifying natural groupings or preferences within the data.")
     
     
 # Interactive graphs of the pre/post data for each marker. 
 with tab2:
         
-    st.subheader("A Real-Life Example!")
+    st.subheader("A ***:rainbow[real-life]*** example!")
     
     st.write("Throughout the rest of this page, we will go through an example of using unsupervised techniques in a real-life example!")
 
@@ -139,7 +125,7 @@ with tab2:
 
 
 
-    st.subheader("Unsupervised techniques")
+    st.subheader("Our Unsupervised approach")
     
     st.write("In the analysis of this dataset, we will use Principal Component Analysis (PCA) and K-means clustering. ")
     
@@ -186,14 +172,15 @@ with tab2:
     pc_var = pca.fit(scaled_bc)
     fig, ax = plt.subplots()
     ax.bar(pc.columns[:-1], height=pc_var.explained_variance_ratio_, label="Individual EV")
-    ax.plot(pc.columns[:-1], np.cumsum(pc_var.explained_variance_ratio_), linestyle="--", label="Cumulative EV")
-    ax.set(xlabel="Number of Components", ylabel="Cumulative Explained Variance")
+    ax.plot(pc.columns[:-1], np.cumsum(pc_var.explained_variance_ratio_), color='blue', linestyle="--", label="Cumulative EV")
+    ax.set(xlabel="Number of Components", ylabel="Explained Variance Ratio")
     ax.legend()
     st.pyplot(fig)
 
     st.markdown("For this example we'll focus on the first two principle components, as the majority of the variance of the dataset is covered (over 80%!:astonished:).")
 
-
+    st.write("But which features are most important? Below we plot the weightings of each feature in the first two principal components.")
+    
     pcs_relevance = ['PC1', 'PC2']
     num_pcs = len(pcs_relevance)
     feature_relevance_matrix = pd.DataFrame(pca.components_[:num_pcs].T * np.sqrt(pca.explained_variance_[:num_pcs]), 
@@ -213,8 +200,12 @@ with tab2:
     ax.legend()
     st.pyplot(fig)
 
-    ######################## NEED TO DO THIS
-    # st.write("This bar chart shows that texture and fractal dimension have the least variance explained by")
+    
+    st.write("This bar chart shows that each feature has a positive loading for PC1 which suggests a large PC1 corresponds to large quantities for the features.\
+        The negative loadings for radius, texture, perimeter, and area for PC2, show that a larger value of PC2 corresponds to smaller size and texture.     ")
+    st.write(" Furthermore, the texture and fractal dimension have the least variance explained by the first principal components.\
+        This may be relevant later, so keep this in mind...")
+
 
     # Show PCA result
     st.markdown("So, lets see what it looks like if we plot Principal Component 1 against Principal Component 2!")
@@ -286,13 +277,17 @@ with tab2:
     
     st.write("It can clearly be seen that the clusters determined by K-means clustering are very similar to the clusters produced if labelling by diagnoses.")
     st.write("This suggests that a patient could have a breast cancer tumour effectively diagnosed as benign or malignant, \
-        by having these measurements taken and then seeing which cluster they would fall into after applying PCA.  ")
+        by having these measurements taken and then seeing which cluster they would fall into after applying PCA.\
+            Furthermore, the clustering suggests that getting a larger PC1 score means the tumour is more likely to be malignant.\
+                Associating this with the feature relevance bar chart above, texture and fractal dimension have the least relevance for diagnosis due to their small loadings of PC1. ")
+    
+    
     
     st.write("But how accurate would the diagnosis be? All be explained below :point_down:")
     
     st.subheader("Final Analysis")
 
-    st.write("Here, we run through how to anlayse our ML methods, and see if our method is an accurate way of diagnosing breast cancer.")
+    st.write("Here, we run through how to analyse our ML methods, and see if our method is an accurate way of diagnosing breast cancer.")
     st.write("We sure hope so! :crossed_fingers:")
 
 
@@ -336,13 +331,13 @@ with tab2:
 
 
 with tab3:
-    st.subheader("INTERACTIVE PLOT TO SEE HOW CLUSTERING WORKS WITH DIFFERENT DATASHAPES")
+    st.subheader("How does clustering work on ***weird*** datasets:question::exclamation:")
 
 
     # normal writing details
     multi = '''
     Data doesnt always come in blobs - it can come in *other shapes*:    
-    Different clustering techniques work better than others depending on the shape of the data. :large_blue_square: :large_blue_diamond: :large_blue_circle: 
+    Different clustering techniques work better than others depending on the shape of the data.
 
     The plot below allows you to produce some data selected randomly from a set of :rainbow[funky] datasets -  
     For example there is data in the shape of smiley faces :smiley:, dartboards :dart:, yin yang :yin_yang:, spirals :face_with_spiral_eyes:, and so much more!
@@ -749,5 +744,140 @@ with tab3:
     st.write(conclusion_multi)
 
 
+with tab4:
+    st.subheader("Python implementation")
+    
+    st.write("Here, we'll run through how to implement the tools used on this page in **Python**")
+    st.write("If you have no experience in coding or just don't want to know how to implement these concepts in Python, that is *completely fine*, just skip on to the next page.\
+        However, if you're an ***advanced learner*** crack on through this page.")
+    st.write("Be warned, a basic understanding knowledge of Python is required to understand this page. ")
+    
+    
+    st.subheader("Dimensionality reduction (PCA)")
+    pca_multi = """
+    To reduce the number of dimesnions of a dataset using PCA in Python the following steps are done. 
+    
+    First you need to scale the data, to ensure larger features do not dominate the variance, purely because of their magnitude. 
+    ``` python
+    from sklearn.preprocessing import StandardScaler
 
+    scaled_data = StandardScaler().fit_transform(data)
+    ```
+    
+    Next, we need to fit and transform the data. This can achieved in one function. 
+    ``` python
+    from sklearn.decomposition import PCA
+    
+    pca = PCA()
+    transformed_data = pca.fit_transform(scaled_data)
+    pc_var = pca.fit(scaled_data)
+    ```
+    This will have produced a new dataframe in which the columns represent each principal component. 
+    
+    There are multiple ways to get information from this transformed data. 
+    
+    ``` python
+    
+    # get proportion of total variance explained by each principal component
+    pca.explained_variance_ratio_
+    
+    # Get feature components that make up each principal component
+    pca.components_
+    ```
+    
+    
+    """
+    st.markdown(pca_multi)
+    
+    st.subheader("Clustering")
+    
+    python_implementation_multi = """
+    
+    Here, I give a little function showing how to implement K-means clustering on a set of data.
+    We use a module called ***sklearn*** to implement the clustering technique.
+    This does all the hard work for you!
+    
+    ``` python
+    from sklearn.cluster import KMeans
+    
+    def kmeans_cluster(data, num_centres):
+        \"""
+        Cluster data using kmeans clustering
 
+        Args:
+            data (df): input data to cluster
+            num_centres (int): Number of clusters
+
+        Returns:
+            labels: labels for each datapoint of which cluster they are in
+            cluster_centres: coordinates of cluster centres
+        \"""
+        kmeans = KMeans(n_clusters=num_centres)
+        kmeans.fit(data)
+        
+        labels = kmeans.labels_
+        cluster_centres = kmeans.cluster_centers_
+        
+        return labels, cluster_centres
+    ```
+    Notice how you must define the number of clusters. 
+    
+    The Gaussian Mixture Model is very similar:
+    
+    ``` python
+    from sklearn.mixture import GaussianMixture
+    
+    def gmm_cluster(data, num_centres):     
+        \"""
+        Cluster data using gmm clustering
+
+        Args:
+            data (df): input data to cluster
+            num_centres (int): Number of clusters
+
+        Returns:
+            size: Size proportional to probabilty of data being in given cluster
+            colour_labels: labels for each datapoint of which cluster they are in
+        \"""   
+
+        gmm = GaussianMixture(n_components=num_centres).fit(data)
+        colour_labels = gmm.predict(data)
+        
+        probabilities = gmm.predict_proba(data)
+        size = 15 * probabilities.max(axis=1) ** 2
+        
+        return size, colour_labels
+    
+    ```
+    
+    The DBSCAN method is a little different, as you do not need to input the number of clusters, and can the hyperparameters 'eps' and 'min_samples'.
+    
+    ``` python
+    from sklearn.cluster import DBSCAN
+    
+    def dbscan_cluster(data, eps, min_samples):
+        \"""
+        Cluster data using dbscan clustering
+
+        Args:
+            data (df): input data to cluster
+            eps (int): Max distance for points to be neighbours.
+            min_samples (int): Minimum number of points needed to form a cluster.
+
+        Returns:
+            labels: labels for each datapoint of which cluster they are in
+        \"""   
+        
+        dbscan = DBSCAN(eps=eps, min_samples=min_samples).fit(data)
+        labels = dbscan.labels_
+        
+        num_labels = len(np.unique(labels))
+        st.write(f"Number of unique labels: {num_labels}")
+
+        return labels
+    ```
+    
+    """
+
+    st.write(python_implementation_multi)
+    
