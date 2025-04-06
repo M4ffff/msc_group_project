@@ -16,11 +16,7 @@ from Modules.unsupervised_functions import kmeans_cluster, gmm_cluster, dbscan_c
 st.title("Unsupervised Learning Page")
 
 
-<<<<<<< HEAD
-tab1, tab2, tab3 = st.tabs(["Introduction", "Real-World Application", "Clustering Examples"])
-=======
 tab1, tab2, tab3, tab4 = st.tabs(["Introduction", "Unsupervised explanation", "Clustering Examples", "Python Implementation"])
->>>>>>> 9af049312b7e73d6a2f3d9b90564ab3107a9accf
 
 with tab1:
     st.subheader("What ***is*** Unsupervised Learning:question::exclamation:")
@@ -176,14 +172,15 @@ with tab2:
     pc_var = pca.fit(scaled_bc)
     fig, ax = plt.subplots()
     ax.bar(pc.columns[:-1], height=pc_var.explained_variance_ratio_, label="Individual EV")
-    ax.plot(pc.columns[:-1], np.cumsum(pc_var.explained_variance_ratio_), linestyle="--", label="Cumulative EV")
-    ax.set(xlabel="Number of Components", ylabel="Cumulative Explained Variance")
+    ax.plot(pc.columns[:-1], np.cumsum(pc_var.explained_variance_ratio_), color='blue', linestyle="--", label="Cumulative EV")
+    ax.set(xlabel="Number of Components", ylabel="Explained Variance Ratio")
     ax.legend()
     st.pyplot(fig)
 
     st.markdown("For this example we'll focus on the first two principle components, as the majority of the variance of the dataset is covered (over 80%!:astonished:).")
 
-
+    st.write("But which features are most important? Below we plot the weightings of each feature in the first two principal components.")
+    
     pcs_relevance = ['PC1', 'PC2']
     num_pcs = len(pcs_relevance)
     feature_relevance_matrix = pd.DataFrame(pca.components_[:num_pcs].T * np.sqrt(pca.explained_variance_[:num_pcs]), 
@@ -203,8 +200,12 @@ with tab2:
     ax.legend()
     st.pyplot(fig)
 
-    ######################## NEED TO DO THIS
-    # st.write("This bar chart shows that texture and fractal dimension have the least variance explained by")
+    
+    st.write("This bar chart shows that each feature has a positive loading for PC1 which suggests a large PC1 corresponds to large quantities for the features.\
+        The negative loadings for radius, texture, perimeter, and area for PC2, show that a larger value of PC2 corresponds to smaller size and texture.     ")
+    st.write(" Furthermore, the texture and fractal dimension have the least variance explained by the first principal components.\
+        This may be relevant later, so keep this in mind...")
+
 
     # Show PCA result
     st.markdown("So, lets see what it looks like if we plot Principal Component 1 against Principal Component 2!")
@@ -276,13 +277,17 @@ with tab2:
     
     st.write("It can clearly be seen that the clusters determined by K-means clustering are very similar to the clusters produced if labelling by diagnoses.")
     st.write("This suggests that a patient could have a breast cancer tumour effectively diagnosed as benign or malignant, \
-        by having these measurements taken and then seeing which cluster they would fall into after applying PCA.  ")
+        by having these measurements taken and then seeing which cluster they would fall into after applying PCA.\
+            Furthermore, the clustering suggests that getting a larger PC1 score means the tumour is more likely to be malignant.\
+                Associating this with the feature relevance bar chart above, texture and fractal dimension have the least relevance for diagnosis due to their small loadings of PC1. ")
+    
+    
     
     st.write("But how accurate would the diagnosis be? All be explained below :point_down:")
     
     st.subheader("Final Analysis")
 
-    st.write("Here, we run through how to anlayse our ML methods, and see if our method is an accurate way of diagnosing breast cancer.")
+    st.write("Here, we run through how to analyse our ML methods, and see if our method is an accurate way of diagnosing breast cancer.")
     st.write("We sure hope so! :crossed_fingers:")
 
 
@@ -746,6 +751,45 @@ with tab4:
     st.write("If you have no experience in coding or just don't want to know how to implement these concepts in Python, that is *completely fine*, just skip on to the next page.\
         However, if you're an ***advanced learner*** crack on through this page.")
     st.write("Be warned, a basic understanding knowledge of Python is required to understand this page. ")
+    
+    
+    st.subheader("Dimensionality reduction (PCA)")
+    pca_multi = """
+    To reduce the number of dimesnions of a dataset using PCA in Python the following steps are done. 
+    
+    First you need to scale the data, to ensure larger features do not dominate the variance, purely because of their magnitude. 
+    ``` python
+    from sklearn.preprocessing import StandardScaler
+
+    scaled_data = StandardScaler().fit_transform(data)
+    ```
+    
+    Next, we need to fit and transform the data. This can achieved in one function. 
+    ``` python
+    from sklearn.decomposition import PCA
+    
+    pca = PCA()
+    transformed_data = pca.fit_transform(scaled_data)
+    pc_var = pca.fit(scaled_data)
+    ```
+    This will have produced a new dataframe in which the columns represent each principal component. 
+    
+    There are multiple ways to get information from this transformed data. 
+    
+    ``` python
+    
+    # get proportion of total variance explained by each principal component
+    pca.explained_variance_ratio_
+    
+    # Get feature components that make up each principal component
+    pca.components_
+    ```
+    
+    
+    """
+    st.markdown(pca_multi)
+    
+    st.subheader("Clustering")
     
     python_implementation_multi = """
     
