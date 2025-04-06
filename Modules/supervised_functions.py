@@ -14,7 +14,7 @@ from sklearn.datasets import make_classification,make_blobs
 import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import OrdinalEncoder
-
+import streamlit.components.v1 as components
 
 #
 def plot_decision_boundary(X, y, model, alpha=0.8, cmap='viridis'):
@@ -300,6 +300,12 @@ def subpage1(method):
     st.write(f"Predicted y for X = {x_value}: {y_pred[0][0]:.2f}")
     # Predict and display the corresponding y value
 
+    # Part 1
+    st.subheader("Do you finish it?")
+    if st.button("Yes"):
+        st.session_state.part1_visited = True
+
+
 # Define the subpage function
 def subpage2(method):
     """
@@ -469,6 +475,11 @@ def subpage2(method):
     prediction = model.predict(input_features)
     st.write(f"Predicted class for input ({feature1:.2f}, {feature2:.2f}): {prediction[0]}")
     # Allow users to input feature values and get predictions
+
+    # Part 2
+    st.subheader("Do you finish it?")
+    if st.button("Yes"):
+        st.session_state.part2_visited = True
 
 
 # Define the subpage function
@@ -655,6 +666,11 @@ def subpage3(method):
     plot_decision_boundary_with_hyperplane(X_train, y_train, model)
     # Visualize the decision boundary with the hyperplane and support vectors
 
+    # Part 3
+    st.subheader("Do you finish it?")
+    if st.button("Yes"):
+        st.session_state.part3_visited = True
+
 
 def subpage4(method):
     """
@@ -819,8 +835,11 @@ def subpage4(method):
     plot_decision_boundary(X_train, y_train, rf, alpha=0.4, cmap='coolwarm')
     # Visualize the decision boundary of the Random Forest model
 
+    # Part 4
+    st.subheader("Do you finish it?")
+    if st.button("Yes"):
+        st.session_state.part4_visited = True
 
-        
         
         
 def supervised_quiz():

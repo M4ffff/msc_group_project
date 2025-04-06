@@ -39,7 +39,8 @@ with tab1:
     st.write("Facial Recognition: Used in security systems and social media (e.g., for automatic photo tagging).")
     st.write("Object Detection: Detecting pedestrians and vehicles in autonomous driving, and abnormal behaviors in security surveillance.")
     st.write("Medical Imaging Analysis: Used for disease diagnosis (e.g., cancer detection, X-ray image analysis).")
-    
+
+    #Make image in the middle of screen
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.image("images/1_supervised_images/Facial Recognition.jpg", caption="Facial Recognition", use_container_width=True)
@@ -49,7 +50,8 @@ with tab1:
     st.write("Machine Translation: Translating text from one language to another.")
     st.write("Converting speech signals into text (e.g., in smart voice assistants)")
     st.write("Text Classification: Categorizing text into different classes (e.g., news classification, spam detection).")
-    
+
+    # Make image in the middle of screen
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.image("images/1_supervised_images/ORC.png", caption="ORC", use_container_width=True)
@@ -57,7 +59,8 @@ with tab1:
     st.subheader("Gaming and Entertainment")
     st.write("Game Recommendation: Recommending games based on players' gaming history and preferences.")
     st.write("In-Game Character Behavior Prediction: Predicting character behavior based on player data to optimize the gaming experience.")
-    
+
+    # Make image in the middle of screen
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.image("images/1_supervised_images/OIP.jpg", caption="OIP", use_container_width=True)
@@ -66,6 +69,15 @@ with tab1:
     st.write("Of course, there are many other application scenarios. Supervised learning is widely applied and deeply integrated into various aspects of daily life, making it an accessible and practical tool.")
 
 with tab2:
+    # Initialize session state
+    if "part1_visited" not in st.session_state:
+        st.session_state.part1_visited = False
+    if "part2_visited" not in st.session_state:
+        st.session_state.part2_visited = False
+    if "part3_visited" not in st.session_state:
+        st.session_state.part3_visited = False
+    if "part4_visited" not in st.session_state:
+        st.session_state.part4_visited = False
     st.header("Which Supervised Learning model would you like?")
     st.write("No matter where it is applied, the underlying logic is consistent. Starting from the basics is a necessary path to becoming a master. Choose a direction that interests you and dive in. :diving_mask: ")
 
@@ -94,11 +106,30 @@ with tab2:
         subpage4(summaries[selected_method])
 
     st.divider()
+    parts = {
+        "part1_visited": "Part 1:Linear Regression ",
+        "part2_visited": "Part 2: Logistic Regression",
+        "part3_visited": "Part 3: SVM",
+        "part4_visited": "Part 4: Random Forest"
+    }
+    incomplete_parts = [
+        name for key, name in parts.items()
+        if not st.session_state.get(key, False)
+    ]
+    #show quizz
+    if not incomplete_parts:
+        st.subheader("Quiz time!")
+        st.write("How much have you learnt?!?")
+        supervised_quiz()
+    else:
+        for i in range(1, 5):
+            status = "✅" if st.session_state.get(f"part{i}_visited", False) else "❌"
+            st.write(f"{status} Part {i}")
+        st.warning(
+            "Please complete the following parts before taking the quiz:\n\n" +
+            "\n".join(f"{name}\n" for name in incomplete_parts )
+        )
 
-    st.subheader("Quiz time!")
-    st.write("How much have you learnt?!?")
-
-    supervised_quiz()
 
 with tab3:
     
