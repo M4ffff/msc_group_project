@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 from sklearn import svm
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error,classification_report,accuracy_score, confusion_matrix
 from sklearn.metrics import mean_absolute_error, r2_score
@@ -274,14 +276,15 @@ with tab4:
         df = pd.read_csv('datasets/IMDb_Dataset.csv')
         
         # Only keep selected certificates
-        valid_certificates = ['G', 'PG-13', 'R']
-        df = df[df['Certificates'].isin(valid_certificates)]
+        # valid_certificates = ['G', 'PG-13', 'R']
+        # df = df[df['Certificates'].isin(valid_certificates)]
 
         # Encode 'Certificates'
-        cert_map = {'G': 0, 'PG-13': 1, 'R': 3}
-        df['Certificates'] = df['Certificates'].map(cert_map)
+        encoder = LabelEncoder()
+        df['Certificates'] = encoder.fit_transform(df['Certificates'])
+        df['Genre'] = encoder.fit_transform(df['Genre'])
 
-        df = df[['IMDb Rating', 'Certificates', 'Duration (minutes)', 'Year', 'MetaScore']]
+        df = df[['IMDb Rating', 'Certificates', 'Duration (minutes)', 'Year', 'MetaScore', 'Genre']]
         df = df.dropna()
 
         return df
@@ -293,13 +296,13 @@ with tab4:
     X_imdb = df_imdb.drop(columns=['IMDb Rating'])
     y_imdb = df_imdb['IMDb Rating']
 
-    st.header("Predicting IMDb Film Ratings with Linear Regression")
+    st.header("Predicting IMDb Film Ratings with Random Forest Regression")
 
     col1, col2 = st.columns([2, 1])
     with col1:
         st.write("""
         In this section, we're using **real movie data** from IMDb to build a regression model that predicts a film’s rating out of 10.
-        Since ratings are continuous values (not categories), we use a **regression model**—specifically, Linear Regression.
+        Since ratings are continuous values (not categories), we use a **regression model**—specifically, Random Forest Regression.
 
         This allows us to explore how features like **film duration**, **release year**, and **age certificate** relate to the overall score.
         """)
@@ -320,7 +323,7 @@ with tab4:
         X_train, X_test, y_train, y_test = train_test_split(X_imdb[selected_features_imdb], y_imdb, test_size=0.2, random_state=42)
 
         # Train model
-        model = LinearRegression()
+        model = RandomForestRegressor()
         model.fit(X_train, y_train)
 
         y_pred = model.predict(X_test)
@@ -354,10 +357,10 @@ with tab4:
         # Coefficients
         coefficients = pd.DataFrame({
             'Feature': selected_features_imdb,
-            'Coefficient': model.coef_
-        }).sort_values(by="Coefficient", key=abs, ascending=False)
+            'Importance': model.feature_importances_
+        }).sort_values(by="Importance", key=abs, ascending=False)
 
-        st.subheader("Feature Coefficients")
+        st.subheader("Feature Importance")
         st.write("""
         These coefficients indicate how much each feature affects the predicted rating. 
         A **positive value** means the feature increases the predicted score, while a **negative value** means it reduces it.
@@ -365,8 +368,8 @@ with tab4:
         """)
 
         fig, ax = plt.subplots(figsize=(8, 4))
-        sns.barplot(x="Coefficient", y="Feature", data=coefficients, ax=ax)
-        ax.set_title("Feature Coefficients (Linear Regression)")
+        sns.barplot(x="Importance", y="Feature", data=coefficients, ax=ax)
+        ax.set_title("Feature importance (RF Regression)")
         st.pyplot(fig)
 
         st.write("For example, a longer movie might have a slightly higher predicted rating, or older movies may tend to score better.")
@@ -379,7 +382,7 @@ with tab4:
             quiz_options = coefficients['Feature'].tolist()
 
             selected_answer = st.radio(
-                "Which feature has the **least** impact (smallest absolute coefficient) in the model?",
+                "Which feature has the **least** impact (smallest importance) in the model?",
                 quiz_options, index=None
             )
 
@@ -389,7 +392,7 @@ with tab4:
                 elif selected_answer is None:
                     st.write("")
                 else:
-                    st.error(f"❌ Incorrect. The least important feature is **{least_important_feature}**.")
+                    st.error(f"❌ Incorrect. Have another go!")
     else:
         st.warning("Please select at least one feature to train the model.")
     
