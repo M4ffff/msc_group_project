@@ -314,6 +314,8 @@ with tab4:
     st.write("Choose which features to include in the model. This helps us explore their influence on the final rating.")
     selected_features_imdb = st.multiselect("Choose features", X_imdb.columns.tolist(), default=X_imdb.columns.tolist())
 
+    st.write(len(X_imdb))
+
     if selected_features_imdb:
         X_train, X_test, y_train, y_test = train_test_split(X_imdb[selected_features_imdb], y_imdb, test_size=0.2, random_state=42)
 

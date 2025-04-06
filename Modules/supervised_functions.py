@@ -858,7 +858,7 @@ def supervised_quiz():
     elif selected_option_1 == options_1[1]:
         st.success("Correct! Linear Regression models the relationship using a linear function.")
     else:
-        st.error("Incorrect. The correct answer is B.")
+        st.error("Incorrect. Have another guess!")
     
     
     
@@ -876,7 +876,7 @@ def supervised_quiz():
     elif selected_option_2 == options_2[2]:
         st.success("Correct! Logistic Regression outputs probabilities for classification tasks.")
     else:
-        st.error("Incorrect. The correct answer is C.")
+        st.error("Incorrect. Have another guess!")
         
         
     
@@ -894,7 +894,7 @@ def supervised_quiz():
     elif selected_option_3 == options_3[1]:
         st.success("Correct! SVM aims to find the hyperplane that maximizes the margin between two classes.")
     else:
-        st.error("Incorrect. The correct answer is B.")
+        st.error("Incorrect. Have another guess!")
     
     
     
@@ -911,5 +911,5 @@ def supervised_quiz():
     elif selected_option_4 == options_4[1]:
         st.success("Correct! Random Forest builds multiple decision trees for more accurate predictions.")
     else:
-        st.error("Incorrect. The correct answer is B.")
+        st.error("Incorrect. Have another guess!")
         

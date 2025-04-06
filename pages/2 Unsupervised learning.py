@@ -96,7 +96,7 @@ with tab2:
     x_axis = st.selectbox("Select x-axis:", numeric_columns)
     y_axis = st.selectbox("Selection y-axis:", numeric_columns)
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(6,4))
     sns.scatterplot(data=bc_dat, x=x_axis, y=y_axis, ax=ax, alpha=0.7)
     ax.set(xlabel=x_axis, ylabel=y_axis, title=f"{x_axis} vs {y_axis}")
     st.pyplot(fig)
