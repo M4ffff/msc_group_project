@@ -16,12 +16,12 @@ from Modules.unsupervised_functions import kmeans_cluster, gmm_cluster, dbscan_c
 st.title("Unsupervised Learning Page")
 
 
-tab1, tab2, tab3, tab4 = st.tabs(["Introduction", "Unsupervised explanation", "Clustering Examples", "Python Implementation"])
+tab1, tab2, tab3, tab4 = st.tabs(["Introduction", "Real-life Example", "Clustering Explorations", "Python Implementation"])
 
 with tab1:
     st.subheader("What ***is*** Unsupervised Learning:question::exclamation:")
     
-    st.markdown("Unsupervised learning is a type of machine learning where the algorithm learns patterns from unlabelled data. Unlike supervised learning, there are no predefined outputs. The goal is to explore the underlying structure of the dataset, uncovering hidden relationships or groupings without predefined categories. This approach is particularly useful for larger datasets.")
+    st.markdown("Unsupervised learning is a type of machine learning where the algorithm learns patterns from ***unlabelled*** data. Unlike supervised learning, there are no predefined outputs. The goal is to explore the underlying structure of the dataset, uncovering hidden relationships or groupings without predefined categories.")
         
     st.subheader("Types of Unsupervised Learning")
     
@@ -38,25 +38,26 @@ with tab1:
         st.write("""
                  This is a method to reduce the number of features in a dataset, without losing lots of important information. 
                  Often, datasets have many features. However, as humans we are unable to visualise data with more than 3 dimensions. 
-                 Dimensionality reduction allows us to reduce the number of dimensions to a number that can be visualised by us!
-                 
+                 Dimensionality reduction allows us to **reduce the number of dimensions** to a number that can be visualised by us (i.e. 2D, or 3D)!
+                 It is also useful for reducing the size of large datasets, making analysis less computationally intensive. :fast_forward:
                  
                  The most important features of the dataset can also be determined, allowing future research to focus on these specific features and ignore irrelevant features.   
                  
-                 There are both linear algorithms (eg principal component analysis (PCA)) and non-linear methods (eg t-SNE). 
+                 There are both *linear* algorithms (eg principal component analysis (PCA)) and *non-linear* methods (eg t-SNE). 
+                 In this resource, we only really cover linear algorithms :disappointed: However, if you're interested in non-linear methods they're definitely worth looking into!
                  
                  """)
         
     with st.expander("Clustering"):
         st.write("""
                  This is a method often used alongside dimensionality reduction.
-                 It is used to group unlabelled data based on the data points' similarity to each other.
+                 It is used to **group** unlabelled data based on the data points' similarity to each other.
                  
                  The similarity of the datapoints can be determined in different ways.
                  Some methods, such as **K-means clustering**, split the data into group purely based on distance to each other. 
-                 Other methods, such as DBSCAN, base simlarity on the density of data. 
+                 Other methods, such as DBSCAN, base similarity on the density of data. 
                  
-                 The method you want to use depends on each case. 
+                 The method you want to use depends on each case - as we will explore in the next few tabs... 
                  
                  """)
     
@@ -64,7 +65,7 @@ with tab1:
     
     st.subheader("Unsupervised Learning applications")
 
-    st.markdown("Unsupervised learning is particularly valuable in the early stages of data analysis, especially for data preparation and visualisation. It is often used when data scientists do not have predefined labels or clear hypotheses, allowing them to explore the data freely.")
+    st.markdown("Unsupervised learning is particularly valuable in the *early stages* of data analysis, especially for data preparation and visualisation. It is often used when data scientists do not have predefined labels or clear hypotheses, allowing them to explore the data freely.")
     st.markdown("By uncovering the most relevant features and revealing hidden patterns or relationships, unsupervised learning helps reduce the risk of human bias or oversight. Common applications include anomaly detection, preparing datasets for supervised learning, and powering recommendation systems by identifying natural groupings or preferences within the data.")
     
     
@@ -95,7 +96,7 @@ with tab2:
     x_axis = st.selectbox("Select x-axis:", numeric_columns)
     y_axis = st.selectbox("Selection y-axis:", numeric_columns)
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(6,4))
     sns.scatterplot(data=bc_dat, x=x_axis, y=y_axis, ax=ax, alpha=0.7)
     ax.set(xlabel=x_axis, ylabel=y_axis, title=f"{x_axis} vs {y_axis}")
     st.pyplot(fig)

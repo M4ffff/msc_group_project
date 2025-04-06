@@ -229,7 +229,7 @@ def reg_quiz():
         # Allow user to choose answer (use key to ensure each radio button is unique for each question)
         selected_answer = st.radio("Look at the graph and select the correct answer:", 
                                    answer_options, 
-                                   key=f"radio_{st.session_state.n_question}")
+                                   key=f"radio_{st.session_state.n_question}", index=None)
         
         # update session state with chosen answer 
         st.session_state.user_answer = selected_answer 
