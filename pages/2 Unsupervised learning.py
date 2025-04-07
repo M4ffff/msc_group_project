@@ -365,13 +365,14 @@ with tab3:
             """
         Hopefully, you saw this in action on the page before, but we'll run through it again in case you didn't!
         
-        1. Select the number of clusters, for example **three**.
+        1. Select the number of clusters, for example *k*=**three**.
         2. Randomly select **three** points of data as starting points for the **three** cluster centres.
-        3. Calculate which centre each point is closest to.")
+        3. Calculate which centre each point is closest to.
         4. Sort into the three clusters by which centre is closest.  :man-boy-boy:             :woman-girl-girl:
         5. Calculate the mean of each cluster, with the mean then set as the new cluster centre. :abacus:
         6. Repeat this process until the cluster centres stabilise, calculated with a given **tolerance**.
-        "FINISHED :trophy:
+        
+        FINISHED :trophy:
         """)
         
     with st.expander("**:violet[GMM clustering]:**"):
@@ -379,10 +380,10 @@ with tab3:
             """
         GMM assumes the data is a mixture of multiple Gaussian distributions, each corresponding to a cluster.
         The number of clusters must be specified, as with K-means clustering.
-        Gmm iteratively estimates the parameters of the Gaussian distributions, using the \"Expectation-Maximisation algorithm\"
+        Gmm iteratively estimates the parameters of the Gaussian distributions, using the \"Expectation-Maximisation algorithm\".
         The data points are each given a probability of belonging in each cluster.
         
-        Gmm can deal with overlapping clusters, and more funky-shaped data. 
+        GMM can deal with overlapping clusters, and more funky-shaped data. 
         """)
         
     with st.expander("**:green[DBSCAN clustering]:**"):
@@ -395,7 +396,7 @@ with tab3:
         DBSCAN does not need the number of clusters specified, but does require sensible input parameters. 
         These parameters are as follows:
         - **Eps**:  *The maximum distance between two samples for one to be considered as in the neighbourhood of the other.*
-        - **min_clusters**: *Minimum number of points for a group of data to be considered a cluster rather than noise.*
+        - **min_samples**: *Minimum number of points for a group of data to be considered a cluster rather than noise.*
         
         DBSCAN does not assume the shapes of the clusters, so is often more effective at clustering strangely-shaped data, 
         which form obvious clusters to the human eye, but which K-means and GMM may struggle with. 
@@ -404,9 +405,9 @@ with tab3:
     with st.expander("**:red[HDBSCAN clustering]:**"):
         st.markdown(
             """
-        HDBSCAN is an extension of DBSCAN, with can deal effectively with clusters of varying densities. 
+        HDBSCAN is an extension of DBSCAN, which can deal effectively with clusters of varying densities. 
         The "H" stands for "hierarchical". This is because it creates a hierarchy (ranking) of  clusters based on their density.
-        This is done automatically, although the technique could be improved by tweaking some input parameters. 
+        This is done automatically, although the technique can be improved by tweaking some hyperparameters. 
         """)
 
     final_multi = """    These different methods often produce different clusters on the same set of data, as we will see below./
@@ -486,10 +487,10 @@ with tab3:
             
         elif technique == clustering_technique_options[3]:
             st.write("Change the following slider to see how this parameter effects the DBSCAN results.")
-            eps = st.slider("Eps", 0.01, 0.5, value=0.10, step=0.01)
-            min_clusters = st.slider("min_clusters", 1, 15, value=5)
+            eps = st.slider("Eps", 0.01, 0.5, value=0.10, step=0.01, help="**Eps:** *The maximum distance between two samples for one to be considered as in the neighbourhood of the other.*")
+            min_samples = st.slider("min_samples", 1, 15, value=5, help="Minimum number of points required for a cluster to be considered a cluster.")
             
-            colour_labels = dbscan_cluster(random_data, eps, min_clusters)
+            colour_labels = dbscan_cluster(random_data, eps, min_samples)
             size=15
             
         elif technique == clustering_technique_options[4]:
@@ -501,23 +502,11 @@ with tab3:
         else:
             size = 15
             colour_labels = np.zeros(len(random_data))
-            
-    if technique == clustering_technique_options[3]:
-        if st.checkbox("Click to see what 'Eps' is....."):
-            st.write("Eps is a DBSCAN-SPECIFIC DEFINITION: :nerd_face:")
-            st.markdown("**Eps:** *The maximum distance between two samples for one to be considered as in the neighbourhood of the other.*")
-            # st.markdown("<br>---------------------", unsafe_allow_html=True)
-            st.markdown("***")
-        
-    # st.write("previous data slider bool:", st.session_state["previous_data_slider"])
-        st.write("counter:", st.session_state["counter"])
-    
+               
 
     with col1:
         basic_plot(random_data, ax1, size, colour_labels, cluster_centres)
-        st.pyplot(fig1)
-        
-    st.write(f"filename: {random_file}")   
+        st.pyplot(fig1)  
 
     
     st.subheader("Quiz time!")
