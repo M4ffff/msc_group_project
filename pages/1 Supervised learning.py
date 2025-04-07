@@ -358,9 +358,7 @@ with tab4:
 
         st.subheader("Feature Importance")
         st.write("""
-        These coefficients indicate how much each feature affects the predicted rating. 
-        A **positive value** means the feature increases the predicted score, while a **negative value** means it reduces it.
-        Larger absolute values indicate more influence.
+        These coefficients indicate how much each feature affects the predicted rating. Larger absolute values indicate more influence.
         """)
 
         fig, ax = plt.subplots(figsize=(8, 4))
@@ -368,7 +366,52 @@ with tab4:
         ax.set_title("Feature importance (RF Regression)")
         st.pyplot(fig)
 
-        st.write("For example, a longer movie might have a slightly higher predicted rating, or older movies may tend to score better.")
+        st.subheader("Let's Predict the IMDb Rating for *Gladiator*")
+
+        # Example feature values for Gladiator
+        st.write("""
+        Now let’s use the model to estimate the IMDb rating for the film **Gladiator (2000)**, 
+        and compare it to the actual rating on IMDb.
+
+        Here's the information we're using:
+        - **Certificate**: R
+        - **Duration**: 155 minutes
+        - **Year**: 2000
+        - **MetaScore**: 67
+        - **Genre**: Action 
+        """)
+
+        # Create Gladiator's input
+        genre_action_encoded = df_imdb['Genre'].mode()[0] 
+
+        gladiator_input = {
+            'Certificates': 3,            # 'R' encoded
+            'Duration (minutes)': 155,
+            'Year': 2000,
+            'MetaScore': 67,
+            'Genre': genre_action_encoded
+        }
+
+        # Only include selected features
+        input_df = pd.DataFrame([gladiator_input])[selected_features_imdb]
+
+        predicted_rating = model.predict(input_df)[0]
+        actual_rating = 8.5  # IMDb actual rating for Gladiator
+
+        st.write(f"**Predicted Rating**: {predicted_rating:.2f}")
+        st.write(f"**Actual IMDb Rating**: {actual_rating}")
+
+        # Comparison plot
+        st.write("Here's a visual comparison:")
+        fig, ax = plt.subplots(figsize=(5, 3))
+        sns.barplot(x=["Predicted", "Actual"], y=[predicted_rating, actual_rating], palette="viridis", ax=ax)
+        ax.set_ylabel("IMDb Rating")
+        ax.set_title("Gladiator: Predicted vs Actual Rating")
+        st.pyplot(fig)
+
+        st.info("""
+        The predicted score is based solely on the features available to the model. Differences between prediction and actual rating can be due to subjective viewer opinions, performances, awards, or cultural impact—none of which are included in the dataset!
+        """)
 
         # Quiz
         st.header("Quiz: Identify the Least Important Feature!")
