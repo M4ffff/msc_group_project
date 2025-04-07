@@ -22,3 +22,5 @@ st.write("Your current knowledge level after completing the app:", knowledge_sli
 
 st.success("👏 Thanks again for exploring machine learning with us!")
 st.markdown("*You can always come back to test and build more models!*")
+
+st.link_button("Link to GitHub","https://github.com/M4ffff/msc_group_project")
