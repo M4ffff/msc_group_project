@@ -23,7 +23,7 @@ from Modules.supervised_functions import subpage1, subpage2, subpage3, subpage4,
 
 st.title("Supervised Learning ")
 
-tab1, tab2, tab3, tab4 = st.tabs(['Introduction', 'Different models', 'Car Accident Prediction', 'Film Rating Prediction'])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(['Introduction', 'Different models', 'Car Accident Prediction', 'Film Rating Prediction', 'Python Implementation'])
 
 
 with tab1:
@@ -434,4 +434,83 @@ with tab4:
                     st.error(f"❌ Incorrect. Have another go!")
     else:
         st.warning("Please select at least one feature to train the model.")
+
+with tab5:
+    st.subheader("Python implementation (Random Forests)")
+
+    rf_multi = """
+    Let's explore how we can actually use these techniques using Python. These methods are useful when we already know the labels for our data and want to learn patterns to predict them in the future.
+
+    We'll focus on **Random Forests**, which can be used for:
+    - Classification (predicting categories)
+    - Regression (predicting continuous values)
+
+    These models are powerful and work by combining multiple decision trees into an ensemble to improve accuracy and reduce overfitting.
+    
+    ---
+    
+    ### Random Forest Classifier
+
+    This model is used to classify data into categories.
+
+    ``` python
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.model_selection import train_test_split
+    from sklearn.metrics import accuracy_score
+
+    # Split dataset into features and labels
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Build and train classifier
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+
+    # Make predictions
+    y_pred = model.predict(X_test)
+
+    # Evaluate model
+    accuracy = accuracy_score(y_test, y_pred)
+    print("Accuracy:", accuracy)
+    ```
+
+    This code trains a classifier and prints the accuracy score on the test data.
+    
+    ---
+    
+    ### Random Forest Regressor
+
+    This model is used when you want to predict a **number** instead of a category.
+
+    ``` python
+    from sklearn.ensemble import RandomForestRegressor
+    from sklearn.model_selection import train_test_split
+    from sklearn.metrics import mean_squared_error, r2_score
+
+    # Split dataset into features and target
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Build and train regressor
+    reg = RandomForestRegressor(n_estimators=100, random_state=42)
+    reg.fit(X_train, y_train)
+
+    # Make predictions
+    y_pred = reg.predict(X_test)
+
+    # Evaluate model
+    mse = mean_squared_error(y_test, y_pred)
+    r2 = r2_score(y_test, y_pred)
+
+    print("Mean Squared Error:", mse)
+    print("R² Score:", r2)
+    ```
+
+    This code trains a regression model and prints out common metrics for performance.
+    
+    ---
+    
+    Notice how the structure for both models is **almost identical** — you just swap out the classifier for a regressor and change the evaluation metric.
+    """
+
+    st.markdown(rf_multi)
+        
     
