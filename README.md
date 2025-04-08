@@ -7,7 +7,7 @@ We hope you enjoy!
 
 To access the app remotely, click this link: [![ML Platform](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://machine-learning-platform.streamlit.app)
 
-For quicker app running speeds when training models, use the local installation (given below).
+**For quicker app running speeds when training models, use the local installation (given below).**
 
 ## Key Features
 
