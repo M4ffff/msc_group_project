@@ -5,7 +5,7 @@ Welcome to the Interactive Machine Learning Platform. This Streamlit web applica
 
 We hope you enjoy!
 
-To access the app remotely, click this link: [![ML Platform](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)]()
+To access the app remotely, click this link: [![ML Platform](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://machine-learning-platform.streamlit.app)
 
 
 ## Key Features
