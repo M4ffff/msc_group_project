@@ -137,6 +137,68 @@ def get_data(seed, cluster_dict):
 
 
 
+cluster_dict = {
+    "basic1.csv": {"best_method": ["GMM", "DBSCAN", "HDBSCAN"], "num_clusters": 4,
+                    "description": "This data is split into 4 blobs which GMM, DBSCAN (eps=0.22, min_clusters=5), and HDBSCAN cluster effectively."},
+    "basic2.csv": {"best_method": ["DBSCAN"], "num_clusters": 5,
+                    "description": "DBSCAN definitely the most effective here (eps=15,min_clusters=5) - the other methods struggle with the elongated shapes of the clusters."},
+    "basic3.csv": {"best_method": ["GMM", "DBSCAN", "HDBSCAN"], "num_clusters": 3,
+                    "description": " GMM, DBSCAN (eps=0.22, min_clusters=5), and HDBSCAN all effectively determine the separate clusters. K-means does not"},
+    "basic4.csv": {"best_method": ["K-means", "GMM"], "num_clusters": 3,
+                    "description": "K-means and GMM are most effective here due to the blobby nature of the data."},
+    "basic5.csv": {"best_method": ["K-means", "GMM"], "num_clusters": 3,
+                    "description": "K-means and GMM both effectively cluster here. DBSCSN and HDBSCAN struggle with the sparsity of the data."},
+    "blob.csv": {"best_method": ["K-means", "GMM"], "num_clusters": 4,
+                    "description": "These clusters are not clearly distinct, but there is a vague blobby structure which K-means and GMM show."},
+    # "box.csv": {"best_method": "dbscan", "num_clusters": 1}, ###
+    # "boxes.csv": {"best_method": "dbscan", "num_clusters": 30}, ###
+    "boxes2.csv": {"best_method": ["DBSCAN", "HDBSCAN"], "num_clusters": 3,
+                    "description": " DBSCAN (eps=0.10, min_clusters=5) and HDBSCAN determines the three clusters most reliably."},
+    # "boxes3.csv": {"best_method": "dbscan", "num_clusters": 12}, ###
+    "chrome.csv": {"best_method": ["DBSCAN", "HDBSCAN"], "num_clusters": 4,
+                    "description": "DBSCAN (eps=0.11, min_clusters=5) and HDBSCAN both effective here due to the strange shapes of the clusters."},
+    "dart.csv": {"best_method": ["DBSCAN", "HDBSCAN"], "num_clusters": 2,
+                    "description": "K-means particularly struggles with this one as the clusters do not have blobby shapes. "},
+    "dart2.csv": {"best_method": ["DBSCAN", "HDBSCAN"], "num_clusters": 4,
+                    "description": "DBSCAN and HDBSCAN can effectively cluster based on the shapes of the rings. "},
+    "face.csv": {"best_method": ["DBSCAN", "HDBSCAN"], "num_clusters": 4,
+                    "description": "DBSCAN (eps=0.32, min_clusters=5) and HDBSCAN both effective here."},
+    "hyperplane.csv": {"best_method": ["GMM"], "num_clusters": 2,
+                    "description": "GMM probably the most effective here, although there aren't any clearly defined clusters so hard to judge the effectiveness of each method."},
+    "isolation.csv": {"best_method": ["DBSCAN", "HDBSCAN"], "num_clusters": 3,
+                    "description": "DBSCAN (eps=0.18, min_clusters=5) and HDBSCAN can deal with the noise around the clusters."},
+    "lines.csv": {"best_method": ["DBSCAN", "HDBSCAN"], "num_clusters": 5,
+                    "description": "DBSCAN (eps=0.07, min_clusters=5) and HDBSCAN are the most effective here although cannot distinguish the top two lines."},
+    "lines2.csv": {"best_method": ["DBSCAN", "HDBSCAN"], "num_clusters": 5,
+                    "description": "DBSCAN (eps=0.09, min_clusters=5) and HDBSCAN are the most effective here - the other methods struggle with the elongated shapes of the clusters. GMM nearly works but misclassifies the two clusters in the top left"},
+    "moon_blobs.csv": {"best_method": ["DBSCAN", "HDBSCAN"], "num_clusters": 4,
+                    "description": "DBSCAN (eps=0.37, min_clusters=5) and HDBSCAN effectively deal with the moons here. "},             ############## check best method
+    "network.csv": {"best_method": ["K-means", "GMM", "DBSCAN", "HDBSCAN"], "num_clusters": 5,
+                    "description": "All the methods work pretty effective here. DBSCAN hyperparameters: (eps=0.10,min_clusters=5)"},
+    "outliers.csv": {"best_method": ["GMM"], "num_clusters": 2,
+                    "description": "GMM and DBSCAN (eps=0.24, min_clusters=5) effectively determine the clusters and ignore the noise. "},
+    # "ring.csv": {"best_method": "kmeans", "num_clusters": 1}, ###
+    "sparse.csv": {"best_method": ["K-means", "GMM", "DBSCAN", "HDBSCAN"], "num_clusters": 3,
+                    "description": "This is pretty blobby data, so K-means and GMM both effectively cluster into 3 clusters. However, DBSCAN (eps=0.38, min_clusters=5) and HDBSCAN also work."},
+    "spiral.csv": {"best_method": ["DBSCAN", "HDBSCAN"], "num_clusters": 1,
+                    "description": "This doesn't have any clusters as it is only one spiral. However, setting eps to 0.04 and min_clusters to 5, you can see DBSCAN can separate the spiral into separate chunks which effectively capture its shape, whereas GMM and K-means do not."}, ###
+    "spiral2.csv": {"best_method": ["GMM", "DBSCAN"], "num_clusters": 2,
+                    "description": "GMM and DBSCAN (eps=0.09, min_clusters=5) both determine the yin and yang here."},
+    "spirals.csv": {"best_method": ["DBSCAN"], "num_clusters": 3,
+                    "description": "DBSCAN (eps=0.10, min_clusters=5) and HDBSCAN are the most effective here"},
+    "supernova.csv": {"best_method": ["K-means", "GMM"], "num_clusters": 4,
+                    "description": "GMM and K-means can determine the four clusters here."},
+    "triangle.csv": {"best_method": ["GMM", "DBSCAN"], "num_clusters": 3,
+                    "description": "GMM effectively deals with the sparsity of the data here. DBSCAN works with eps=0.18, min_clusters=5 "},
+    "un.csv": {"best_method": ["DBSCAN, HDBSCAN"], "num_clusters": 2,
+                    "description": "GMM and K-means can't reliably determine the irregular shapes of the clusters. DBSCAN: (eps=0.10, min_clusters=5)"},
+    "un2.csv": {"best_method": ["DBSCAN, HDBSCAN"], "num_clusters": 3,
+                    "description": "DBSCAN (eps=0.08, min_clusters=5) and HDBSCAN effectively determine the three clusters here. "},
+    "wave.csv": {"best_method": ["DBSCAN, HDBSCAN"], "num_clusters": 4,
+                    "description": "GMM and K-means can't reliably determine the irregular shapes of the clusters."}
+}
+
+
 def kmeans_cluster(data, num_centres):
     """
     Cluster data using kmeans clustering

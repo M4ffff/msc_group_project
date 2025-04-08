@@ -5,7 +5,10 @@ import time
 import matplotlib.pyplot as plt
 from sklearn import svm
 from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error,classification_report,accuracy_score, confusion_matrix
 from sklearn.metrics import mean_absolute_error, r2_score
@@ -20,7 +23,7 @@ from Modules.supervised_functions import subpage1, subpage2, subpage3, subpage4,
 
 st.title("Supervised Learning ")
 
-tab1, tab2, tab3, tab4 = st.tabs(['Introduction', 'Different models', 'Car Accident Prediction', 'Film Rating Prediction'])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(['Introduction', 'Different models', 'Car Accident Prediction', 'Film Rating Prediction', 'Python Implementation'])
 
 
 with tab1:
@@ -30,7 +33,6 @@ with tab1:
     st.header("What is Supervised Learning ")
     st.write("Supervised learning is one of the core techniques in machine learning. Think of it like teaching a model with examples: you provide it with data (the inputs) along with the correct answers (the outputs), and it learns to make predictions based on that. These predictions can be continuous values (like predicting house prices—this is called regression) or categories (like identifying if an email is spam or not—this is called classification).")
     st.write("After being trained on labeled examples, the model can then make educated guesses on new, unseen data. This ability to generalize is key, and it mirrors how humans learn to recognize patterns and form concepts.")
-    st.write("(*Based on [Wikipedia](https://en.wikipedia.org/wiki/Supervised_learning)*)")
 
     st.header("Supervised Learning in the ***:rainbow[real-world]***")
     st.write("Due to its powerful predictive capabilities and broad applicability, supervised learning has a wide range of applications in many fields. Here are some of the main application areas:")
@@ -273,16 +275,13 @@ with tab4:
     @st.cache_data
     def load_imdb_data():
         df = pd.read_csv('datasets/IMDb_Dataset.csv')
-        
-        # Only keep selected certificates
-        valid_certificates = ['G', 'PG-13', 'R']
-        df = df[df['Certificates'].isin(valid_certificates)]
 
-        # Encode 'Certificates'
-        cert_map = {'G': 0, 'PG-13': 1, 'R': 3}
-        df['Certificates'] = df['Certificates'].map(cert_map)
+        # Encode 'Certificates' and 'Genre'
+        encoder = LabelEncoder()
+        df['Certificates'] = encoder.fit_transform(df['Certificates'])
+        df['Genre'] = encoder.fit_transform(df['Genre'])
 
-        df = df[['IMDb Rating', 'Certificates', 'Duration (minutes)', 'Year']]
+        df = df[['IMDb Rating', 'Certificates', 'Duration (minutes)', 'Year', 'MetaScore', 'Genre']]
         df = df.dropna()
 
         return df
@@ -294,13 +293,13 @@ with tab4:
     X_imdb = df_imdb.drop(columns=['IMDb Rating'])
     y_imdb = df_imdb['IMDb Rating']
 
-    st.header("Predicting IMDb Film Ratings with Linear Regression")
+    st.header("Predicting IMDb Film Ratings with Random Forest Regression")
 
     col1, col2 = st.columns([2, 1])
     with col1:
         st.write("""
         In this section, we're using **real movie data** from IMDb to build a regression model that predicts a film’s rating out of 10.
-        Since ratings are continuous values (not categories), we use a **regression model**—specifically, Linear Regression.
+        Since ratings are continuous values (not categories), we use a **regression model**—specifically, Random Forest Regression.
 
         This allows us to explore how features like **film duration**, **release year**, and **age certificate** relate to the overall score.
         """)
@@ -315,11 +314,12 @@ with tab4:
     st.write("Choose which features to include in the model. This helps us explore their influence on the final rating.")
     selected_features_imdb = st.multiselect("Choose features", X_imdb.columns.tolist(), default=X_imdb.columns.tolist())
 
+
     if selected_features_imdb:
         X_train, X_test, y_train, y_test = train_test_split(X_imdb[selected_features_imdb], y_imdb, test_size=0.2, random_state=42)
 
         # Train model
-        model = LinearRegression()
+        model = RandomForestRegressor()
         model.fit(X_train, y_train)
 
         y_pred = model.predict(X_test)
@@ -353,22 +353,65 @@ with tab4:
         # Coefficients
         coefficients = pd.DataFrame({
             'Feature': selected_features_imdb,
-            'Coefficient': model.coef_
-        }).sort_values(by="Coefficient", key=abs, ascending=False)
+            'Importance': model.feature_importances_
+        }).sort_values(by="Importance", key=abs, ascending=False)
 
-        st.subheader("Feature Coefficients")
+        st.subheader("Feature Importance")
         st.write("""
-        These coefficients indicate how much each feature affects the predicted rating. 
-        A **positive value** means the feature increases the predicted score, while a **negative value** means it reduces it.
-        Larger absolute values indicate more influence.
+        These coefficients indicate how much each feature affects the predicted rating. Larger absolute values indicate more influence.
         """)
 
         fig, ax = plt.subplots(figsize=(8, 4))
-        sns.barplot(x="Coefficient", y="Feature", data=coefficients, ax=ax)
-        ax.set_title("Feature Coefficients (Linear Regression)")
+        sns.barplot(x="Importance", y="Feature", data=coefficients, ax=ax)
+        ax.set_title("Feature importance (RF Regression)")
         st.pyplot(fig)
 
-        st.write("For example, a longer movie might have a slightly higher predicted rating, or older movies may tend to score better.")
+        st.subheader("Let's Predict the IMDb Rating for *Gladiator*")
+
+        # Example feature values for Gladiator
+        st.write("""
+        Now let’s use the model to estimate the IMDb rating for the film **Gladiator (2000)**, 
+        and compare it to the actual rating on IMDb.
+
+        Here's the information we're using:
+        - **Certificate**: R
+        - **Duration**: 155 minutes
+        - **Year**: 2000
+        - **MetaScore**: 67
+        - **Genre**: Action 
+        """)
+
+        # Create Gladiator's input
+        genre_action_encoded = df_imdb['Genre'].mode()[0] 
+
+        gladiator_input = {
+            'Certificates': 3,            # 'R' encoded
+            'Duration (minutes)': 155,
+            'Year': 2000,
+            'MetaScore': 67,
+            'Genre': genre_action_encoded
+        }
+
+        # Only include selected features
+        input_df = pd.DataFrame([gladiator_input])[selected_features_imdb]
+
+        predicted_rating = model.predict(input_df)[0]
+        actual_rating = 8.5  # IMDb actual rating for Gladiator
+
+        st.write(f"**Predicted Rating**: {predicted_rating:.2f}")
+        st.write(f"**Actual IMDb Rating**: {actual_rating}")
+
+        # Comparison plot
+        st.write("Here's a visual comparison:")
+        fig, ax = plt.subplots(figsize=(5, 3))
+        sns.barplot(x=["Predicted", "Actual"], y=[predicted_rating, actual_rating], palette="viridis", ax=ax)
+        ax.set_ylabel("IMDb Rating")
+        ax.set_title("Gladiator: Predicted vs Actual Rating")
+        st.pyplot(fig)
+
+        st.info("""
+        The predicted score is based solely on the features available to the model. Differences between prediction and actual rating can be due to subjective viewer opinions, performances, awards, or cultural impact—none of which are included in the dataset!
+        """)
 
         # Quiz
         st.header("Quiz: Identify the Least Important Feature!")
@@ -378,7 +421,7 @@ with tab4:
             quiz_options = coefficients['Feature'].tolist()
 
             selected_answer = st.radio(
-                "Which feature has the **least** impact (smallest absolute coefficient) in the model?",
+                "Which feature has the **least** impact (smallest importance) in the model?",
                 quiz_options, index=None
             )
 
@@ -388,7 +431,86 @@ with tab4:
                 elif selected_answer is None:
                     st.write("")
                 else:
-                    st.error(f"❌ Incorrect. The least important feature is **{least_important_feature}**.")
+                    st.error(f"❌ Incorrect. Have another go!")
     else:
         st.warning("Please select at least one feature to train the model.")
+
+with tab5:
+    st.subheader("Python implementation (Random Forests)")
+
+    rf_multi = """
+    Let's explore how we can actually use these techniques using Python. These methods are useful when we already know the labels for our data and want to learn patterns to predict them in the future.
+
+    We'll focus on **Random Forests**, which can be used for:
+    - Classification (predicting categories)
+    - Regression (predicting continuous values)
+
+    These models are powerful and work by combining multiple decision trees into an ensemble to improve accuracy and reduce overfitting.
+    
+    ---
+    
+    ### Random Forest Classifier
+
+    This model is used to classify data into categories.
+
+    ``` python
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.model_selection import train_test_split
+    from sklearn.metrics import accuracy_score
+
+    # Split dataset into features and labels
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Build and train classifier
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+
+    # Make predictions
+    y_pred = model.predict(X_test)
+
+    # Evaluate model
+    accuracy = accuracy_score(y_test, y_pred)
+    print("Accuracy:", accuracy)
+    ```
+
+    This code trains a classifier and prints the accuracy score on the test data.
+    
+    ---
+    
+    ### Random Forest Regressor
+
+    This model is used when you want to predict a **number** instead of a category.
+
+    ``` python
+    from sklearn.ensemble import RandomForestRegressor
+    from sklearn.model_selection import train_test_split
+    from sklearn.metrics import mean_squared_error, r2_score
+
+    # Split dataset into features and target
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Build and train regressor
+    reg = RandomForestRegressor(n_estimators=100, random_state=42)
+    reg.fit(X_train, y_train)
+
+    # Make predictions
+    y_pred = reg.predict(X_test)
+
+    # Evaluate model
+    mse = mean_squared_error(y_test, y_pred)
+    r2 = r2_score(y_test, y_pred)
+
+    print("Mean Squared Error:", mse)
+    print("R² Score:", r2)
+    ```
+
+    This code trains a regression model and prints out common metrics for performance.
+    
+    ---
+    
+    Notice how the structure for both models is **almost identical** — you just swap out the classifier for a regressor and change the evaluation metric.
+    """
+
+    st.markdown(rf_multi)
+        
     

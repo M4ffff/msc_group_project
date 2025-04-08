@@ -11,17 +11,17 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 from Modules.unsupervised_functions import run_kmeans_animation, plot_clusters, get_data, basic_plot, pros_and_cons
-from Modules.unsupervised_functions import kmeans_cluster, gmm_cluster, dbscan_cluster, hdbscan_cluster
+from Modules.unsupervised_functions import cluster_dict, kmeans_cluster, gmm_cluster, dbscan_cluster, hdbscan_cluster
 
 st.title("Unsupervised Learning Page")
 
 
-tab1, tab2, tab3, tab4 = st.tabs(["Introduction", "Unsupervised explanation", "Clustering Examples", "Python Implementation"])
+tab1, tab2, tab3, tab4 = st.tabs(["Introduction", "Real-life Example", "Clustering Explorations", "Python Implementation"])
 
 with tab1:
     st.subheader("What ***is*** Unsupervised Learning:question::exclamation:")
     
-    st.markdown("Unsupervised learning is a type of machine learning where the algorithm learns patterns from unlabelled data. Unlike supervised learning, there are no predefined outputs. The goal is to explore the underlying structure of the dataset, uncovering hidden relationships or groupings without predefined categories. This approach is particularly useful for larger datasets.")
+    st.markdown("Unsupervised learning is a type of machine learning where the algorithm learns patterns from ***unlabelled*** data. Unlike supervised learning, there are no predefined outputs. The goal is to explore the underlying structure of the dataset, uncovering hidden relationships or groupings without predefined categories.")
         
     st.subheader("Types of Unsupervised Learning")
     
@@ -34,29 +34,30 @@ with tab1:
     
     st.write(types_multi)
     
-    with st.expander("Dimensionality Reduction"):
+    with st.expander(":blue[Dimensionality Reduction] :arrow_right: :arrow_left:"):
         st.write("""
                  This is a method to reduce the number of features in a dataset, without losing lots of important information. 
                  Often, datasets have many features. However, as humans we are unable to visualise data with more than 3 dimensions. 
-                 Dimensionality reduction allows us to reduce the number of dimensions to a number that can be visualised by us!
-                 
+                 Dimensionality reduction allows us to **reduce the number of dimensions** to a number that can be visualised by us (i.e. 2D, or 3D)!
+                 It is also useful for reducing the size of large datasets, making analysis less computationally intensive. :fast_forward:
                  
                  The most important features of the dataset can also be determined, allowing future research to focus on these specific features and ignore irrelevant features.   
                  
-                 There are both linear algorithms (eg principal component analysis (PCA)) and non-linear methods (eg t-SNE). 
+                 There are both *linear* algorithms (eg principal component analysis (PCA)) and *non-linear* methods (eg t-SNE). 
+                 In this resource, we only really cover linear algorithms :disappointed: However, if you're interested in non-linear methods they're definitely worth looking into!
                  
                  """)
         
-    with st.expander("Clustering"):
+    with st.expander(":red[Clustering]"):
         st.write("""
                  This is a method often used alongside dimensionality reduction.
-                 It is used to group unlabelled data based on the data points' similarity to each other.
+                 It is used to **group** unlabelled data based on the data points' similarity to each other.
                  
                  The similarity of the datapoints can be determined in different ways.
                  Some methods, such as **K-means clustering**, split the data into group purely based on distance to each other. 
-                 Other methods, such as DBSCAN, base simlarity on the density of data. 
+                 Other methods, such as DBSCAN, base similarity on the density of data. 
                  
-                 The method you want to use depends on each case. 
+                 The method you want to use depends on each case - as we will explore in the next few tabs... 
                  
                  """)
     
@@ -64,7 +65,7 @@ with tab1:
     
     st.subheader("Unsupervised Learning applications")
 
-    st.markdown("Unsupervised learning is particularly valuable in the early stages of data analysis, especially for data preparation and visualisation. It is often used when data scientists do not have predefined labels or clear hypotheses, allowing them to explore the data freely.")
+    st.markdown("Unsupervised learning is particularly valuable in the *early stages* of data analysis, especially for data preparation and visualisation. It is often used when data scientists do not have predefined labels or clear hypotheses, allowing them to :rainbow[explore the data] freely.")
     st.markdown("By uncovering the most relevant features and revealing hidden patterns or relationships, unsupervised learning helps reduce the risk of human bias or oversight. Common applications include anomaly detection, preparing datasets for supervised learning, and powering recommendation systems by identifying natural groupings or preferences within the data.")
     
     
@@ -95,7 +96,7 @@ with tab2:
     x_axis = st.selectbox("Select x-axis:", numeric_columns)
     y_axis = st.selectbox("Selection y-axis:", numeric_columns)
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(6,4))
     sns.scatterplot(data=bc_dat, x=x_axis, y=y_axis, ax=ax, alpha=0.7)
     ax.set(xlabel=x_axis, ylabel=y_axis, title=f"{x_axis} vs {y_axis}")
     st.pyplot(fig)
@@ -221,7 +222,7 @@ with tab2:
 
     # K-Means clustering
     st.subheader("K-Means Clustering")
-    st.markdown("As we know that there are two key groupings in the data, Malignant and Benign, therefore K-means clustering will be applied with two clusters (k=2). This ensures that the model assigns each data point to one of two clusters.")
+    st.markdown("As we know that there are two key groupings in the data (Malignant and Benign), K-means clustering will be applied with two clusters (k=2). This ensures that the model assigns each data point to one of two clusters.")
 
 
     # Show clustered data
@@ -414,78 +415,12 @@ with tab3:
     st.write(final_multi)
 
 
-    #######################################################################################################################################
-    st.subheader("LOADING IN FUNKY DATA")
+
+    st.subheader("Cluster Experiment")
 
     # Making filename dictionary
     
     # SHOULD MOVE OUT OF SCRIPT
-    cluster_dict = {
-    "basic1.csv": {"best_method": ["GMM"], "num_clusters": 4,
-                   "description": "This data is split into 4 blobs which GMM clusters effectively."},
-    "basic2.csv": {"best_method": ["DBSCAN"], "num_clusters": 5,
-                   "description": "DBSCAN definitely the most effective here (eps=15,min_clusters=5) - the other methods struggle with the elongated shapes of the clusters."},
-    "basic3.csv": {"best_method": ["GMM"], "num_clusters": 3,
-                   "description": ""},
-    "basic4.csv": {"best_method": ["K-means", "GMM"], "num_clusters": 3,
-                   "description": "K-means and GMM are most effective here due to the blobby nature of the data."},
-    "basic5.csv": {"best_method": ["K-means", "GMM"], "num_clusters": 3,
-                   "description": "K-means and GMM both effectively cluster here. DBSCSN and HDBSCAN struggle with the sparsity of the data."},
-    "blob.csv": {"best_method": ["K-means", "GMM"], "num_clusters": 4,
-                   "description": "These clusters are not clearly distinct, but there is a vague blobby structure which K-means and GMM show."},
-    # "box.csv": {"best_method": "dbscan", "num_clusters": 1}, ###
-    # "boxes.csv": {"best_method": "dbscan", "num_clusters": 30}, ###
-    "boxes2.csv": {"best_method": ["DBSCAN"], "num_clusters": 3,
-                   "description": "All the methods struggle with this one,  particularly as noise increases. However, with low noise, DBSCAN determines the three clusters most reliabely."},
-    # "boxes3.csv": {"best_method": "dbscan", "num_clusters": 12}, ###
-    "chrome.csv": {"best_method": ["DBSCAN", "HDBSCAN"], "num_clusters": 4,
-                   "description": "DBSCAN (eps=0.32, min_clusters=5) and HDBSCAN both effective here due to the strange shapes of the clusters,\
-                       even as noise increases."},
-    "dart.csv": {"best_method": ["DBSCAN", "HDBSCAN"], "num_clusters": 2,
-                   "description": "K-means particularly struggles with this one as the clusters do not have blobby shapes. "},
-    "dart2.csv": {"best_method": ["DBSCAN", "HDBSCAN"], "num_clusters": 4,
-                   "description": "DBSCAN and HDBSCAN can effectively cluster based on the shapes of the rings (although struggle when the noise is increased) "},
-    "face.csv": {"best_method": ["DBSCAN", "HDBSCAN"], "num_clusters": 4,
-                 "description": "DBSCAN (eps=0.32, min_clusters=5) and HDBSCAN both effective here, even as noise increases."},
-    "hyperplane.csv": {"best_method": ["GMM"], "num_clusters": 2,
-                   "description": "GMM probably the most effective here, although there aren't any clearly defined clusters so hard to judge the effectiveness of each method."},
-    "isolation.csv": {"best_method": ["DBSCAN"], "num_clusters": 3,
-                   "description": ""},
-    "lines.csv": {"best_method": ["DBSCAN"], "num_clusters": 5,
-                   "description": ""},
-    "lines2.csv": {"best_method": ["DBSCAN"], "num_clusters": 5,
-                   "description": "DBSCAN the most effective here (eps=?,min_clusters=?) - the other methods struggle with the elongated shapes of the clusters."},
-    "moon_blobs.csv": {"best_method": ["DBSCAN"], "num_clusters": 4,
-                   "description": ""},             ############## check best method
-    "network.csv": {"best_method": ["K-means", "GMM", "DBSCAN"], "num_clusters": 5,
-                   "description": "All the methods work pretty effective here, although GMM deals with increased noise the best. DBSCAN:(eps=0.10,min_clusters=5)"},
-    "outliers.csv": {"best_method": ["GMM"], "num_clusters": 2,
-                   "description": ""},
-    # "ring.csv": {"best_method": "kmeans", "num_clusters": 1}, ###
-    "sparse.csv": {"best_method": ["K-means", "GMM"], "num_clusters": 3,
-                   "description": "This is pretty blobby data, so K-means and GMM both effectively cluster into 3 clusters. DBSCAN struggles with the sparsity of the data here"},
-    "spiral.csv": {"best_method": ["DBSCAN"], "num_clusters": 1,
-                   "description": ""}, ###
-    "spiral2.csv": {"best_method": ["GMM"], "num_clusters": 2,
-                   "description": ""},
-    "spirals.csv": {"best_method": ["GMM"], "num_clusters": 3,
-                   "description": ""},
-    "supernova.csv": {"best_method": ["GMM"], "num_clusters": 4,
-                   "description": ""},
-    "triangle.csv": {"best_method": ["DBSCAN"], "num_clusters": 3,
-                   "description": ""},
-    "un.csv": {"best_method": ["GMM"], "num_clusters": 2,
-                   "description": ""},
-    "un2.csv": {"best_method": ["DBSCAN"], "num_clusters": 3,
-                   "description": ""},
-    "wave.csv": {"best_method": ["GMM"], "num_clusters": 4,
-                   "description": ""}
-}
-
-
-
-    ################################################## 
-
 
 
     
@@ -524,28 +459,9 @@ with tab3:
 
 
 
-    st.write("Make the lil quiz below **harder** by increasing the noise of the data.\
-             This will make the clusters less distinct. (and may make the models significantly worse at determining the clusters) ")
-    noise_std = st.slider("Select noise distribution", 0.0, 0.5, step=0.1 )
-    rand_noise = np.random.normal(0,noise_std, random_data.shape )
-
-    random_data += rand_noise
-
-
-    #######################################################################################################################################
-    st.subheader("CLUSTER AND PLOT FUNKY DATA")
-
     # have plot next to explanation of limitations of each model. 
 
     col1, col2 = st.columns([0.7, 0.3])
-
-
-
-
-        # st.pyplot(fig)
-
-        
-
 
     with col1:
         fig1, ax1 = plt.subplots(figsize=(6,6))
@@ -631,6 +547,9 @@ with tab3:
             else:
                 # st.write(f"clusters: {cluster_dict[random_file]["num_clusters"]}")
                 st.error("I'm afraid I don't agree with you here, have another go!")
+    
+    
+     
                     
     # other methods
     # elif question_one == cluster_dict[random_file]["cluster"]:
@@ -641,8 +560,8 @@ with tab3:
         st.error("I'm afraid I don't agree with you here, have another go!")
     
     
-    if "description" in cluster_dict[random_file].keys():
-            st.write(cluster_dict[random_file]["description"])
+    if st.checkbox("Show brief author analysis for this set of data!"):
+        st.write(cluster_dict[random_file]["description"])
    
 
 
@@ -655,8 +574,10 @@ with tab3:
     There is evidently no one-size-fits-all :gloves: clustering technique which can be used to cluster any set of data -\
     the methods introduced here all have their pros and cons. 
     
-    Overall, GMM is generally the most reliable (and easy to implement), in particular for noise-less :mute: data. 
-    However, it does struggle with clusters that are funky shapes if there is more noise and overlap between clusters. \
+    Overall, DBSCAN is generally the most reliable method (and easy to implement), as it can deal with funky shapes and \
+        noisy :mute: data. However, it requires tuning of the hyperparameters to ensure a correct clustering and can struggle when clusters overlap.
+        GMM is easy to implement and deals with a lot of the datasets well.\
+    However, it does struggle with clusters that are funky shapes especially if there is more noise. \
         In these cases, it often returns to clustering into blobs rather than effectively capturing the shape of the data.  
     
     It is important to remember that clusters are often hard to distinguish by eye. :eye: 
@@ -726,6 +647,7 @@ with tab3:
         '''
         multi_cons = '''
         - Computationally expensive
+        - Doesn't always capture clusters correctly.
         '''
         pros_and_cons(multi_pros, multi_cons)
 
@@ -736,7 +658,7 @@ with tab3:
     I hope you feel like you've learnt a lot along the way, and now understand the different scenarios for when to use the different clustering methods. 
     
     Make sure to checkout the documentation page for simple examples of how to implement these methods in Python, \
-    or view our GitHub (url) to see the full code used in producing these examples. 
+    or view our GitHub (link on final page) to see the full code used in producing these examples. 
     
     Unsupervised learning, over and out. :end:
     """
