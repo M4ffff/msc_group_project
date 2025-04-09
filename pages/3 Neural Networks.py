@@ -194,13 +194,18 @@ with sections[1]:
         try:
             architecture_shape = [int(n.strip()) for n in user_architecture_input.split(',')]
 
-            if len(architecture_shape) > 0:
-                # call the architecture draw function 
-                architecture_diagram = nn_architecture_draw(architecture_shape)
-                st.pyplot(architecture_diagram, use_container_width=False)  # plot the figure in streamlit
+            if 0 < len(architecture_shape) < 7:
+                # limit number of neurons 
+                if any(n > 10 for n in architecture_shape):
+                    st.write("Please limit the number of neurons per layer to 10 or fewer.")
+
+                else:
+                    # call the architecture draw function 
+                    architecture_diagram = nn_architecture_draw(architecture_shape)
+                    st.pyplot(architecture_diagram, use_container_width=False)  # plot the figure in streamlit
 
             else:
-                st.write("This is an invalid architecture shape.")
+                st.write("This is architecture shape is too big or small. The limit is 6 layers.")
         except ValueError:
             st.write("The input you have provided is invalid. Please follow the correct format (e.g. 2,3,2).")
 
